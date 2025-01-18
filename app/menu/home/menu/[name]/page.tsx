@@ -17,8 +17,8 @@ const MenuPage = () => {
 
   return (
     <div className="p-2 bg-cover bg-center bg-no-repeat" style={{backgroundImage:'url(/images/background/menuback.png)'}}>
-      <header className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">{selectedMenu}</h1>
+      <header className="flex justify-between items-center mb-4 border-b-2 border-white">
+        <h1 className="text-3xl font-bold">{selectedMenu}</h1>
         <button className="bg-transparent p-2 rounded"><FiMenu size={24}/></button>
       </header>
       <CategoryRow categories={["Pasta", "Spaghetti", "Pizza", "Risotto"]} />

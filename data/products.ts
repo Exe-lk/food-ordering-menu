@@ -36,5 +36,16 @@ export const products: Record<string, any[]> ={
             category:"Spaghetti",
             image:'/assets/Italian/alfredo.jpg'
         },
+        {
+            name: "Cheese Pizza",
+            portions:[
+                {size: "Medium", price:"800"},
+                {size: "Large", price:"1800"},
+                {size: "Extra Large", price:"2800"}
+            ],
+            category:"Pizza",
+            image:'/assets/Italian/cheesepizza.jpg'
+        },
+        
     ]
 }
