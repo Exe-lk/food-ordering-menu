@@ -2,11 +2,12 @@ import { configureStore, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 // Define the type for a cart item
 interface CartItem {
-  id?: string; // Optional in case you need unique IDs
+  id?: string;
   name: string;
   portion: string;
   quantity: number;
   price: number;
+  image:string;
 }
 
 const menuSlice = createSlice({

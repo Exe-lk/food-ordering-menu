@@ -5,9 +5,10 @@ interface PortionPopUpProps {
     name: string;
     portions: {size: string; price:string}[];
     onClose:() => void;
+    image:string;
 }
 
-const PortionPopUp = ({name, portions, onClose}:PortionPopUpProps) => {
+const PortionPopUp = ({name, portions, image, onClose}:PortionPopUpProps) => {
     const [selectedPortion, setSelectedPortion] = useState("");
     const [quantity, setQuantity] = useState(1);
     const dispatch = useDispatch();
@@ -16,7 +17,13 @@ const PortionPopUp = ({name, portions, onClose}:PortionPopUpProps) => {
         if(selectedPortion){
             const price = portions.find((p) => p.size === selectedPortion)?.price || '0';
             dispatch(
-                addToCart({name, portion:selectedPortion, quantity, price: +price})
+                addToCart({
+                    name, 
+                    portion:selectedPortion, 
+                    quantity, 
+                    price: +price,
+                    image    
+                })
             );
             onClose();
         }else{

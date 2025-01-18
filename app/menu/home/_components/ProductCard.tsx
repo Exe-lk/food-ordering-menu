@@ -39,6 +39,7 @@ const ProductCard = ({name, portions, image}:ProductCardProps) => {
                 <PortionPopUp 
                 name={name}
                 portions={portions}
+                image={image}
                 onClose={() => setShowPopUp(false)}  
                 />
             )}
