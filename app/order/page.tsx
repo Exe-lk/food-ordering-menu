@@ -1,15 +1,27 @@
 "use client";
 import React, { useState } from "react";
-import OrderCard from "./_components/OrderCard";
 import { FiMenu } from "react-icons/fi";
-import { orders } from "@/data/order";
+// Import the OrderGrid component
+import { orders as initialOrders } from "@/data/order";
+import OrderGrid from "./_components/DataGrid";
 
 const Page = () => {
   const [activeFilter, setActiveFilter] = useState("All");
+  const [orders, setOrders] = useState(initialOrders);
+
   const filteredOrders =
     activeFilter === "All"
       ? orders
       : orders.filter((order) => order.status === activeFilter);
+
+  const handleStatusChange = (id: number, newStatus: string) => {
+    setOrders((prevOrders) =>
+      prevOrders.map((order) =>
+        order.id === id ? { ...order, status: newStatus } : order
+      )
+    );
+  };
+
   return (
     <div className="p-4 bg-gray-100 min-h-screen">
       {/* Header Section */}
@@ -17,7 +29,9 @@ const Page = () => {
         <button className="text-2xl text-black">
           <FiMenu />
         </button>
-        <h1 className="text-3xl font-bold text-black text-center">Order Management</h1>
+        <h1 className="text-3xl font-bold text-black text-center">
+          Order Management
+        </h1>
         <input
           type="text"
           placeholder="Search"
@@ -26,7 +40,7 @@ const Page = () => {
       </div>
       {/* Filter Buttons */}
       <div className="flex space-x-2 mb-6">
-        {["All", "Served", "Ready", "Cooking", "New Order"].map((filter) => (
+        {["All", "Served", "Ready", "Cooking", "Pending"].map((filter) => (
           <button
             key={filter}
             onClick={() => setActiveFilter(filter)}
@@ -41,18 +55,7 @@ const Page = () => {
         ))}
       </div>
       {/* Orders Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredOrders.map((order, index) => (
-          <OrderCard
-            key={index}
-            name={order.name}
-            table={order.table}
-            items={order.items}
-            total={order.total}
-            status={order.status as "Ready" | "Cooking" | "Served" | "New Order"}
-          />
-        ))}
-      </div>
+      <OrderGrid orders={filteredOrders} handleStatusChange={handleStatusChange} />
     </div>
   );
 };
