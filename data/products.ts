@@ -6,7 +6,6 @@ export const products: Record<string, any[]> ={
                 {size: "Regular", price: "800"},
                 {size: "Large", price: "1800"}
             ],
-            category:"Pasta",
             image:"/assets/Italian/garlic.jpg"
         },
         {
@@ -15,7 +14,6 @@ export const products: Record<string, any[]> ={
                 {size: "Regular", price:"800"},
                 {size: "Large", price:"1800"}
             ],
-            category:"Pasta",
             image:'/assets/Italian/spicy.webp'
         },
         {
@@ -24,7 +22,6 @@ export const products: Record<string, any[]> ={
                 {size: "Regular", price:"800"},
                 {size: "Large", price:"1800"}
             ],
-            category:"Spaghetti",
             image:'/assets/Italian/carbonara.jpeg'
         },
         {
@@ -33,7 +30,6 @@ export const products: Record<string, any[]> ={
                 {size: "Regular", price:"800"},
                 {size: "Large", price:"1800"}
             ],
-            category:"Spaghetti",
             image:'/assets/Italian/alfredo.jpg'
         },
         {
@@ -43,60 +39,101 @@ export const products: Record<string, any[]> ={
                 {size: "Large", price:"1800"},
                 {size: "Extra Large", price:"2800"}
             ],
-            category:"Pizza",
             image:'/assets/Italian/cheesepizza.jpg'
         },
         
     ],
 
-    Chineese:[
+    Chinese:[
         {
-            name: "Garlic Pasta",
+            name: "Sour Pork",
             portions:[
                 {size: "Regular", price: "800"},
                 {size: "Large", price: "1800"}
             ],
-            category:"RiceMeal",
-            image:"/assets/Italian/garlic.jpg"
+            image:"/assets/chineese/dish1.jpg"
         },
         {
-            name: "Soup",
+            name: "Dim Sum",
             portions:[
                 {size: "Regular", price:"800"},
                 {size: "Large", price:"1800"}
             ],
-            category:"Soup",
-            image:'/assets/Italian/spicy.webp'
+            image:'/assets/chineese/dish2.jpg'
         },
         {
-            name: "Carbonara",
+            name: "Kung Pao",
             portions:[
                 {size: "Regular", price:"800"},
                 {size: "Large", price:"1800"}
             ],
-            category:"Vegeterian",
-            image:'/assets/Italian/carbonara.jpeg'
-        },
-        {
-            name: "Alfredo",
-            portions:[
-                {size: "Regular", price:"800"},
-                {size: "Large", price:"1800"}
-            ],
-            category:"Spicy",
-            image:'/assets/Italian/alfredo.jpg'
+            image:'/assets/chineese/dish3.jpg'
         },
         {
             name: "Fried Rice",
             portions:[
-                {size: "Medium", price:"800"},
-                {size: "Large", price:"1800"},
-                {size: "Extra Large", price:"2800"}
+                {size: "Regular", price:"800"},
+                {size: "Large", price:"1800"}
             ],
-            category:"FriedRice",
-            image:'/assets/Italian/cheesepizza.jpg'
+            image:'/assets/chineese/dish4.jpg'
         },
         
-    ]
+    ],
+
+    Dessert:[
+        {
+            name: "Sundaes",
+            portions:[
+                {size: "Regular", price: "800"},
+                {size: "Large", price: "1800"}
+            ],
+            image:"/assets/dessert/item1.jpg"
+        },
+        {
+            name: "Brownies",
+            portions:[
+                {size: "Regular", price:"800"},
+                {size: "Large", price:"1800"}
+            ],
+            image:"/assets/dessert/item2.jpg"
+        },
+        {
+            name: "Chocolate Mousse",
+            portions:[
+                {size: "Regular", price:"800"},
+                {size: "Large", price:"1800"}
+            ],
+            image:'/assets/dessert/item3.jpg'
+        },
+        
+    ],
+
+    Coffees:[
+        {
+            name: "Americano",
+            portions:[
+                {size: "Regular", price: "800"},
+                {size: "Large", price: "1800"}
+            ],
+            image:"/assets/coffee/coffee2.jpg"
+        },
+        {
+            name: "Espresso",
+            portions:[
+                {size: "Regular", price:"800"},
+                {size: "Large", price:"1800"}
+            ],
+            image:"/assets/coffee/coffee3.jpg"
+        },
+        {
+            name: "Capuchchino",
+            portions:[
+                {size: "Regular", price:"800"},
+                {size: "Large", price:"1800"}
+            ],
+            image:'/assets/coffee/coffee2.jpg'
+        },
+        
+    ],
 
 }

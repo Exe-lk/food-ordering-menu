@@ -1,18 +1,21 @@
 import React from 'react'
 
-interface CategoryRowProps {
-    categories:string[];
+interface MenuRowProps {
+    menus:string[];
+    onMenuSelect:(menu:string) => void;
+
 }
 
-const MenuRow = ({categories}:CategoryRowProps) => {
+const MenuRow = ({menus, onMenuSelect}:MenuRowProps) => {
   return (
     <div className='flex space-x-4 overflow-x-scroll p-4'>
-        {categories.map((category, index) =>(
+        {menus.map((menu, index) =>(
             <button 
                 key={index}
+                onClick={() => onMenuSelect(menu)}
                 className='px-4 py-2 bg-customback rounded-full font-medium text-black w-96 whitespace-nowrap'
             >
-                {category}
+                {menu}
             </button>
         ))}
 

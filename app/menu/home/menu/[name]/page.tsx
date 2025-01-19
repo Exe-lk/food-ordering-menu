@@ -12,9 +12,12 @@ import ProductCard from "../_components/ProductCard";
 const MenuPage = () => {
   const params = useParams();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const selectedMenu = params.name as string;
-  const menuProducts = products[selectedMenu];
+  // const selectedMenu = params.name as string;
+  // const menuProducts = products[selectedMenu];
   const menus = menuData.map((menu) => menu.name);
+  const [selectedMenu, setSelectedMenu] = useState(menus[0]);
+  const menuProducts = products[selectedMenu] || [];
+
   return (
     <div className="p-2 bg-black">
       <header className="flex justify-between items-center mb-4 border-b-2 border-white">
@@ -25,17 +28,24 @@ const MenuPage = () => {
         </button>
       </header>
       {/* Menus */}
-      <MenuRow categories={menus} />
-      <h1 className="text-center text-white text-xl">{selectedMenu}</h1>
-      {/* Products */}
+      <MenuRow menus={menus} onMenuSelect={setSelectedMenu} />
       <div>
-        {menuProducts.map((product, index) => (
-          <ProductCard key={index} {...product} />
-        ))}
+          <h1 className="text-center text-white text-xl">{selectedMenu}</h1>
+        {/* Products */}
+          <div>
+            {menuProducts.length > 0 ?(
+              menuProducts.map((product, index) => (
+                <ProductCard key={index} {...product} />
+              ))
+            ):(
+              <p className="text-center text-white text-lg">Menu is Empty</p>
+            )}
+          </div>
+          <CartSection/>
+          <MenuOverlay isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
+        </div> 
       </div>
-      <CartSection/>
-      <MenuOverlay isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
-    </div>
+      
   );
 };
 export default MenuPage;
