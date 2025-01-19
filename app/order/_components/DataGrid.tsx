@@ -58,13 +58,18 @@ const OrderGrid: React.FC<OrderGridProps> = ({ orders, handleStatusChange }) => 
                 ? "#FFC107"
                 : params.value === "Served"
                 ? "#4CAF50"
+                : params.value === "Cooking"
+                ? "#FF5722"
+                : params.value === "Ready to Serve"
+                ? "#03A9F4"
                 : "#9C27B0",
             color: "white",
           }}
         >
           <MenuItem value="Pending">Pending</MenuItem>
-          <MenuItem value="Served">Served</MenuItem>
+          <MenuItem value="Cooking">Cooking</MenuItem>
           <MenuItem value="Ready to Serve">Ready to Serve</MenuItem>
+          <MenuItem value="Served">Served</MenuItem>
         </Select>
       ),
     },
