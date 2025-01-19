@@ -6,12 +6,10 @@ import { orders } from "@/data/order";
 
 const Page = () => {
   const [activeFilter, setActiveFilter] = useState("All");
-  // Filtering orders
   const filteredOrders =
     activeFilter === "All"
       ? orders
       : orders.filter((order) => order.status === activeFilter);
-
   return (
     <div className="p-4 bg-gray-100 min-h-screen">
       {/* Header Section */}
@@ -26,7 +24,6 @@ const Page = () => {
           className="border border-gray-300 rounded-md px-4 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
-
       {/* Filter Buttons */}
       <div className="flex space-x-2 mb-6">
         {["All", "Served", "Ready", "Cooking", "New Order"].map((filter) => (
@@ -43,7 +40,6 @@ const Page = () => {
           </button>
         ))}
       </div>
-
       {/* Orders Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredOrders.map((order, index) => (

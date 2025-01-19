@@ -7,12 +7,10 @@ interface PortionPopUpProps {
     onClose:() => void;
     image:string;
 }
-
 const PortionPopUp = ({name, portions, image, onClose}:PortionPopUpProps) => {
     const [selectedPortion, setSelectedPortion] = useState("");
     const [quantity, setQuantity] = useState(1);
     const dispatch = useDispatch();
-
     const handleAddToCart = () =>{
         if(selectedPortion){
             const price = portions.find((p) => p.size === selectedPortion)?.price || '0';
@@ -68,13 +66,9 @@ const PortionPopUp = ({name, portions, image, onClose}:PortionPopUpProps) => {
                 <button onClick={onClose} className='bg-gray-800 text-white rounded'>
                     Cancel
                 </button>
-
             </div>
-
         </div>
-
     </div>
   )
 }
-
 export default PortionPopUp
