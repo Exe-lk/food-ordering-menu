@@ -28,7 +28,7 @@ const OrderGrid: React.FC<OrderGridProps> = ({ orders, handleStatusChange }) => 
       headerName: "Items",
       flex: 2,
       renderCell: (params) => (
-        <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}> {/* Increased gap to 16px */}
           {params.value.map((item: { name: string; size: string; quantity: number }) => (
             <div key={`${item.name}-${item.size}`}>
               {item.name} - {item.size} x{item.quantity}
@@ -93,9 +93,19 @@ const OrderGrid: React.FC<OrderGridProps> = ({ orders, handleStatusChange }) => 
           "& .MuiDataGrid-cell": {
             display: "flex",
             alignItems: "center",
+            padding: "12px", // Added padding to cells
+            border: "1px solid #ddd", // Make row and column borders visible
           },
           "& .MuiDataGrid-columnHeaders": {
             backgroundColor: "#F4F4F4",
+            borderBottom: "2px solid #ddd", // Add a border for the column header
+          },
+          "& .MuiDataGrid-row": {
+            borderBottom: "2px solid #ddd", // Add a bottom border to rows
+          },
+          "& .MuiDataGrid-columnSeparator": {
+            visibility: "visible",
+            borderColor: "#ddd", 
           },
         }}
       />
