@@ -82,6 +82,7 @@ const OrderGrid = ({ orders, handleStatusChange } : OrderGridProps) => {
         columns={columns}
         getRowHeight={() => "auto"}
         disableColumnMenu
+        className="bg-beige"
         sx={{
           "& .MuiDataGrid-cell": {
             display: "flex",

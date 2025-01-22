@@ -1,6 +1,6 @@
 "use client"
 import React,{useState} from 'react'
-import {FiChevronDown, FiChevronUp} from 'react-icons/fi'
+import {FiChevronDown, FiChevronUp, FiX} from 'react-icons/fi'
 
 interface SideBarProps{
     isOpen: boolean;
@@ -17,15 +17,15 @@ const Sidebar = ({isOpen, onClose}:SideBarProps) => {
         <div className='flex justify-end p-4'>
             <button
                 onClick={onClose}
-                className='text-black text-xl'
+                className='text-black text-2xl'
             >
-                X
+                <FiX/>
             </button>
         </div>
         <ul className='p-4 space-y-4'>
             <li>
-                <a href="#"
-                className='block text-lg text-gray-800'
+                <a href="/order"
+                className='block text-xl text-gray-800'
                 >
                     Order Management
                 </a>
@@ -33,7 +33,7 @@ const Sidebar = ({isOpen, onClose}:SideBarProps) => {
             <li>
                 <button
                     onClick={() => setIsMenuOpen(!isMenuOpen)}
-                    className='w-full flex justify-between items-center text-lg text-gray-800'
+                    className='w-full flex justify-between items-center text-xl text-gray-800'
                 >
                     Food Inventory
                     {isMenuOpen ? <FiChevronUp/> : <FiChevronDown/>}
@@ -41,15 +41,15 @@ const Sidebar = ({isOpen, onClose}:SideBarProps) => {
                 {isMenuOpen && (
                     <ul className='pl-4 mt-2 space-y-4'>
                         <li>
-                           <a href="#"
-                            className='block text-gray-800'
+                           <a href="/inventory/food/internal"
+                            className='block text-gray-800 text-xl'
                            >
                                 Internal
                             </a> 
                         </li>
                         <li>
                             <a href=""
-                            className='block text-gray-800'
+                            className='block text-gray-800 text-xl'
                             >
                                 External
                             </a>
@@ -59,9 +59,16 @@ const Sidebar = ({isOpen, onClose}:SideBarProps) => {
             </li>
             <li>
                 <a href="#"
-                className='block text-lg text-gray-800'
+                className='block text-gray-800 text-xl'
                 >
                     Portion Management
+                </a>
+            </li>
+            <li>
+                <a href="#"
+                className='block text-gray-800 text-xl'
+                >
+                    Ingredients Inventory
                 </a>
             </li>
         </ul>

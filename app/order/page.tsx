@@ -4,11 +4,13 @@ import { FiMenu } from "react-icons/fi";
 import { orders as initialOrders } from "@/data/order";
 import OrderGrid from "../../components/DataGrid";
 import Sidebar from "@/components/Sidebar";
+import SearchBar from "@/components/SearchBar";
 
 const Page = () => {
   const [activeFilter, setActiveFilter] = useState("All");
   const [orders, setOrders] = useState(initialOrders);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const filteredOrders =
     activeFilter === "All"
@@ -24,7 +26,7 @@ const Page = () => {
   };
 
   return (
-    <div className="p-4 bg-gray-100 min-h-screen">
+    <div className="p-4 min-h-screen bg-gradient-to-b from-[#EDD3B3] to-white" >
       {/* Header Section */}
       <div className="flex items-center justify-between mb-6">
         <button 
@@ -35,11 +37,7 @@ const Page = () => {
         <h1 className="text-3xl font-bold text-black text-center">
           Order Management
         </h1>
-        <input
-          type="text"
-          placeholder="Search"
-          className="border border-gray-300 rounded-md px-4 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+       <SearchBar placeholder="Search Orders" onSearch={setSearchQuery} />
       </div>
       <Sidebar
         isOpen={isSidebarOpen}
@@ -62,7 +60,10 @@ const Page = () => {
         ))}
       </div>
       {/* Orders Grid */}
-      <OrderGrid orders={filteredOrders} handleStatusChange={handleStatusChange} />
+      <div className="px-3 py-3">
+        <OrderGrid orders={filteredOrders} handleStatusChange={handleStatusChange} />
+      </div>
+      
     </div>
   );
 };
