@@ -1,13 +1,14 @@
 "use client";
 import React, { useState } from "react";
 import { FiMenu } from "react-icons/fi";
-// Import the OrderGrid component
 import { orders as initialOrders } from "@/data/order";
-import OrderGrid from "./_components/DataGrid";
+import OrderGrid from "../../components/DataGrid";
+import Sidebar from "@/components/Sidebar";
 
 const Page = () => {
   const [activeFilter, setActiveFilter] = useState("All");
   const [orders, setOrders] = useState(initialOrders);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const filteredOrders =
     activeFilter === "All"
@@ -26,7 +27,9 @@ const Page = () => {
     <div className="p-4 bg-gray-100 min-h-screen">
       {/* Header Section */}
       <div className="flex items-center justify-between mb-6">
-        <button className="text-2xl text-black">
+        <button 
+        onClick={() => setIsSidebarOpen(true)}
+        className="text-2xl text-black">
           <FiMenu />
         </button>
         <h1 className="text-3xl font-bold text-black text-center">
@@ -38,6 +41,10 @@ const Page = () => {
           className="border border-gray-300 rounded-md px-4 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
+      <Sidebar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+      />
       {/* Filter Buttons */}
       <div className="flex space-x-2 mb-6">
         {["All", "Served", "Ready", "Cooking", "Pending"].map((filter) => (

@@ -16,11 +16,19 @@ interface OrderGridProps {
   handleStatusChange: (id: number, newStatus: string) => void;
 }
 
-const OrderGrid: React.FC<OrderGridProps> = ({ orders, handleStatusChange }) => {
+const OrderGrid = ({ orders, handleStatusChange } : OrderGridProps) => {
+
+  const statusColors: { [key: string]: { main: string; light: string } } = {
+    Pending: { main: "#FFC107", light: "#FFF8E1" },
+    Cooking: { main: "#FF5722", light: "#FFE0E0" },
+    Ready: { main: "#03A9F4", light: "#E1F5FE" },
+    Served: { main: "#4CAF50", light: "#E8F5E9" },
+  };
+
   const columns: GridColDef[] = [
     {
-      field: "name",
-      headerName: "Customer Name",
+      field: "table",
+      headerName: "Table",
       flex: 1,
     },
     {
@@ -28,7 +36,7 @@ const OrderGrid: React.FC<OrderGridProps> = ({ orders, handleStatusChange }) => 
       headerName: "Items",
       flex: 2,
       renderCell: (params) => (
-        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}> {/* Increased gap to 16px */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
           {params.value.map((item: { name: string; size: string; quantity: number }) => (
             <div key={`${item.name}-${item.size}`}>
               {item.name} - {item.size} x{item.quantity}
@@ -36,11 +44,6 @@ const OrderGrid: React.FC<OrderGridProps> = ({ orders, handleStatusChange }) => 
           ))}
         </div>
       ),
-    },
-    {
-      field: "table",
-      headerName: "Table",
-      flex: 1,
     },
     {
       field: "status",
@@ -53,25 +56,17 @@ const OrderGrid: React.FC<OrderGridProps> = ({ orders, handleStatusChange }) => 
           fullWidth
           style={{
             textTransform: "capitalize",
-            backgroundColor:
-              params.value === "Pending"
-                ? "#FFC107"
-                : params.value === "Served"
-                ? "#4CAF50"
-                : params.value === "Cooking"
-                ? "#FF5722"
-                : params.value === "Ready to Serve"
-                ? "#03A9F4"
-                : "#9C27B0",
+            backgroundColor: statusColors[params.value]?.main || "#9C27B0",
             color: "white",
           }}
         >
           <MenuItem value="Pending">Pending</MenuItem>
           <MenuItem value="Cooking">Cooking</MenuItem>
-          <MenuItem value="Ready to Serve">Ready to Serve</MenuItem>
+          <MenuItem value="Ready">Ready</MenuItem>
           <MenuItem value="Served">Served</MenuItem>
         </Select>
       ),
+      cellClassName: (params) => `status-${params.value.replace(/\s/g, "-").toLowerCase()}`,
     },
   ];
 
@@ -80,7 +75,6 @@ const OrderGrid: React.FC<OrderGridProps> = ({ orders, handleStatusChange }) => 
       <DataGrid
         rows={orders.map((order) => ({
           id: order.id,
-          name: order.name,
           items: order.items,
           table: order.table,
           status: order.status,
@@ -88,24 +82,36 @@ const OrderGrid: React.FC<OrderGridProps> = ({ orders, handleStatusChange }) => 
         columns={columns}
         getRowHeight={() => "auto"}
         disableColumnMenu
-        disableRowSelectionOnClick
         sx={{
           "& .MuiDataGrid-cell": {
             display: "flex",
             alignItems: "center",
-            padding: "12px", // Added padding to cells
-            border: "1px solid #ddd", // Make row and column borders visible
+            padding: "12px",
+            border: "1px solid #",
           },
           "& .MuiDataGrid-columnHeaders": {
             backgroundColor: "#F4F4F4",
-            borderBottom: "2px solid #ddd", // Add a border for the column header
+            borderBottom: "2px solid #ddd",
           },
           "& .MuiDataGrid-row": {
-            borderBottom: "2px solid #ddd", // Add a bottom border to rows
+            borderBottom: "2px solid #ddd",
           },
           "& .MuiDataGrid-columnSeparator": {
             visibility: "visible",
-            borderColor: "#ddd", 
+            borderColor: "#ddd",
+          },
+
+          "& .MuiDataGrid-cell.status-pending": {
+            backgroundColor: statusColors.Pending.light,
+          },
+          "& .MuiDataGrid-cell.status-cooking": {
+            backgroundColor: statusColors.Cooking.light,
+          },
+          "& .MuiDataGrid-cell.status-ready-to-serve": {
+            backgroundColor: statusColors.Readylight,
+          },
+          "& .MuiDataGrid-cell.status-served": {
+            backgroundColor: statusColors.Served.light,
           },
         }}
       />

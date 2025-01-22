@@ -10,7 +10,7 @@ export const orders = [
         { name: "Carbonara", size: "Large", quantity: 5 },
       ],
       total: "12000 LKR",
-      status: "Ready To Serve",
+      status: "Pending",
     },
     {
       id:2,

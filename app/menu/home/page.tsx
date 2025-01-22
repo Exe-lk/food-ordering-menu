@@ -1,13 +1,11 @@
-"use client"
+import MenuType from '@/components/MenuType'
 import React from 'react'
-import Menu from './_components/Menu'
 
 const page = () => {
-
   return (
-   <>
-        <Menu/>
-   </>
+    <>
+      <MenuType/>
+    </>
   )
 }
 

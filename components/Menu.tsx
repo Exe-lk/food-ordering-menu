@@ -19,11 +19,11 @@ const Menu = () => {
     <div className="flex flex-col items-center bg-black min-h-screen p-6">
       <h1 className="text-white text-2xl font-bold mb-4">Menus</h1>
       <hr className="border-gray-700 w-full mb-6" />
-      <div className="grid grid-cols-2 gap-4 w-full max-w-sm">
+      <div className="grid grid-cols-2 gap-1 w-full max-w-sm">
         {menuData.map((item, index) => (
           <div
             key={index}
-            className="relative rounded-lg overflow-hidden cursor-pointer"
+            className="relative rounded-sm overflow-hidden cursor-pointer"
             onClick={() => handleMenuClick(item.name)}
           >
             <img
