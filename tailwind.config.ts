@@ -12,7 +12,10 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
         customback: "#F5DDDD",
-        beige:"#F9F3F0"
+        beige:"#F9F9F9",
+        customwhite:"#EAEAEA",
+        customgray:"#EAEAEA",
+        cooking:"#FFBA08",
       },
     },
   },

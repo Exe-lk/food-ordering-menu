@@ -2,9 +2,10 @@
 import React, { useState } from "react";
 import { FiMenu } from "react-icons/fi";
 import { orders as initialOrders } from "@/data/order";
-import OrderGrid from "../../components/DataGrid";
 import Sidebar from "@/components/Sidebar";
 import SearchBar from "@/components/SearchBar";
+import TableHeading from "@/components/TableHeading";
+import OrderCard from "@/components/OrderCard";
 
 const Page = () => {
   const [activeFilter, setActiveFilter] = useState("All");
@@ -17,16 +18,16 @@ const Page = () => {
       ? orders
       : orders.filter((order) => order.status === activeFilter);
 
-  const handleStatusChange = (id: number, newStatus: string) => {
-    setOrders((prevOrders) =>
-      prevOrders.map((order) =>
-        order.id === id ? { ...order, status: newStatus } : order
-      )
-    );
-  };
+      const handleStatusChange = (id: number, newStatus: string) => {
+        setOrders((prevOrders) =>
+          prevOrders.map((order) =>
+            order.id === id ? { ...order, status: newStatus } : order
+          )
+        );
+      };
 
   return (
-    <div className="p-4 min-h-screen bg-gradient-to-b from-[#EDD3B3] to-white" >
+    <div className="p-4 min-h-screen bg-beige" >
       {/* Header Section */}
       <div className="flex items-center justify-between mb-6">
         <button 
@@ -51,19 +52,23 @@ const Page = () => {
             onClick={() => setActiveFilter(filter)}
             className={`px-4 py-2 rounded-md border ${
               activeFilter === filter
-                ? "bg-blue-500 text-white font-bold"
+                ? "bg-black text-white font-bold"
                 : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
             }`}
           >
             {filter}
           </button>
         ))}
+      </div>    
+      <TableHeading/>
+      <div className="min-h-screen flex flex-col gap-6 mt-5">
+        {filteredOrders.map((order) => (
+          <OrderCard 
+            key={order.id}
+            order={order}
+          />
+        ))}
       </div>
-      {/* Orders Grid */}
-      <div className="px-3 py-3">
-        <OrderGrid orders={filteredOrders} handleStatusChange={handleStatusChange} />
-      </div>
-      
     </div>
   );
 };
