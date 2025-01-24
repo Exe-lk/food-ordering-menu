@@ -1,6 +1,8 @@
 "use client"
 import React, { useState } from 'react'
-import PortionPopUp from '../menu/_components/PortionPopUp';
+import PortionPopUp from './PortionPopUp';
+
+
 interface ProductCardProps {
     name: string;
     portions: {size: string; price:string}[];
@@ -35,8 +37,9 @@ const ProductCard = ({name, portions, image}:ProductCardProps) => {
             className="absolute bottom-4 right-4 bg-red-500 text-white px-4 py-2 rounded shadow-lg">
                 Add +
             </button>
+            {/* Portion Selection Pop UP */}
             {showPopup && (
-                <PortionPopUp 
+                <PortionPopUp
                 name={name}
                 portions={portions}
                 image={image}

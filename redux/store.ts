@@ -25,7 +25,7 @@ const menuSlice = createSlice({
 const cartSlice = createSlice({
   name: "cart",
   initialState: {
-    items: [] as CartItem[], // Explicitly define the type of items
+    items: [] as CartItem[],
     totalItems: 0,
   },
   reducers: {
@@ -53,10 +53,23 @@ const cartSlice = createSlice({
         state.items.splice(index, 1);
       }
     },
+    updateQuantity: (state, action: PayloadAction<{ name: string; portion: string; quantity: number }>) => {
+      const item = state.items.find(
+        (i) =>
+          i.name === action.payload.name &&
+          i.portion === action.payload.portion
+      );
+      if (item && action.payload.quantity > 0) {
+        const diff = action.payload.quantity - item.quantity;
+        item.quantity = action.payload.quantity;
+        state.totalItems += diff;
+      }
+    },
   },
 });
 
-export const { addToCart, removeFromCart } = cartSlice.actions;
+export const { addToCart, removeFromCart, updateQuantity } = cartSlice.actions;
+
 export const { selectMenu } = menuSlice.actions;
 
 const store = configureStore({

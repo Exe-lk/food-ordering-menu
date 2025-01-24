@@ -1,0 +1,105 @@
+"use client";
+import React, { useState } from "react";
+import { Menu } from "@headlessui/react";
+import { FiChevronDown } from "react-icons/fi";
+import { FaConciergeBell, FaClock, FaCheckCircle, FaUtensils } from "react-icons/fa";
+
+interface OrderItem {
+  name: string;
+  size: string;
+  quantity: number;
+}
+
+interface Order {
+  id: number;
+  name: string;
+  table: string;
+  items: OrderItem[];
+  total: string;
+  status: string;
+}
+
+interface OrderCardProps {
+  order: Order;
+}
+
+const statusOptions = [
+  { value: "Pending", icon: FaClock, color: "text-[#D00000]" },
+  { value: "Cooking", icon: FaConciergeBell, color: "text-[#FFBA08]" },
+  { value: "Ready", icon: FaUtensils, color: "text-blue-500" },
+  { value: "Served", icon: FaCheckCircle, color: "text-green-500" },
+];
+
+const OrderCard = ({ order }: OrderCardProps) => {
+  const [status, setStatus] = useState(order.status);
+  const handleStatusChange = (newStatus: string) => {
+    setStatus(newStatus);
+  };
+
+  const currentStatus = statusOptions.find((opt) => opt.value === status);
+
+  return (
+    <div className="border rounded-lg shadow-md p-4 bg-white grid grid-cols-3 gap-4 text-center hover:bg-gray-300 transition-all duration-300 cursor-pointer">
+      {/* Table Info */}
+      <div className="flex items-center justify-center">
+        <div className="w-8 h-8 flex items-center justify-center bg-gray-200 rounded-lg border border-black">
+          <span className="text-sm font-semibold text-black">{order.table}</span>
+        </div>
+        <div className="ml-4 flex items-center">
+          {currentStatus?.icon && (
+            <currentStatus.icon className={`${currentStatus.color} w-6 h-6`} />
+          )}
+        </div>
+      </div>
+      {/* Order Items */}
+      <div className="flex flex-col justify-center border-r border-l border-gray-500 items-start px-36 lg:px-30">
+          {order.items.map((item, index) => (
+            <p key={index} className="text-gray-600 text-md mb-2">
+              {item.name} - {item.size} x {item.quantity}
+            </p>
+          ))}
+        </div>
+
+      {/* Status Dropdown */}
+      <div className="flex flex-col items-center justify-center">
+        <Menu as="div" className="relative inline-block">
+          <Menu.Button
+            className={`flex items-center justify-between w-40 px-4 py-2 rounded-lg border shadow-sm bg-white cursor-pointer`}
+            style={{
+              boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+              border: "1px solid #E5E7EB",
+              width: "200px", // Adjust as needed for the exact width
+            }}
+          >
+            <div className="flex items-center">
+              {currentStatus?.icon && (
+                <currentStatus.icon className={`w-5 h-5 mr-2 ${currentStatus.color}`} />
+              )}
+            </div>
+            <span className="text-black font-medium flex-1 text-center">{status}</span>
+            <FiChevronDown className="w-5 h-5 text-gray-600" />
+          </Menu.Button>
+          <Menu.Items className="absolute right-0 mt-2 w-40 bg-white border z-10 border-gray-200 rounded-md shadow-lg focus:outline-none">
+            {statusOptions.map((option) => (
+              <Menu.Item key={option.value}>
+                {({ active }) => (
+                  <button
+                    onClick={() => handleStatusChange(option.value)}
+                    className={`w-full flex items-center px-4 py-2 text-left ${
+                      active ? "bg-gray-100" : ""
+                    }`}
+                  >
+                    <option.icon className={`w-5 h-5 mr-2 ${option.color}`} />
+                    <span className={`${option.color}`}>{option.value}</span>
+                  </button>
+                )}
+              </Menu.Item>
+            ))}
+          </Menu.Items>
+        </Menu>
+      </div>
+    </div>
+  );
+};
+
+export default OrderCard;

@@ -2,9 +2,7 @@
 import { useRouter } from 'next/navigation';
 import React from 'react'
 const page = () => {
-
-   const router = useRouter();
-  
+   const router = useRouter();  
       const handleClick = () =>{
           router.push("/menu/home");
       };
@@ -21,17 +19,10 @@ const page = () => {
             <button
                 onClick={handleClick}
                 className='w-full bg-blue-600 text-white font-medium py-3 rounded-md text-center'
-            >
-                Next
-
-            </button>
-
+            >Next</button>
         </div>
-
         </div>
-
     </div>
   )
 }
-
 export default page
