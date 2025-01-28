@@ -18,26 +18,21 @@ interface Order {
   total: string;
   status: string;
 }
-
 interface OrderCardProps {
   order: Order;
 }
-
 const statusOptions = [
   { value: "Pending", icon: FaClock, color: "text-[#D00000]" },
   { value: "Cooking", icon: FaConciergeBell, color: "text-[#FFBA08]" },
   { value: "Ready", icon: FaUtensils, color: "text-blue-500" },
   { value: "Served", icon: FaCheckCircle, color: "text-green-500" },
 ];
-
 const OrderCard = ({ order }: OrderCardProps) => {
   const [status, setStatus] = useState(order.status);
   const handleStatusChange = (newStatus: string) => {
     setStatus(newStatus);
   };
-
   const currentStatus = statusOptions.find((opt) => opt.value === status);
-
   return (
     <div className="border rounded-lg shadow-md p-4 bg-white grid grid-cols-3 gap-4 text-center hover:bg-gray-300 transition-all duration-300 cursor-pointer">
       {/* Table Info */}
@@ -52,14 +47,13 @@ const OrderCard = ({ order }: OrderCardProps) => {
         </div>
       </div>
       {/* Order Items */}
-      <div className="flex flex-col justify-center border-r border-l border-gray-500 items-start px-36 lg:px-30">
+      <div className="flex flex-col justify-center border-r border-l border-gray-500 items-start xl:px-36 ">
           {order.items.map((item, index) => (
             <p key={index} className="text-gray-600 text-md mb-2">
               {item.name} - {item.size} x {item.quantity}
             </p>
           ))}
         </div>
-
       {/* Status Dropdown */}
       <div className="flex flex-col items-center justify-center">
         <Menu as="div" className="relative inline-block">

@@ -10,20 +10,17 @@ interface PortionPopUpProps {
 }
 
 const PortionPopUp = ({ name, portions, image, onClose }: PortionPopUpProps) => {
-  const [selectedPortions, setSelectedPortions] = useState<
-    { size: string; quantity: number }[]
-  >([]);
+  const [selectedPortions, setSelectedPortions] = useState<{ size: string; quantity: number }[]>([]);
   const dispatch = useDispatch();
 
-  const handleQuantityChange = (size: string, quantity: number) => {
+  const handleQuantityChange = (size: string, change: number) => {
     setSelectedPortions((prev) => {
       const existingPortion = prev.find((p) => p.size === size);
       if (existingPortion) {
-        return prev.map((p) =>
-          p.size === size ? { ...p, quantity } : p
-        );
+        const newQuantity = Math.max(1, existingPortion.quantity + change);
+        return prev.map((p) => (p.size === size ? { ...p, quantity: newQuantity } : p));
       }
-      return [...prev, { size, quantity }];
+      return [...prev, { size, quantity: 1 }];
     });
   };
 
@@ -43,7 +40,7 @@ const PortionPopUp = ({ name, portions, image, onClose }: PortionPopUpProps) => 
       });
       onClose();
     } else {
-      alert("Please select at least one portion and enter a quantity.");
+      alert("Please select at least one portion.");
     }
   };
 
@@ -52,65 +49,47 @@ const PortionPopUp = ({ name, portions, image, onClose }: PortionPopUpProps) => 
       <div className="bg-black p-6 rounded-lg shadow-lg w-96">
         <h2 className="text-xl font-bold mb-4">{name}</h2>
         <div className="mb-4">
-          <label htmlFor="" className="block font-bold mb-2">
-            Select Portions:
-          </label>
+          <label htmlFor="" className="block font-bold mb-2">Select Portions:</label>
           {portions.map((portion, index) => (
-            <div key={index} className="mb-2">
+            <div key={index} className="mb-4">
               <input
                 type="checkbox"
                 id={portion.size}
                 onChange={(e) => {
                   if (e.target.checked) {
-                    setSelectedPortions((prev) => [
-                      ...prev,
-                      { size: portion.size, quantity: 1 },
-                    ]);
+                    setSelectedPortions((prev) => [...prev, { size: portion.size, quantity: 1 }]);
                   } else {
-                    setSelectedPortions((prev) =>
-                      prev.filter((p) => p.size !== portion.size)
-                    );
+                    setSelectedPortions((prev) => prev.filter((p) => p.size !== portion.size));
                   }
                 }}
               />
-              <label htmlFor={portion.size} className="ml-2">
-                {portion.size} - {portion.price} LKR
-              </label>
+              <label htmlFor={portion.size} className="ml-2">{portion.size} - {portion.price} LKR</label>
+
               {selectedPortions.some((p) => p.size === portion.size) && (
-                <div className="mt-2">
-                  <label htmlFor="" className="block font-bold mb-1">
-                    Quantity:
-                  </label>
-                  <input
-                    type="number"
-                    min="1"
-                    value={
-                      selectedPortions.find((p) => p.size === portion.size)
-                        ?.quantity || 1
-                    }
-                    onChange={(e) =>
-                      handleQuantityChange(
-                        portion.size,
-                        +e.target.value
-                      )
-                    }
-                    className="border p-2 w-full text-black"
-                  />
+                <div className="mt-2 flex items-center">
+                  <button
+                    onClick={() => handleQuantityChange(portion.size, -1)}
+                    className="w-8 h-8 bg-gray-700 text-white rounded-md flex items-center justify-center"
+                  >
+                    -
+                  </button>
+                  <span className="mx-4 text-lg">
+                    {selectedPortions.find((p) => p.size === portion.size)?.quantity || 1}
+                  </span>
+                  <button
+                    onClick={() => handleQuantityChange(portion.size, 1)}
+                    className="w-8 h-8 bg-gray-700 text-white rounded-md flex items-center justify-center"
+                  >
+                    +
+                  </button>
                 </div>
               )}
             </div>
           ))}
         </div>
-        <div className="flex justify-end">
-          <button
-            onClick={handleAddToCart}
-            className="bg-red-500 text-white px-4 py-2 rounded mr-2"
-          >
-            Add
-          </button>
-          <button onClick={onClose} className="bg-gray-800 text-white rounded">
-            Cancel
-          </button>
+        <div className="flex justify-end gap-2">
+          <button onClick={onClose} className="bg-gray-800 text-white rounded w-16">Cancel</button>
+          <button onClick={handleAddToCart} className="bg-red-500 text-white px-4 py-2 rounded w-16">Add</button>
         </div>
       </div>
     </div>

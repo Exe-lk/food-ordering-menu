@@ -1,11 +1,17 @@
 import React from "react";
 
-const TableHeading = () => {
+interface TableHeadingProps {
+  headings: string[];
+}
+
+const TableHeading = ({ headings }: TableHeadingProps) => {
   return (
-    <div className="flex justify-between items-center bg-customgray rounded-lg shadow-md px-4 py-3">
-      <div className="flex-1 text-center font-semibold text-gray-800">Table</div>
-      <div className="flex-1 text-center font-semibold text-gray-800">Items</div>
-      <div className="flex-1 text-center font-semibold text-gray-800">Status</div>
+    <div className="flex justify-evenly items-baseline bg-customgray rounded-lg shadow-md px-4 py-3">
+      {headings.map((heading, index) => (
+        <div key={index} className="flex-1 text-center font-semibold text-gray-800">
+          {heading}
+        </div>
+      ))}
     </div>
   );
 };

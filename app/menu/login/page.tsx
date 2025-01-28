@@ -4,7 +4,7 @@ import React from 'react'
 const page = () => {
     const router = useRouter();
     const handleClick = () =>{
-        router.push("/menu/home");
+        router.push("/menu/signup");
     };
   return (
     <div className='container mx-auto'>

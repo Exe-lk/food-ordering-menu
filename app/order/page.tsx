@@ -60,7 +60,7 @@ const Page = () => {
           </button>
         ))}
       </div>    
-      <TableHeading/>
+      <TableHeading headings={["Table", "Items", "Status"]}/>
       <div className="min-h-screen flex flex-col gap-6 mt-5">
         {filteredOrders.map((order) => (
           <OrderCard 

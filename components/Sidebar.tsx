@@ -58,7 +58,7 @@ const Sidebar = ({isOpen, onClose}:SideBarProps) => {
                 )}
             </li>
             <li>
-                <a href="#"
+                <a href="/portion"
                 className='block text-gray-800 text-xl'
                 >
                     Portion Management
