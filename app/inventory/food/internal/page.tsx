@@ -50,11 +50,11 @@ const page = () => {
         <div className="flex items-center justify-between mb-6">
             <button
                 onClick={() => setIsSidebarOpen(true)}
-                className="text-2xl text-black"
+                className="text-2xl text-customblue"
             >
                 <FiMenu/>
             </button>
-            <h1 className="text-3xl font-bold text-black">Internal Food Item Management</h1>
+            <h1 className="text-3xl font-bold text-customblue">Internal Food Item Management</h1>
             <SearchBar placeholder="Search Products" onSearch={setSearchQuery} />
         </div>
         <Sidebar

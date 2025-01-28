@@ -8,6 +8,7 @@ import portionOptions from "@/data/portionst+";
 import TableHeading from "@/components/TableHeading";
 import PortionCard from "@/components/Inventory/PortionCard";
 import Confirm from "@/components/PopUpModels/Confirm";
+import PortionCreate from "@/components/PopUpModels/PortionCreate";
 
 const Page = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -47,7 +48,7 @@ const Page = () => {
         <button onClick={() => setIsSidebarOpen(true)} className="text-2xl text-customblue">
           <FiMenu />
         </button>
-        <h1 className="text-3xl font-bold text-black">Portion Management</h1>
+        <h1 className="text-3xl font-bold text-customblue">Portion Management</h1>
         <SearchBar placeholder="Search Portions" onSearch={setSearchQuery} />
       </div>
 
@@ -56,7 +57,7 @@ const Page = () => {
 
       {/* Create Portion Button */}
       <div className="flex space-x-4 mt-4 items-start justify-start w-full mb-3">
-        <Button label="Create Portion" variant="primary" />
+        <Button label="Create Portion" variant="primary" onClick={() => setIsPopupOpen(true)} />
       </div>
 
       {/* Table Heading */}
@@ -64,6 +65,7 @@ const Page = () => {
 
       {/* Portion Cards - Display below TableHeading */}
       <PortionCard portions={portions} onEdit={handleEdit} onRemove={handleRemove} />
+      <PortionCreate isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)}/>
 
       {/* Confirm Delete Popup */}
       <Confirm
