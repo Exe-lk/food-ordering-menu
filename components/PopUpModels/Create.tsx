@@ -1,9 +1,9 @@
 "use client";
 import React, { useState } from "react";
-import { FiX } from "react-icons/fi";
-import { FiUpload } from "react-icons/fi";
+import { FiX, FiUpload, FiImage } from "react-icons/fi";
 import portionOptions from "@/data/portionst+";
 import menuData from "@/data/menus";
+import { useDropzone } from "react-dropzone";
 
 interface ProductModalProps {
   isOpen: boolean;
@@ -16,10 +16,10 @@ const Create = ({ onClose, isOpen }: ProductModalProps) => {
     name: "",
     category: "",
     description: "",
-    image: null,
+    image: null as File | null,
   });
 
-  if (!isOpen) return null;
+
 
   const handleAddSize = () => {
     setProductSizes([...productSizes, { size: "", price: "" }]);
@@ -37,9 +37,20 @@ const Create = ({ onClose, isOpen }: ProductModalProps) => {
     setProductSizes(updatedSizes);
   };
 
+  const {getRootProps, getInputProps, isDragActive} = useDropzone({
+    accept:{"image/*":[]},
+    onDrop:(acceptedFiles) => {
+      if(acceptedFiles.length > 0){
+        setNewProduct((prev) => ({...prev, image:acceptedFiles[0]}));
+      }
+    },
+  });
+
+  if (!isOpen) return null;
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 text-black">
-      <div className="bg-white rounded-lg shadow-lg p-6 w-[600px]">
+    <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50 text-black">
+      <div className="bg-white rounded-lg shadow-lg p-10 w-[650px]">
         {/* Header */}
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-semibold text-center w-full">
@@ -53,6 +64,28 @@ const Create = ({ onClose, isOpen }: ProductModalProps) => {
           </button>
         </div>
 
+        <div className="mt-3">
+          <label className="block text-gray-700 font-medium">Image</label>
+          <div
+            {...getRootProps()}
+            className="border-2 border-dashed border-gray-300 p-4 rounded-lg flex flex-col items-center justify-center cursor-pointer"
+          >
+            <input {...getInputProps()} />
+            {isDragActive ? (
+              <p className="text-customblue">Drag & Drop the Image Here....</p>
+            ): newProduct.image?(
+              <div className="flex flex-col items-center">
+                <FiImage className="text-gray-500 text-3xl"/>
+                <p className="mt-2 text-gray-700">{newProduct.image.name}</p>
+              </div>
+            ):(
+              <>
+                <FiUpload className="text-gray-500 text-3xl"/>
+                <p className="mt-2 text-gray-700">Drag & Drop or Click to Upload</p>
+              </>
+            )}
+          </div>
+        </div>
         {/* Product Name */}
         <div>
           <label className="block text-gray-700 font-medium">Product Name</label>
@@ -139,27 +172,6 @@ const Create = ({ onClose, isOpen }: ProductModalProps) => {
             }
           ></textarea>
         </div>
-
-        {/* Image Upload */}
-        <div className="mt-3">
-          <label className="block text-gray-700 font-medium">Image</label>
-          <div className="border-2 border-dashed border-gray-300 p-4 rounded-lg flex flex-col items-center justify-center">
-            <FiUpload className="text-gray-500 text-3xl" />
-            <input
-              type="file"
-              className="hidden"
-              id="image-upload"
-              onChange={() => {}}
-            />
-            <label
-              htmlFor="image-upload"
-              className="mt-2 bg-gray-200 text-gray-700 px-4 py-2 rounded-md cursor-pointer hover:bg-gray-300"
-            >
-              Choose File
-            </label>
-          </div>
-        </div>
-
         {/* Buttons */}
         <div className="mt-5 flex justify-center items-center">
           <button
