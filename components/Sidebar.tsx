@@ -48,7 +48,7 @@ const Sidebar = ({isOpen, onClose}:SideBarProps) => {
                             </a> 
                         </li>
                         <li>
-                            <a href=""
+                            <a href="/inventory/food/external"
                             className='block text-gray-800 text-xl'
                             >
                                 External
@@ -72,7 +72,7 @@ const Sidebar = ({isOpen, onClose}:SideBarProps) => {
                 </a>
             </li>
             <li>
-                <a href="#"
+                <a href="/menutype"
                 className='block text-gray-800 text-xl'
                 >
                     Menu Management

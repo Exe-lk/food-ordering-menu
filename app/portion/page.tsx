@@ -17,12 +17,11 @@ const Page = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
-  const [portions, setPortions] = useState(portionOptions); // State to manage portion list
+  const [portions, setPortions] = useState(portionOptions); 
 
   // Edit portion
   const handleEdit = (index: number) => {
     console.log("Editing portion at index:", index);
-    // Implement edit logic
   };
 
   // Open confirm modal before removing
@@ -62,7 +61,7 @@ const Page = () => {
       </div>
 
       {/* Table Heading */}
-      <Heading/>
+      <Heading titles={["Portion Name", "Served Number"]}/>
 
       {/* Portion Cards - Display below TableHeading */}
       <PortionCard portions={portions} onEdit={handleEdit} onRemove={handleRemove} />

@@ -32,10 +32,10 @@ const Page = () => {
       <div className="flex items-center justify-between mb-6">
         <button 
         onClick={() => setIsSidebarOpen(true)}
-        className="text-2xl text-black">
+        className="text-2xl text-customblue">
           <FiMenu />
         </button>
-        <h1 className="text-3xl font-bold text-black text-center">
+        <h1 className="text-3xl font-bold text-customblue text-center">
           Order Management
         </h1>
        <SearchBar placeholder="Search Orders" onSearch={setSearchQuery} />
@@ -52,7 +52,7 @@ const Page = () => {
             onClick={() => setActiveFilter(filter)}
             className={`px-4 py-2 rounded-md border ${
               activeFilter === filter
-                ? "bg-black text-white font-bold"
+                ? "bg-customblue text-white font-bold"
                 : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
             }`}
           >

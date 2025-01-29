@@ -62,7 +62,7 @@ const page = () => {
         onClose={() => setIsSidebarOpen(false)}
          />
         <div className="flex space-x-4 mt-4 items-start justify-start w-full mb-3">
-            <Button onClick={()=> setIsPopupOpen(true)} label="Add Product" variant="primary"/>
+            <Button onClick={()=> setIsPopupOpen(true)} label="Create Item" variant="primary"/>
         </div>
         <TableHeading headings={["Name","Portion & Price", "Description", "Actions"]}/>
         <div className="mt-4">
