@@ -9,6 +9,7 @@ import TableHeading from "@/components/TableHeading";
 import PortionCard from "@/components/Inventory/PortionCard";
 import Confirm from "@/components/PopUpModels/Confirm";
 import PortionCreate from "@/components/PopUpModels/PortionCreate";
+import Heading from "@/components/Heading";
 
 const Page = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -61,7 +62,7 @@ const Page = () => {
       </div>
 
       {/* Table Heading */}
-      <TableHeading headings={["Name", "Served Number", "Actions"]} />
+      <Heading/>
 
       {/* Portion Cards - Display below TableHeading */}
       <PortionCard portions={portions} onEdit={handleEdit} onRemove={handleRemove} />

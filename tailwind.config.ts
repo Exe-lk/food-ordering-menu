@@ -16,7 +16,8 @@ export default {
         customwhite:"#EAEAEA",
         customgray:"#EAEAEA",
         cooking:"#FFBA08",
-        customblue:"#2B4674"
+        customblue:"#2B4674",
+        customred:"#D00000"
       },
     },
   },

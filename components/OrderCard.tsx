@@ -47,7 +47,7 @@ const OrderCard = ({ order }: OrderCardProps) => {
         </div>
       </div>
       {/* Order Items */}
-      <div className="flex flex-col justify-center border-r border-l border-gray-500 items-start xl:px-36 ">
+      <div className="flex flex-col justify-center border-r border-l border-gray-500 lg:px-14 items-start xl:px-36 ">
           {order.items.map((item, index) => (
             <p key={index} className="text-gray-600 text-md mb-2">
               {item.name} - {item.size} x {item.quantity}

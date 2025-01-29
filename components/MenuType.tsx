@@ -6,7 +6,7 @@ const MenuType = () => {
   const router = useRouter();
 
   return (
-    <div className="flex flex-col items-center bg-black h-full p-6">
+    <div className="flex flex-col items-center bg-black  p-6 h-screen">
       <h1 className="text-white text-2xl font-bold mb-4">Select Menu</h1>
       <hr className="border-gray-300 w-full mb-6" />
       <div className="flex-grow flex justify-center items-center">
@@ -18,11 +18,11 @@ const MenuType = () => {
             <img
               src="/assets/menus/food.jpg"
               alt="Food Menu"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover hover:scale-110"
             />
             <div className="absolute inset-0 bg-black bg-opacity-75"></div>
             <div className="absolute inset-0 flex items-center justify-center">
-              <h2 className="text-white text-2xl lg:text-6xl font-semibold">Food Menu</h2>
+              <h2 className="text-white text-2xl md:text-4xl lg:text-6xl font-semibold">Food Menu</h2>
             </div>
           </div>
 
@@ -37,7 +37,7 @@ const MenuType = () => {
             />
             <div className="absolute inset-0 bg-black bg-opacity-70"></div>
             <div className="absolute inset-0 flex items-center justify-center">
-              <h2 className="text-white text-2xl lg:text-6xl font-semibold">Bar Menu</h2>
+              <h2 className="text-white text-2xl md:text-4xl lg:text-6xl font-semibold">Bar Menu</h2>
             </div>
           </div>
         </div>

@@ -71,6 +71,13 @@ const Sidebar = ({isOpen, onClose}:SideBarProps) => {
                     Ingredients Inventory
                 </a>
             </li>
+            <li>
+                <a href="#"
+                className='block text-gray-800 text-xl'
+                >
+                    Menu Management
+                </a>
+            </li>
         </ul>
 
     </div>

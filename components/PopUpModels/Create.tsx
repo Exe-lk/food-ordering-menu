@@ -86,7 +86,7 @@ const Create = ({ onClose, isOpen }: ProductModalProps) => {
         </div>
         {/* Portion & Price Section */}
         {productSizes.map((size, index) => (
-        <div key={index} className="flex items-center gap-2 mt-3">
+        <div key={index} className="flex items-center justify-center gap-2 mt-3">
             {/* Portion Dropdown */}
             <select
                 className="flex-1 border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
@@ -110,11 +110,9 @@ const Create = ({ onClose, isOpen }: ProductModalProps) => {
                 handleSizeChange(index, "price", e.target.value)
             }
             />
-
-            {/* Remove Button (Properly Aligned) */}
             <div className="shrink-0">
             <button
-                className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600"
+                className="bg-customred text-white px-3 py-2 rounded-md hover:bg-red-600"
                 onClick={() => handleRemoveSize(index)}
             >
                 Remove
@@ -122,16 +120,14 @@ const Create = ({ onClose, isOpen }: ProductModalProps) => {
             </div>
         </div>
         ))}
-
-
-        {/* Add Size Button */}
+        <div className="justify-center items-center mt-5">
         <button
-          className="w-full mt-3 bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600"
+          className="w-[30%] mt-3 bg-customblue text-white py-2 rounded-md hover:bg-blue-800"
           onClick={handleAddSize}
         >
-          + Add
+          + Add Portion
         </button>
-
+        </div>
         {/* Description */}
         <div className="mt-3">
           <label className="block text-gray-700 font-medium">Description</label>
@@ -157,7 +153,7 @@ const Create = ({ onClose, isOpen }: ProductModalProps) => {
             />
             <label
               htmlFor="image-upload"
-              className="mt-2 bg-gray-200 text-gray-700 px-4 py-2 rounded-lg cursor-pointer hover:bg-gray-300"
+              className="mt-2 bg-gray-200 text-gray-700 px-4 py-2 rounded-md cursor-pointer hover:bg-gray-300"
             >
               Choose File
             </label>
@@ -165,9 +161,9 @@ const Create = ({ onClose, isOpen }: ProductModalProps) => {
         </div>
 
         {/* Buttons */}
-        <div className="mt-5 flex justify-center">
+        <div className="mt-5 flex justify-center items-center">
           <button
-            className="bg-blue-600 text-white px-5 py-2 rounded-lg w-full hover:bg-blue-700"
+            className="bg-customblue w-[30%] text-white px-5 py-2 rounded-md hover:bg-blue-800"
             onClick={() => {
               console.log(newProduct, productSizes);
               onClose();

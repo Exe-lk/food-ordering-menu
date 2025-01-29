@@ -17,7 +17,7 @@ const Confirm = ({isOpen, onClose, onConfirm, message}:ConfirmProps) => {
             <div className='flex justify-center space-x-4 mt-4'>
                 <button 
                     onClick={onConfirm}
-                    className='px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-800 cursor-pointer'>
+                    className='px-4 py-2 bg-customred text-white rounded-md hover:bg-red-800 cursor-pointer'>
                     Remove
                 </button>
                 <button

@@ -9,7 +9,7 @@ const page = () => {
   return (
     <div className='container mx-auto'>
         <div className='flex items-center justify-center min-h-screen bg-cover bg-center bg-no-repeat' style={{backgroundImage: 'url(/images/background/authback.jpg)'}}>
-        <div className='bg-black p-6 rounded-lg w-80'>
+        <div className='bg-black p-6 rounded-lg w-96'>
             <h1 className='text-white text-xl font-semibold text-center mb-6'>Phone Number</h1>
             <input 
             type="number" 
