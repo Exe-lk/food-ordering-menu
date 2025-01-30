@@ -4,7 +4,7 @@ import { FiMenu } from "react-icons/fi";
 import { orders as initialOrders } from "@/data/order";
 import Sidebar from "@/components/Sidebar";
 import SearchBar from "@/components/SearchBar";
-import TableHeading from "@/components/TableHeading";
+import TableHeading from "@/components/Headings/TableHeading";
 import OrderCard from "@/components/OrderCard";
 
 const Page = () => {

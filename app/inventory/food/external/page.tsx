@@ -5,9 +5,9 @@ import { external } from "@/data/external";
 import SearchBar from "@/components/SearchBar";
 import Sidebar from "@/components/Sidebar";
 import Button from "@/components/Button";
-import Heading from "@/components/Heading";
+import Heading from "@/components/Headings/Heading";
 import ExternalCard from "@/components/Inventory/ExternalCard";
-import ExternalHeading from "@/components/ExternalHeading";
+import ExternalHeading from "@/components/Headings/ExternalHeading";
 import External from "@/components/PopUpModels/External";
 const page = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);

@@ -4,10 +4,8 @@ import { FiMenu } from "react-icons/fi";
 import { products } from "@/data/products";
 import SearchBar from "@/components/SearchBar";
 import Sidebar from "@/components/Sidebar";
-
-
 import Button from "@/components/Button";
-import TableHeading from "@/components/TableHeading";
+import TableHeading from "@/components/Headings/TableHeading";
 
 import InternalCard from "@/components/Inventory/InternalCard";
 import Create from "@/components/PopUpModels/Create";

@@ -6,7 +6,7 @@ import Button from "@/components/Button";
 import menuData from '@/data/menus';
 import Confirm from "@/components/PopUpModels/Confirm";
 import Sidebar from '@/components/Sidebar';
-import Heading from '@/components/Heading';
+import Heading from '@/components/Headings/Heading';
 import MenuCard from '@/components/MenuManagement/MenuCard';
 import MenuCreate from '@/components/PopUpModels/MenuCreate';
 const page = () => {

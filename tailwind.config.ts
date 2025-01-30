@@ -17,7 +17,9 @@ export default {
         customgray:"#EAEAEA",
         cooking:"#FFBA08",
         customblue:"#2B4674",
-        customred:"#D00000"
+        customred:"#D00000",
+        customgreen:"#38B000",
+        customorange:"#F48C06"
       },
     },
   },

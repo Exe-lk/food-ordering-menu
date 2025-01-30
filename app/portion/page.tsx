@@ -5,11 +5,11 @@ import SearchBar from "@/components/SearchBar";
 import Sidebar from "@/components/Sidebar";
 import Button from "@/components/Button";
 import portionOptions from "@/data/portionst+";
-import TableHeading from "@/components/TableHeading";
+import TableHeading from "@/components/Headings/TableHeading";
 import PortionCard from "@/components/Inventory/PortionCard";
 import Confirm from "@/components/PopUpModels/Confirm";
 import PortionCreate from "@/components/PopUpModels/PortionCreate";
-import Heading from "@/components/Heading";
+import Heading from "@/components/Headings/Heading";
 
 const Page = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
