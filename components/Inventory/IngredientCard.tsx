@@ -9,9 +9,11 @@ interface IngredientCardProps{
     supplier:string;
     onEdit:() => void;
     onRemove:() => void;
+    onStockIn:()=> void;
+    onStockOut:() => void;
 }
 
-const IngredientCard = ({category, productName, quantity,dateIn,costPrice,supplier, onEdit, onRemove}:IngredientCardProps) => {
+const IngredientCard = ({category, productName, quantity,dateIn,costPrice,supplier, onEdit, onRemove, onStockIn, onStockOut}:IngredientCardProps) => {
   return (
     <div className="grid grid-cols-10 items-center border rounded-lg shadow-md p-4 mb-4 bg-white hover:bg-gray-300 transition-all duration-300 cursor-pointer">
       <div className="text-gray-900 font-bold text-justify">{category}</div>
@@ -21,10 +23,14 @@ const IngredientCard = ({category, productName, quantity,dateIn,costPrice,suppli
       <div className="text-gray-900 font-bold text-justify">{costPrice}</div>
       <div className="text-gray-900 font-bold text-justify">{supplier}</div>
       <div className="col-span-2 flex items-center justify-center space-x-2">
-        <button className="px-4 py-2 text-white bg-customgreen hover:bg-green-600 rounded-md w-32">
+        <button 
+          onClick={onStockIn}
+          className="px-4 py-2 text-white bg-customgreen hover:bg-green-600 rounded-md w-32">
           Stock In
         </button>
-        <button className="px-4 py-2 text-white bg-customorange hover:bg-orange-400 rounded-md w-32">
+        <button 
+        onClick={onStockOut}
+        className="px-4 py-2 text-white bg-customorange hover:bg-orange-400 rounded-md w-32">
           Stock Out
         </button>
       </div>

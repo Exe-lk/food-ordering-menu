@@ -9,21 +9,37 @@ import Button from "@/components/Button";
 import IngredientsHeading from "@/components/Headings/IngredientsHeading";
 import IngredientCard from "@/components/Inventory/IngredientCard";
 import IngredientCreate from "@/components/PopUpModels/IngredientCreate";
+import StockIn from "@/components/PopUpModels/StockIn";
+import StockOut from "@/components/PopUpModels/StockOut";
 
 
 const page = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [isStockOpen, setIsStockOpen] = useState(false);
+    const [isStockOutOpen, setIsStockOutOpen] = useState(false);
     const [ingredientItems, setIngredientItems] = useState(ingredients)
     const [searchQuery, setSearchQuery] = useState("");
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
+    const [selectedItem, setSelectedItem] = useState<{
+      ingredientName:string;
+      category:string;
+    } | null>(null);
     const handleEdit = (productId: number) =>{
         // 
     }
 
+    const handleStockOut = (ingredientName:string, category:string)=>{
+      setSelectedItem({ingredientName, category});
+      setIsStockOutOpen(true);
+    }
+    
+    const handleStockIn = (ingredientName:string, category:string) =>{
+      setSelectedItem({ingredientName,category});
+      setIsStockOpen(true);
 
-
+    }
     const handleRemove = (productId:number)=>{
       setSelectedProductId(productId)
       setIsConfirmOpen(true)
@@ -62,12 +78,30 @@ const page = () => {
           supplier={item.supplier}
           onEdit={()=>handleEdit(item.id)}
           onRemove={() => handleRemove(item.id)}
+          onStockIn={() => handleStockIn(item.productName, item.category)}
+          onStockOut={() => handleStockOut(item.productName, item.category)}
           />
         ))}
       </div>
       <div>
         <IngredientCreate isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)}/>
         <Confirm message="Are you sure you want to remove the ingredient?" isOpen={isConfirmOpen} onClose={()=> setIsConfirmOpen(false)} onConfirm={confirmRemove}/>
+          {selectedItem &&(
+            <StockIn
+              isOpen={isStockOpen}
+              onClose={() => setIsStockOpen(false)}
+              ingredientName={selectedItem.ingredientName}
+              category={selectedItem.category}
+            />
+          )}
+          {selectedItem &&(
+            <StockOut
+              isOpen={isStockOutOpen}
+              onClose={() => setIsStockOutOpen(false)}
+              ingredientName={selectedItem.ingredientName}
+              category={selectedItem.category}
+            />
+          )}
       </div>
     </div>
   )

@@ -65,6 +65,13 @@ const Sidebar = ({ isOpen, onClose }: SideBarProps) => {
                     </a>
                 </li>
                 <li>
+                    <a href="/inventory/ingredients"
+                        className='block text-gray-800 text-xl'
+                    >
+                        Ingredients Inventory
+                    </a>
+                </li>
+                {/* <li>
                     <button
                         onClick={() => setIsIngredientsMenuOpen(!isIngredientsMenuOpen)}
                         className='w-full flex justify-between items-center text-xl text-gray-800'
@@ -90,7 +97,7 @@ const Sidebar = ({ isOpen, onClose }: SideBarProps) => {
                             </li>
                         </ul>
                     )}
-                </li>
+                </li> */}
                 <li>
                     <a href="/menutype"
                         className='block text-gray-800 text-xl'
