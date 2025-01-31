@@ -1,11 +1,20 @@
 "use client"
 import { useRouter } from 'next/navigation';
-import React from 'react'
+import React,{useState} from 'react'
+import { UseDispatch } from 'react-redux';
+import { updateCustomerDetails } from '@/redux/features/customerSlice';
+import { useDispatch } from 'react-redux';
 const page = () => {
-   const router = useRouter();  
-      const handleClick = () =>{
-          router.push("/menu/home");
-      };
+   const router = useRouter(); 
+   const dispatch = useDispatch<any>();
+   const [name, setName] = useState("");
+   const [tableNumber, setTableNumber] = useState(""); 
+   const phone = typeof window !== "undefined" ? localStorage.getItem("phone") : null;
+   const handleClick = async () =>{
+    if(!name || !tableNumber || !phone) return;
+    await dispatch(updateCustomerDetails({phone, name, tableNumber})).unwrap();
+    router.push("/menu/home")
+   }
   return (
     <div className='container mx-auto'>
         <div className='flex items-center justify-center min-h-screen bg-cover bg-center bg-no-repeat' style={{backgroundImage: 'url(/images/background/authback.jpg)'}}>
@@ -14,12 +23,16 @@ const page = () => {
             <input 
             type="text" 
             placeholder='Your Name'
+            value={name}
+            onChange={(e)=>setName(e.target.value)}
             className='w-full px-4 py-3 rounded-md text-sm bg-gray-300 text-black outline-none focus:ring-2 focus:ring-red-600 mb-6'
             />
             <h1 className='text-white text-xl font-semibold text-left mb-6'>Table Number</h1>
             <input 
-            type="number" 
-            placeholder='Enter your phone number'
+            type="text" 
+            placeholder='Enter Table Number'
+            value={tableNumber}
+            onChange={(e) => setTableNumber(e.target.value)}
             className='w-full px-4 py-3 rounded-md text-sm bg-gray-300 text-black outline-none focus:ring-2 focus:ring-red-600 mb-6'
             />
             <button

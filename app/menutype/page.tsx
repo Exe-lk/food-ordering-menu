@@ -9,18 +9,25 @@ import Sidebar from '@/components/Sidebar';
 import Heading from '@/components/Headings/Heading';
 import MenuCard from '@/components/MenuManagement/MenuCard';
 import MenuCreate from '@/components/PopUpModels/MenuCreate';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
+import { fetchMenus } from '@/redux/features/menuSlice';
 const page = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const [isPopupOpen, setIsPopupOpen] = useState(false);
-    const [searchQuery, setSearchQuery] = useState("");
-    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-    const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
-    const [menus, setMenus] = useState(menuData)
+  const dispatch = useDispatch<any>();
+  const {menus, loading, error} = useSelector((state:RootState) =>state.menuType)
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
+
+    if(!menus.length && !loading){
+      dispatch(fetchMenus());
+    }
 
     const handleEdit = (index:number) =>{
       console.log("Editing portion at index:", index);
     }
-
     const handleRemove = (index:number) =>{
       console.info("Removed Menu: ", index);
       setSelectedProductId(index);
@@ -28,10 +35,6 @@ const page = () => {
     };
 
     const confirmRemove = () =>{
-      if(selectedProductId !== null){
-        setMenus((prevMenus) => prevMenus.filter((_,i) => i !== selectedProductId));
-        console.info("Removed Menus: ", selectedProductId);
-      }
       setIsConfirmOpen(false);
       setSelectedProductId(null);
     };
