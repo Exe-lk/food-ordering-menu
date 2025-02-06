@@ -13,22 +13,22 @@ const menuData = [
     {
       id:3,
       name: "Dessert",
-      image: "/assets/menus/menu3.jpg",
+      image: "/assets/menus/menu4.jpg",
     },
     {
       id:4,
       name: "Beverages",
-      image: "/assets/menus/menu4.jpg",
+      image: "/assets/menus/menu5.jpg",
     },
     {
       id:5,
       name: "Coffees",
-      image: "/assets/menus/menu5.jpg",
+      image: "/assets/menus/menu6.jpg",
     },
     {   
         id:6,
-        name: "Fast Food",
-        image: "/assets/menus/menu6.jpg",
+        name: "Mexican",
+        image: "/assets/menus/menu3.jpg",
     },
   ];
   

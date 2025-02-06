@@ -17,9 +17,9 @@ const ProductCard = ({name, portions, image}:ProductCardProps) => {
             <img src={image} alt={name} className="w-full h-56 object-cover" />
 
             {/* Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent">
+            <div className="absolute inset-0">
                 {/* Text Content */}
-                <div className="absolute bottom-0 p-4 text-white w-full">
+                <div className="absolute bottom-0 p-4 text-white w-full bg-black bg-opacity-85">
                     <h3 className="font-bold text-lg mb-2">{name}</h3>
                     <div>
                         {portions.map((portion, index) => (

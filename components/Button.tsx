@@ -22,7 +22,7 @@ const Button = ({label, link, onClick, variant}:ButtonProps) => {
     <button
     className={`px-6 py-2 rounded-lg font-semibold ${
       variant === "primary"
-        ? "bg-black text-white"
+        ? "bg-customblue text-white"
         : "border border-black bg-white text-black"
     }`}
     onClick={handleClick}

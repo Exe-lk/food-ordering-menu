@@ -4,7 +4,7 @@ import { FiMenu } from "react-icons/fi";
 import { orders as initialOrders } from "@/data/order";
 import Sidebar from "@/components/Sidebar";
 import SearchBar from "@/components/SearchBar";
-import TableHeading from "@/components/TableHeading";
+import TableHeading from "@/components/Headings/TableHeading";
 import OrderCard from "@/components/OrderCard";
 
 const Page = () => {
@@ -32,10 +32,10 @@ const Page = () => {
       <div className="flex items-center justify-between mb-6">
         <button 
         onClick={() => setIsSidebarOpen(true)}
-        className="text-2xl text-black">
+        className="text-2xl text-customblue">
           <FiMenu />
         </button>
-        <h1 className="text-3xl font-bold text-black text-center">
+        <h1 className="text-3xl font-bold text-customblue text-center">
           Order Management
         </h1>
        <SearchBar placeholder="Search Orders" onSearch={setSearchQuery} />
@@ -52,7 +52,7 @@ const Page = () => {
             onClick={() => setActiveFilter(filter)}
             className={`px-4 py-2 rounded-md border ${
               activeFilter === filter
-                ? "bg-black text-white font-bold"
+                ? "bg-customblue text-white font-bold"
                 : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
             }`}
           >
@@ -60,7 +60,7 @@ const Page = () => {
           </button>
         ))}
       </div>    
-      <TableHeading/>
+      <TableHeading headings={["Table", "Items", "Status"]}/>
       <div className="min-h-screen flex flex-col gap-6 mt-5">
         {filteredOrders.map((order) => (
           <OrderCard 

@@ -1,0 +1,18 @@
+import React from "react";
+
+const IngredientsHeading = () => {
+  return (
+    <div className="grid grid-cols-10 items-center border bg-gray-200 text-gray-900 font-bold rounded-lg shadow-md mb-2 text-center py-4 px-2">
+      <div className="text-left">Category</div>
+      <div className="text-justify">Product Name</div>
+      <div className="text-center">Quantity</div>
+      <div className="text-justify">Date In</div>
+      <div className="text-justify">Cost Price</div>
+      <div className="text-justify">Supplier</div>
+      <div className="text-center col-span-2">Stock Action</div>
+      <div className="text-center col-span-2">Actions</div>
+    </div>
+  );
+};
+
+export default IngredientsHeading;
