@@ -8,20 +8,21 @@ import { addMenu, fetchMenus } from '@/redux/features/menuSlice';
 
 interface MenuProps{
     isOpen:boolean;
-    onClose: () => void
+    onClose: () => void;
 }
 
 const MenuCreate = ({isOpen, onClose}:MenuProps) => {
     const [menuName, setMenuName] = useState("");
     const dispatch = useDispatch<any>();
+    const [image, setImage] = useState<File | null>(null);
     const {loading, error} = useSelector((state:RootState) => state.menuType);
     if(!isOpen) return null;
 
     const handleCreate = async () => {
-        if (!menuName) return;
+        if (!menuName || !image) return;
     
         try {
-            await dispatch(addMenu(menuName)).unwrap(); 
+            await dispatch(addMenu({menuName, image})).unwrap(); 
             setMenuName("");
             dispatch(fetchMenus());
             onClose();
@@ -29,6 +30,12 @@ const MenuCreate = ({isOpen, onClose}:MenuProps) => {
             console.error("Error creating menu:", error);
         }
     };
+
+    const handleImageChange = (e:React.ChangeEvent<HTMLInputElement>) =>{
+        if(e.target.files && e.target.files[0]){
+            setImage(e.target.files[0]);
+        }
+    }
     
   return (
     <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-85'>
@@ -45,6 +52,15 @@ const MenuCreate = ({isOpen, onClose}:MenuProps) => {
                     onChange={(e) => setMenuName(e.target.value)}
                     className='w-full border rounded-md p-2 text-black'
                     placeholder='Ex: Italian'
+                />
+            </div>
+            <div className='mb-3'>
+                <label htmlFor="#" className='block text-gray-700 font-medium'>Upload Image</label>
+                <input 
+                    type="file" 
+                    accept='image/*'
+                    onChange={handleImageChange}
+                    className='w-full border rounded-md p-2 text-black'
                 />
             </div>
             <button 
