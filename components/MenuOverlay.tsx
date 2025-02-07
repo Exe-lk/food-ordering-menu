@@ -4,14 +4,15 @@ import React from "react";
 import { FiX } from "react-icons/fi";
 import Link from "next/link";
 import menuData from "@/data/menus";
-
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 interface MenuOverlayProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
 const MenuOverlay: React.FC<MenuOverlayProps> = ({ isOpen, onClose }) => {
-  const menus = menuData.map((menu) => menu.name);
+  const menus = useSelector((state:RootState) => state.menuType.menus)
 
   if (!isOpen) return null;
 
@@ -28,11 +29,11 @@ const MenuOverlay: React.FC<MenuOverlayProps> = ({ isOpen, onClose }) => {
           {menus.map((menu, index) => (
             <li key={index}>
               <Link
-                href={`/menu/home/menu/${menu}`}
+                href={`/menu/home/menu/${menu.name}`}
                 onClick={onClose}
                 className="text-lg font-medium text-gray-700"
               >
-                {menu}
+                {menu.name}
               </Link>
             </li>
           ))}

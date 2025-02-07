@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { db } from "@/config/firebase";
 import { collection, doc, getDoc, setDoc } from "firebase/firestore";
+import { RootState } from "@/redux/store";
 
 interface CustomerState {
   phone: string;
@@ -15,6 +16,8 @@ const initialState: CustomerState = {
   loading: false,
   error: null,
 };
+
+// Thunk to check if the phone number exists in Firebase.
 export const checkPhoneExists = createAsyncThunk<
   { exists: boolean; phone: string },
   string,
@@ -24,11 +27,7 @@ export const checkPhoneExists = createAsyncThunk<
     const customerRef = doc(db, "customers", phone);
     const docSnap = await getDoc(customerRef);
 
-    if (docSnap.exists()) {
-      return { exists: true, phone };
-    } else {
-      return { exists: false, phone };
-    }
+    return { exists: docSnap.exists(), phone };
   } catch (error) {
     return rejectWithValue((error as Error).message);
   }
@@ -36,17 +35,26 @@ export const checkPhoneExists = createAsyncThunk<
 export const updateCustomerDetails = createAsyncThunk<
   { success: boolean },
   { phone: string; name: string; tableNumber: string },
-  { rejectValue: string }
+  { rejectValue: string; state: RootState }
 >(
   "customer/updateCustomerDetails",
-  async ({ phone, name, tableNumber }, { rejectWithValue }) => {
+  async ({ phone, name, tableNumber }, { getState, rejectWithValue }) => {
     try {
-      await setDoc(doc(collection(db, "customers"), phone), { name, phone }, { merge: true });
+      const state = getState();
+
+      // Only update Firebase with name (and phone) if the customer is new.
+      if (!state.customer.exists) {
+        await setDoc(
+          doc(collection(db, "customers"), phone),
+          { name, phone },
+          { merge: true }
+        );
+      }
       if (typeof window !== "undefined") {
         localStorage.setItem("phoneNumber", phone);
         localStorage.setItem("tableNumber", tableNumber);
       }
-      
+
       return { success: true };
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -68,20 +76,26 @@ const customerSlice = createSlice({
         state.phone = action.payload.phone;
         state.exists = action.payload.exists;
       })
-      .addCase(checkPhoneExists.rejected, (state, action: PayloadAction<string | undefined>) => {
-        state.loading = false;
-        state.error = action.payload || "An error occurred";
-      })
+      .addCase(
+        checkPhoneExists.rejected,
+        (state, action: PayloadAction<string | undefined>) => {
+          state.loading = false;
+          state.error = action.payload || "An error occurred";
+        }
+      )
       .addCase(updateCustomerDetails.pending, (state) => {
         state.loading = true;
       })
       .addCase(updateCustomerDetails.fulfilled, (state) => {
         state.loading = false;
       })
-      .addCase(updateCustomerDetails.rejected, (state, action: PayloadAction<string | undefined>) => {
-        state.loading = false;
-        state.error = action.payload || "An error occurred";
-      });
+      .addCase(
+        updateCustomerDetails.rejected,
+        (state, action: PayloadAction<string | undefined>) => {
+          state.loading = false;
+          state.error = action.payload || "An error occurred";
+        }
+      );
   },
 });
 

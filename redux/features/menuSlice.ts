@@ -33,7 +33,9 @@ interface MenuState {
 
 const initialState: MenuState = {
   menus: [],
-  selectedMenu: "",
+  selectedMenu: typeof window !== "undefined"
+    ? localStorage.getItem("selectedMenu") || ""
+    : "",
   loading: false,
   error: null,
   fetched: false,
@@ -170,6 +172,9 @@ const menuSlice = createSlice({
     // This action stores the currently selected menu name.
     setSelectedMenu: (state, action: PayloadAction<string>) => {
       state.selectedMenu = action.payload;
+   if (typeof window !== "undefined") {
+    localStorage.setItem("selectedMenu", action.payload);
+  }
     },
     resetFetched: (state) => {
       state.fetched = false;

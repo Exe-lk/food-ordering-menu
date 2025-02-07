@@ -1,7 +1,7 @@
 // src/app/MenuPage.tsx
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FiMenu } from "react-icons/fi";
 import CartSection from "@/components/CartSection";
@@ -10,6 +10,7 @@ import { RootState, AppDispatch } from "@/redux/store";
 import { fetchCategory } from "@/redux/features/internalProductSlice";
 import { setSelectedMenu } from "@/redux/features/menuSlice";
 import MenuRow from "@/components/MenuRow";
+import MenuOverlay from "@/components/MenuOverlay";
 
 const MenuPage = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -20,6 +21,9 @@ const MenuPage = () => {
   const { internalFoods, loading, error } = useSelector(
     (state: RootState) => state.products
   );
+  const [isOverlayOpen, setOverlayOpen] = useState(false);
+
+
   useEffect(() => {
     if (selectedMenu) {
       dispatch(fetchCategory({ category: selectedMenu }));
@@ -35,10 +39,11 @@ const MenuPage = () => {
       <header className="flex justify-between items-center mb-4 border-b-2 border-white">
         <h1 className="text-3xl font-bold text-white">{selectedMenu} Menu</h1>
         <button className="bg-transparent p-2 rounded">
-          <FiMenu size={24} color="white" />
+          <FiMenu size={24} color="white" onClick={() =>setOverlayOpen(true)} />
         </button>
       </header>
       <MenuRow menus={menus.map((menu) => menu.name)} onMenuSelect={handleMenuSelect} />
+      <MenuOverlay isOpen={isOverlayOpen} onClose={() => setOverlayOpen(false)} />
 
       {loading ? (
         <div className="text-white">Loading products...</div>
