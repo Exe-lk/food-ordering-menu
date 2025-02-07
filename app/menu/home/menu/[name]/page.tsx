@@ -8,24 +8,27 @@ import CartSection from "@/components/CartSection";
 import ProductCard from "@/components/ProductCard";
 import { RootState, AppDispatch } from "@/redux/store";
 import { fetchCategory } from "@/redux/features/internalProductSlice";
+import { setSelectedMenu } from "@/redux/features/menuSlice";
+import MenuRow from "@/components/MenuRow";
 
 const MenuPage = () => {
   const dispatch = useDispatch<AppDispatch>();
-  // Get the selected menu name from Redux
   const selectedMenu = useSelector(
     (state: RootState) => state.menuType.selectedMenu
   );
-  // Get the products state from the internalFood slice
+  const menus = useSelector((state:RootState) =>state.menuType.menus)
   const { internalFoods, loading, error } = useSelector(
     (state: RootState) => state.products
   );
-
-  // Whenever the selected menu changes, fetch products for that category
   useEffect(() => {
     if (selectedMenu) {
       dispatch(fetchCategory({ category: selectedMenu }));
     }
   }, [selectedMenu, dispatch]);
+
+  const handleMenuSelect = (menu:string) =>{
+    dispatch(setSelectedMenu(menu))
+  };
 
   return (
     <div className="p-2 bg-black min-h-screen">
@@ -35,6 +38,8 @@ const MenuPage = () => {
           <FiMenu size={24} color="white" />
         </button>
       </header>
+      <MenuRow menus={menus.map((menu) => menu.name)} onMenuSelect={handleMenuSelect} />
+
       {loading ? (
         <div className="text-white">Loading products...</div>
       ) : error ? (

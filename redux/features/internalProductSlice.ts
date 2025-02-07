@@ -1,4 +1,4 @@
-// src/redux/features/internalProductSlice.ts
+
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import {
   collection,

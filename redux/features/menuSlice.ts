@@ -171,6 +171,9 @@ const menuSlice = createSlice({
     setSelectedMenu: (state, action: PayloadAction<string>) => {
       state.selectedMenu = action.payload;
     },
+    resetFetched: (state) => {
+      state.fetched = false;
+    },
   },
   extraReducers: (builder) => {
     // fetchMenus
@@ -229,5 +232,5 @@ const menuSlice = createSlice({
   },
 });
 
-export const { setSelectedMenu } = menuSlice.actions;
+export const { setSelectedMenu, resetFetched } = menuSlice.actions;
 export default menuSlice.reducer;

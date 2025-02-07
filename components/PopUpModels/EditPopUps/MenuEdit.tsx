@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { FiX } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { updateMenu, fetchMenus } from "@/redux/features/menuSlice";
+import { updateMenu, fetchMenus, resetFetched } from "@/redux/features/menuSlice";
 
 interface Menu {
   id: string;
@@ -45,6 +45,7 @@ const MenuEdit = ({ isOpen, onClose, menu }: MenuEditProps) => {
         updateMenu({ id: menu.id, updatedMenuName: menuName, image })
       ).unwrap();
       dispatch(fetchMenus());
+      dispatch(resetFetched())
       onClose();
     } catch (error) {
       console.error("Error updating menu:", error);
