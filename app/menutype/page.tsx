@@ -10,7 +10,7 @@ import MenuCreate from "@/components/PopUpModels/MenuCreate";
 import Confirm from "@/components/PopUpModels/Confirm";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { fetchMenus } from "@/redux/features/menuSlice";
+import { fetchMenus, removeMenu } from "@/redux/features/menuSlice";
 import MenuEdit from "@/components/PopUpModels/EditPopUps/MenuEdit";
 
 const Page = () => {
@@ -24,14 +24,12 @@ const Page = () => {
   const [selectedMenuIndex, setSelectedMenuIndex] = useState<number | null>(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
 
-  // Fetch menus only if they haven't been fetched before
   useEffect(() => {
     if (!fetched) {
       dispatch(fetchMenus());
     }
   }, [fetched, dispatch]);
 
-  // Update local state only when menus actually change
   useEffect(() => {
     if (menus.length > 0) {
       setLocalMenus(menus);
@@ -44,11 +42,21 @@ const Page = () => {
   };
 
   const handleRemove = (index: number) => {
-
+    setSelectedMenuIndex(index);
+    setIsConfirmOpen(true);
   };
 
-  const confirmRemove = () => {
-
+  const confirmRemove = async () => {
+    if (selectedMenuIndex !== null) {
+      try {
+        await dispatch(removeMenu({ id: localMenus[selectedMenuIndex].id })).unwrap();
+        dispatch(fetchMenus());
+        setIsConfirmOpen(false);
+        setSelectedMenuIndex(null);
+      } catch (error) {
+        console.error("Error Removing Menu:", error);
+      }
+    }
   };
 
   return (

@@ -1,4 +1,3 @@
-// components/PopUpModels/EditPopUps/MenuEdit.tsx
 "use client";
 import React, { useState, useEffect } from "react";
 import { FiX } from "react-icons/fi";
@@ -7,6 +6,7 @@ import { RootState } from "@/redux/store";
 import { updateMenu, fetchMenus } from "@/redux/features/menuSlice";
 
 interface Menu {
+  id: string;
   name: string;
   isDeleted: boolean;
   created_at: string;
@@ -27,7 +27,7 @@ const MenuEdit = ({ isOpen, onClose, menu }: MenuEditProps) => {
   const [image, setImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState(menu.imageUrl);
 
-  // When a new menu is passed in, update the fields.
+  // Update fields when a new menu is passed in.
   useEffect(() => {
     if (menu) {
       setMenuName(menu.name);
@@ -37,12 +37,12 @@ const MenuEdit = ({ isOpen, onClose, menu }: MenuEditProps) => {
   }, [menu]);
 
   const handleUpdate = async () => {
-    // Only update if either the name or image was changed.
+    // Only update if the name or image has changed.
     if (menuName === menu.name && !image) return;
 
     try {
       await dispatch(
-        updateMenu({ originalMenuName: menu.name, updatedMenuName: menuName, image })
+        updateMenu({ id: menu.id, updatedMenuName: menuName, image })
       ).unwrap();
       dispatch(fetchMenus());
       onClose();
@@ -92,7 +92,7 @@ const MenuEdit = ({ isOpen, onClose, menu }: MenuEditProps) => {
           />
         </div>
         <div className="mb-3">
-          <label className="block text-gray-700 font-medium">Upload Image</label>
+          <label className="block text-gray-700 font-medium">Upload New Image</label>
           <input
             type="file"
             accept="image/*"
@@ -103,7 +103,7 @@ const MenuEdit = ({ isOpen, onClose, menu }: MenuEditProps) => {
             <img
               src={previewUrl}
               alt="Preview"
-              className="mt-2 h-20 w-20 object-cover rounded-md"
+              className="mt-2 h-auto w-full object-contain rounded-md"
             />
           )}
         </div>

@@ -2,6 +2,7 @@ import { configureStore, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import customerReducer from "./features/customerSlice"
 import menuTypeReducer from './features/menuSlice'
 import portionTypeReducer from './features/portionSlice'
+import internalFoodReducer from './features/internalProductSlice'
 
 // Define the type for a cart item
 interface CartItem {
@@ -81,7 +82,8 @@ const store = configureStore({
     cart: cartSlice.reducer,
     customer:customerReducer,
     menuType: menuTypeReducer,
-    portionType:portionTypeReducer
+    portionType:portionTypeReducer,
+    products: internalFoodReducer, 
 
   },
 });

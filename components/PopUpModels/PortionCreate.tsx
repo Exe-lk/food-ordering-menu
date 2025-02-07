@@ -1,8 +1,6 @@
 "use client"
 import React, { useState } from 'react'
 import { FiX } from 'react-icons/fi'
-import { UseDispatch } from 'react-redux'
-import { UseSelector } from 'react-redux'
 import { RootState } from '@/redux/store'
 import { addPortion, fetchPortions } from '@/redux/features/portionSlice'
 import { useDispatch } from 'react-redux'
