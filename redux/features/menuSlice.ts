@@ -1,3 +1,4 @@
+// src/redux/features/menuSlice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { db, storage } from "@/config/firebase";
 import {
@@ -6,7 +7,6 @@ import {
   getDoc,
   getDocs,
   addDoc,
-  setDoc,
   updateDoc,
   serverTimestamp,
   query,
@@ -14,7 +14,7 @@ import {
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
-interface Menu {
+export interface Menu {
   id: string;
   name: string;
   isDeleted: boolean;
@@ -25,6 +25,7 @@ interface Menu {
 
 interface MenuState {
   menus: Menu[];
+  selectedMenu: string;
   loading: boolean;
   error: string | null;
   fetched: boolean;
@@ -32,6 +33,7 @@ interface MenuState {
 
 const initialState: MenuState = {
   menus: [],
+  selectedMenu: "",
   loading: false,
   error: null,
   fetched: false,
@@ -41,8 +43,9 @@ const initialState: MenuState = {
 export const fetchMenus = createAsyncThunk<Menu[], void, { rejectValue: string }>(
   "menu/fetchMenus",
   async (_, { getState, rejectWithValue }) => {
-    const state = getState() as { menu: MenuState };
-    if (state.menu.fetched) return state.menu.menus;
+    // Assume the slice is mounted under "menuType" in the store.
+    const state = getState() as { menuType: MenuState };
+    if (state.menuType.fetched) return state.menuType.menus;
     try {
       const q = query(
         collection(db, "menuType"),
@@ -54,7 +57,8 @@ export const fetchMenus = createAsyncThunk<Menu[], void, { rejectValue: string }
         name: docSnap.data().name,
         isDeleted: docSnap.data().isDeleted ?? false,
         created_at:
-          docSnap.data().created_at?.toDate().toISOString() || new Date().toISOString(),
+          docSnap.data().created_at?.toDate().toISOString() ||
+          new Date().toISOString(),
         imageUrl: docSnap.data().imageUrl || "",
       }));
       return menus;
@@ -159,11 +163,17 @@ export const removeMenu = createAsyncThunk<
   }
 );
 
-const menuTypeSlice = createSlice({
+const menuSlice = createSlice({
   name: "menu",
   initialState,
-  reducers: {},
+  reducers: {
+    // This action stores the currently selected menu name.
+    setSelectedMenu: (state, action: PayloadAction<string>) => {
+      state.selectedMenu = action.payload;
+    },
+  },
   extraReducers: (builder) => {
+    // fetchMenus
     builder
       .addCase(fetchMenus.pending, (state) => {
         state.loading = true;
@@ -178,6 +188,20 @@ const menuTypeSlice = createSlice({
         state.loading = false;
         state.error = action.payload ?? "An error occurred";
       })
+      // addMenu
+      .addCase(addMenu.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(addMenu.fulfilled, (state, action: PayloadAction<Menu>) => {
+        state.loading = false;
+        state.menus.push(action.payload);
+      })
+      .addCase(addMenu.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload ?? "An error occurred";
+      })
+      // updateMenu
       .addCase(updateMenu.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -189,12 +213,14 @@ const menuTypeSlice = createSlice({
         state.loading = false;
         state.error = action.payload ?? "An error occurred";
       })
+      // removeMenu
       .addCase(removeMenu.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(removeMenu.fulfilled, (state) => {
+      .addCase(removeMenu.fulfilled, (state, action: PayloadAction<string>) => {
         state.loading = false;
+        state.menus = state.menus.filter((menu) => menu.id !== action.payload);
       })
       .addCase(removeMenu.rejected, (state, action) => {
         state.loading = false;
@@ -203,4 +229,5 @@ const menuTypeSlice = createSlice({
   },
 });
 
-export default menuTypeSlice.reducer;
+export const { setSelectedMenu } = menuSlice.actions;
+export default menuSlice.reducer;

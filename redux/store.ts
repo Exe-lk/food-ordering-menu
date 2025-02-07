@@ -1,6 +1,6 @@
 import { configureStore, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import customerReducer from "./features/customerSlice"
-import menuTypeReducer from './features/menuSlice'
+import menuReducer from './features/menuSlice'
 import portionTypeReducer from './features/portionSlice'
 import internalFoodReducer from './features/internalProductSlice'
 
@@ -13,18 +13,6 @@ interface CartItem {
   price: number;
   image:string;
 }
-
-const menuSlice = createSlice({
-  name: "menu",
-  initialState: {
-    selectedMenu: "",
-  },
-  reducers: {
-    selectMenu: (state, action: PayloadAction<string>) => {
-      state.selectedMenu = action.payload;
-    },
-  },
-});
 
 const cartSlice = createSlice({
   name: "cart",
@@ -73,15 +61,11 @@ const cartSlice = createSlice({
 });
 
 export const { addToCart, removeFromCart, updateQuantity } = cartSlice.actions;
-
-export const { selectMenu } = menuSlice.actions;
-
 const store = configureStore({
   reducer: {
-    menu: menuSlice.reducer,
     cart: cartSlice.reducer,
     customer:customerReducer,
-    menuType: menuTypeReducer,
+    menuType: menuReducer,
     portionType:portionTypeReducer,
     products: internalFoodReducer, 
 

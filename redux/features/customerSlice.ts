@@ -23,19 +23,19 @@ export const checkPhoneExists = createAsyncThunk<
     { rejectValue: string }
 >("customer/checkPhoneExists", async (phone, { rejectWithValue }) => {
     try {
-        const customerRef = doc(collection(db, "customers"), phone);
+        const customerRef = doc(db, "customers", phone); 
         const docSnap = await getDoc(customerRef);
 
         if (docSnap.exists()) {
             return { exists: true, phone };
         } else {
-            await setDoc(customerRef, { phone });
             return { exists: false, phone };
         }
     } catch (error) {
         return rejectWithValue((error as Error).message);
     }
 });
+
 
 // Async thunk to update customer details
 export const updateCustomerDetails = createAsyncThunk<

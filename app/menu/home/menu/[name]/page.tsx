@@ -1,61 +1,63 @@
+// src/app/MenuPage.tsx
 "use client";
 
-import { useParams } from "next/navigation";
-import { products } from "@/data/products";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { FiMenu } from "react-icons/fi";
-import CartSection from "../../../../../components/CartSection";
-import { useState, useEffect } from "react";
-import MenuOverlay from "../../../../../components/MenuOverlay";
-import menuData from "@/data/menus";
-import MenuRow from "../../../../../components/MenuRow";
-import ProductCard from "../../../../../components/ProductCard";
+import CartSection from "@/components/CartSection";
+import ProductCard from "@/components/ProductCard";
+import { RootState, AppDispatch } from "@/redux/store";
+import { fetchCategory } from "@/redux/features/internalProductSlice";
 
 const MenuPage = () => {
-  const params = useParams();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+  // Get the selected menu name from Redux
+  const selectedMenu = useSelector(
+    (state: RootState) => state.menuType.selectedMenu
+  );
+  // Get the products state from the internalFood slice
+  const { internalFoods, loading, error } = useSelector(
+    (state: RootState) => state.products
+  );
 
-  // Extract selected menu from the URL parameter
-  const selectedMenuFromParams = params?.name as string; // Ensure the param name matches
-  const menus = menuData.map((menu) => menu.name);
-
-  // Handle state for selected menu
-  const [selectedMenu, setSelectedMenu] = useState(selectedMenuFromParams || menus[0]);
-
-  // Update selectedMenu whenever params change
+  // Whenever the selected menu changes, fetch products for that category
   useEffect(() => {
-    if (selectedMenuFromParams) {
-      setSelectedMenu(selectedMenuFromParams);
+    if (selectedMenu) {
+      dispatch(fetchCategory({ category: selectedMenu }));
     }
-  }, [selectedMenuFromParams]);
-
-  const menuProducts = products[selectedMenu] || [];
+  }, [selectedMenu, dispatch]);
 
   return (
-    <div className="p-2 bg-black">
+    <div className="p-2 bg-black min-h-screen">
       <header className="flex justify-between items-center mb-4 border-b-2 border-white">
-        <h1 className="text-3xl font-bold text-white">Menus</h1>
-        {/* Menu Overlay Button */}
-        <button onClick={() => setIsMenuOpen(true)} className="bg-transparent p-2 rounded">
+        <h1 className="text-3xl font-bold text-white">{selectedMenu} Menu</h1>
+        <button className="bg-transparent p-2 rounded">
           <FiMenu size={24} color="white" />
         </button>
       </header>
-      {/* Menus */}
-      <MenuRow menus={menus} onMenuSelect={setSelectedMenu} />
-      <div>
-        <h1 className="text-center text-white text-xl">{selectedMenu}</h1>
-        {/* Products */}
-        <div>
-          {menuProducts.length > 0 ? (
-            menuProducts.map((product, index) => (
-              <ProductCard key={index} {...product} />
-            ))
-          ) : (
-            <p className="text-center text-white text-lg">Menu is Empty</p>
-          )}
+      {loading ? (
+        <div className="text-white">Loading products...</div>
+      ) : error ? (
+        <div className="text-red-500">{error}</div>
+      ) : internalFoods.length === 0 ? (
+        <div className="text-white">No products found in this category.</div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {internalFoods.map((food) => (
+            <ProductCard
+              key={food.id}
+              name={food.name}
+              // Map the sizes array to portions (if needed)
+              portions={food.sizes.map((size) => ({
+                size: size.size,
+                price: size.price,
+              }))}
+              image={food.imageUrl}
+            />
+          ))}
         </div>
-        <CartSection />
-        <MenuOverlay isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
-      </div>
+      )}
+      <CartSection />
     </div>
   );
 };
