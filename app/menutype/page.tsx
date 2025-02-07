@@ -1,69 +1,109 @@
-"use client"
-import React,{useState} from 'react'
-import { FiMenu } from 'react-icons/fi'
-import SearchBar from '@/components/SearchBar'
+"use client";
+import React, { useState, useEffect } from "react";
+import { FiMenu } from "react-icons/fi";
+import SearchBar from "@/components/SearchBar";
 import Button from "@/components/Button";
-import menuData from '@/data/menus';
+import Sidebar from "@/components/Sidebar";
+import Heading from "@/components/Headings/Heading";
+import MenuCard from "@/components/MenuManagement/MenuCard";
+import MenuCreate from "@/components/PopUpModels/MenuCreate";
 import Confirm from "@/components/PopUpModels/Confirm";
-import Sidebar from '@/components/Sidebar';
-import Heading from '@/components/Headings/Heading';
-import MenuCard from '@/components/MenuManagement/MenuCard';
-import MenuCreate from '@/components/PopUpModels/MenuCreate';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/redux/store';
-import { fetchMenus } from '@/redux/features/menuSlice';
-const page = () => {
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { fetchMenus, removeMenu } from "@/redux/features/menuSlice";
+import MenuEdit from "@/components/PopUpModels/EditPopUps/MenuEdit";
+
+const Page = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const dispatch = useDispatch<any>();
-  const {menus, loading, error} = useSelector((state:RootState) =>state.menuType)
+  const { menus, loading, fetched } = useSelector((state: RootState) => state.menuType);
+  const [localMenus, setLocalMenus] = useState(menus);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-  const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
+  const [selectedMenuIndex, setSelectedMenuIndex] = useState<number | null>(null);
+  const [isEditOpen, setIsEditOpen] = useState(false);
 
-    if(!menus.length && !loading){
+  useEffect(() => {
+    if (!fetched) {
       dispatch(fetchMenus());
     }
+  }, [fetched, dispatch]);
 
-    const handleEdit = (index:number) =>{
-      console.log("Editing portion at index:", index);
+  useEffect(() => {
+    if (menus.length > 0) {
+      setLocalMenus(menus);
     }
-    const handleRemove = (index:number) =>{
-      console.info("Removed Menu: ", index);
-      setSelectedProductId(index);
-      setIsConfirmOpen(true);
-    };
+  }, [menus]);
 
-    const confirmRemove = () =>{
-      setIsConfirmOpen(false);
-      setSelectedProductId(null);
-    };
+  const handleEdit = (index: number) => {
+    setSelectedMenuIndex(index);
+    setIsEditOpen(true);
+  };
+
+  const handleRemove = (index: number) => {
+    setSelectedMenuIndex(index);
+    setIsConfirmOpen(true);
+  };
+
+  const confirmRemove = async () => {
+    if (selectedMenuIndex !== null) {
+      try {
+        await dispatch(removeMenu({ id: localMenus[selectedMenuIndex].id })).unwrap();
+        dispatch(fetchMenus());
+        setIsConfirmOpen(false);
+        setSelectedMenuIndex(null);
+      } catch (error) {
+        console.error("Error Removing Menu:", error);
+      }
+    }
+  };
+
   return (
-    <div className='p-4 min-h-screen bg-beige'>
-      <div className='flex items-center justify-between mb-6'>
-        <button onClick={() => setIsSidebarOpen(true)} className='text-2xl text-customblue'>
-          <FiMenu/>
+    <div className="p-4 min-h-screen bg-beige">
+      <div className="flex items-center justify-between mb-6">
+        <button onClick={() => setIsSidebarOpen(true)} className="text-2xl text-customblue">
+          <FiMenu />
         </button>
-        <h1 className='text-3xl font-bold text-customblue'>Menu Management</h1>
-        <SearchBar placeholder='Search Menu' onSearch={setSearchQuery}/>
-      </div>
-      <Sidebar isOpen={isSidebarOpen} onClose={() =>setIsSidebarOpen(false)}/>
-      <div className='flex space-x-4 mt-4 items-start justify-start w-full mb-3'>
-        <Button label='Create Menu' variant='primary' onClick={()=>setIsPopupOpen(true)}/>
+        <h1 className="text-3xl font-bold text-customblue">Menu Management</h1>
+        <SearchBar placeholder="Search Menu" onSearch={setSearchQuery} />
       </div>
 
-      <Heading titles={["Menu Name"]}/>
-      <MenuCard menus={menus} onEdit={handleEdit} onRemove={handleRemove}/>
-      <MenuCreate isOpen={isPopupOpen} onClose={() =>setIsPopupOpen(false)}/>
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
+      <div className="flex space-x-4 mt-4 items-start justify-start w-full mb-3">
+        <Button label="Create Menu" variant="primary" onClick={() => setIsPopupOpen(true)} />
+      </div>
+
+      <Heading titles={["Menu Name"]} />
+
+      {loading ? (
+        <p>Loading...</p>
+      ) : localMenus.length > 0 ? (
+        <MenuCard menus={localMenus} onEdit={handleEdit} onRemove={handleRemove} />
+      ) : (
+        <p className="text-black">No menus available</p>
+      )}
+
+      <MenuCreate isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} />
+      {selectedMenuIndex !== null && (
+        <MenuEdit
+          isOpen={isEditOpen}
+          onClose={() => {
+            setIsEditOpen(false);
+            setSelectedMenuIndex(null);
+          }}
+          menu={localMenus[selectedMenuIndex]}
+        />
+      )}
       <Confirm
-        message='Are you sure you want to remove the menu?'
+        message="Are you sure you want to remove the menu?"
         isOpen={isConfirmOpen}
         onClose={() => setIsConfirmOpen(false)}
         onConfirm={confirmRemove}
       />
     </div>
-  )
-}
+  );
+};
 
-export default page
+export default Page;

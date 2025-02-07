@@ -1,7 +1,10 @@
 "use client"
 import React, { useState } from 'react'
 import { FiX } from 'react-icons/fi'
-
+import { RootState } from '@/redux/store'
+import { addPortion, fetchPortions } from '@/redux/features/portionSlice'
+import { useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 interface PortionProps{
     isOpen:boolean;
     onClose: () => void;
@@ -9,9 +12,24 @@ interface PortionProps{
 }
 const PortionCreate = ({isOpen, onClose}:PortionProps) => {
     const [portionName, setPortionName] = useState("");
-    const [portionServe, setPortionServe] = useState("");
-
+    const [portionServe, setPortionServes] = useState("");
+    const dispatch = useDispatch<any>();
+    const {loading, error} = useSelector((state:RootState) => state.portionType);
     if(!isOpen) return null;
+
+    const handleCreate = async () =>{
+        if(!portionName || !portionServe) return;
+
+        try {
+            await dispatch(addPortion({name:portionName, serves:portionServe})).unwrap();
+            setPortionName("");
+            setPortionServes("");
+            dispatch(fetchPortions());
+            onClose();
+        } catch (error) {
+            console.error("Error creating portion:",error);
+        }
+    };
   return (
     <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-85'>
         <div className='bg-white p-6 rounded-lg shadow-lg w-[400px] relative'>
@@ -26,7 +44,7 @@ const PortionCreate = ({isOpen, onClose}:PortionProps) => {
                     type="text" 
                     value={portionName}
                     onChange={(e) => setPortionName(e.target.value)}
-                    className='w-full border rounded-md p-2'
+                    className='w-full border rounded-md p-2 text-black'
                     placeholder='Enter Portion Name'
                 />
             </div>
@@ -36,14 +54,17 @@ const PortionCreate = ({isOpen, onClose}:PortionProps) => {
                     <input 
                         type="text" 
                         value={portionServe}
-                        onChange={(e) => setPortionServe(e.target.value)}
-                        className='w-full ml-2 outline-none'
+                        onChange={(e) => setPortionServes(e.target.value)}
+                        className='w-full ml-2 outline-none text-black'
                         placeholder='Served Persons'
                     />
                 </div>
             </div>
-            <button className='w-full bg-customblue text-white py-2 rounded-md hover:bg-blue-900 cursor-pointer'>
-                Create
+            <button 
+            onClick={handleCreate}
+            disabled={loading}
+            className='w-full bg-customblue text-white py-2 rounded-md hover:bg-blue-900 cursor-pointer'>
+                {loading ? "Creating...":"Create"}
             </button>
         </div>
     </div>

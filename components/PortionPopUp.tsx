@@ -1,4 +1,6 @@
-import { addToCart } from "@/redux/store";
+
+"use client";
+import { addToCart } from "@/redux/features/cartSlice";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 
@@ -10,9 +12,12 @@ interface PortionPopUpProps {
 }
 
 const PortionPopUp = ({ name, portions, image, onClose }: PortionPopUpProps) => {
-  const [selectedPortions, setSelectedPortions] = useState<{ size: string; quantity: number }[]>([]);
+  const [selectedPortions, setSelectedPortions] = useState<
+    { size: string; quantity: number }[]
+  >([]);
   const dispatch = useDispatch();
 
+  // Adjust the quantity for a given portion.
   const handleQuantityChange = (size: string, change: number) => {
     setSelectedPortions((prev) => {
       const existingPortion = prev.find((p) => p.size === size);
@@ -24,6 +29,7 @@ const PortionPopUp = ({ name, portions, image, onClose }: PortionPopUpProps) => 
     });
   };
 
+  // When "Add" is clicked, dispatch an addToCart action for each selected portion.
   const handleAddToCart = () => {
     if (selectedPortions.length > 0) {
       selectedPortions.forEach(({ size, quantity }) => {
@@ -47,9 +53,9 @@ const PortionPopUp = ({ name, portions, image, onClose }: PortionPopUpProps) => 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
       <div className="bg-black p-6 rounded-lg shadow-lg w-96">
-        <h2 className="text-xl font-bold mb-4">{name}</h2>
+        <h2 className="text-xl font-bold mb-4 text-white">{name}</h2>
         <div className="mb-4">
-          <label htmlFor="" className="block font-bold mb-2">Select Portions:</label>
+          <label className="block font-bold mb-2 text-white">Select Portions:</label>
           {portions.map((portion, index) => (
             <div key={index} className="mb-4">
               <input
@@ -57,14 +63,20 @@ const PortionPopUp = ({ name, portions, image, onClose }: PortionPopUpProps) => 
                 id={portion.size}
                 onChange={(e) => {
                   if (e.target.checked) {
-                    setSelectedPortions((prev) => [...prev, { size: portion.size, quantity: 1 }]);
+                    setSelectedPortions((prev) => [
+                      ...prev,
+                      { size: portion.size, quantity: 1 },
+                    ]);
                   } else {
-                    setSelectedPortions((prev) => prev.filter((p) => p.size !== portion.size));
+                    setSelectedPortions((prev) =>
+                      prev.filter((p) => p.size !== portion.size)
+                    );
                   }
                 }}
               />
-              <label htmlFor={portion.size} className="ml-2">{portion.size} - {portion.price} LKR</label>
-
+              <label htmlFor={portion.size} className="ml-2 text-white">
+                {portion.size} - {portion.price} LKR
+              </label>
               {selectedPortions.some((p) => p.size === portion.size) && (
                 <div className="mt-2 flex items-center">
                   <button
@@ -73,8 +85,11 @@ const PortionPopUp = ({ name, portions, image, onClose }: PortionPopUpProps) => 
                   >
                     -
                   </button>
-                  <span className="mx-4 text-lg">
-                    {selectedPortions.find((p) => p.size === portion.size)?.quantity || 1}
+                  <span className="mx-4 text-lg text-white">
+                    {
+                      selectedPortions.find((p) => p.size === portion.size)
+                        ?.quantity || 1
+                    }
                   </span>
                   <button
                     onClick={() => handleQuantityChange(portion.size, 1)}
@@ -88,12 +103,21 @@ const PortionPopUp = ({ name, portions, image, onClose }: PortionPopUpProps) => 
           ))}
         </div>
         <div className="flex justify-end gap-2">
-          <button onClick={onClose} className="bg-gray-800 text-white rounded w-16">Cancel</button>
-          <button onClick={handleAddToCart} className="bg-red-500 text-white px-4 py-2 rounded w-16">Add</button>
+          <button
+            onClick={onClose}
+            className="bg-gray-800 text-white p-2 rounded-md w-16"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleAddToCart}
+            className="bg-red-500 text-white px-4 py-2 rounded-md w-16"
+          >
+            Add
+          </button>
         </div>
       </div>
     </div>
   );
 };
-
 export default PortionPopUp;

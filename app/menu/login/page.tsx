@@ -16,7 +16,7 @@ const page = () => {
         localStorage.setItem("phone",phone);
 
         if(result.exists){
-            router.push("/home/table");
+            router.push("/menu/table");
         }else{
             router.push("/menu/signup")
         }

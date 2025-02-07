@@ -1,9 +1,12 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FiX, FiUpload, FiImage } from "react-icons/fi";
-import portionOptions from "@/data/portionst+";
-import menuData from "@/data/menus";
 import { useDropzone } from "react-dropzone";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchPortions } from "@/redux/features/portionSlice";
+import { RootState, AppDispatch } from "@/redux/store";
+import { fetchMenus } from "@/redux/features/menuSlice";
+import { addProduct } from "@/redux/features/internalProductSlice";
 
 interface ProductModalProps {
   isOpen: boolean;
@@ -11,6 +14,17 @@ interface ProductModalProps {
 }
 
 const Create = ({ onClose, isOpen }: ProductModalProps) => {
+  const dispatch = useDispatch<AppDispatch>();
+
+  // Make sure to select the correct slice's state (here "products" is assumed to be where addProduct loading is tracked)
+  const { loading, error } = useSelector((state: RootState) => state.products);
+  const { menus, loading: menusLoading } = useSelector(
+    (state: RootState) => state.menuType
+  );
+  const { portions, loading: portionsLoading } = useSelector(
+    (state: RootState) => state.portionType
+  );
+
   const [productSizes, setProductSizes] = useState([{ size: "", price: "" }]);
   const [newProduct, setNewProduct] = useState({
     name: "",
@@ -19,7 +33,13 @@ const Create = ({ onClose, isOpen }: ProductModalProps) => {
     image: null as File | null,
   });
 
+  useEffect(() => {
+    dispatch(fetchPortions());
+  }, [dispatch]);
 
+  useEffect(() => {
+    dispatch(fetchMenus());
+  }, [dispatch]);
 
   const handleAddSize = () => {
     setProductSizes([...productSizes, { size: "", price: "" }]);
@@ -37,11 +57,27 @@ const Create = ({ onClose, isOpen }: ProductModalProps) => {
     setProductSizes(updatedSizes);
   };
 
-  const {getRootProps, getInputProps, isDragActive} = useDropzone({
-    accept:{"image/*":[]},
-    onDrop:(acceptedFiles) => {
-      if(acceptedFiles.length > 0){
-        setNewProduct((prev) => ({...prev, image:acceptedFiles[0]}));
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const resultAction = await dispatch(addProduct({ newProduct, productSizes }));
+    if (resultAction.meta.requestStatus === "fulfilled") {
+      // Reset the form values after a successful creation
+      setNewProduct({
+        name: "",
+        category: "",
+        description: "",
+        image: null,
+      });
+      setProductSizes([{ size: "", price: "" }]);
+      onClose();
+    }
+  };
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    accept: { "image/*": [] },
+    onDrop: (acceptedFiles) => {
+      if (acceptedFiles.length > 0) {
+        setNewProduct((prev) => ({ ...prev, image: acceptedFiles[0] }));
       }
     },
   });
@@ -63,127 +99,151 @@ const Create = ({ onClose, isOpen }: ProductModalProps) => {
             <FiX />
           </button>
         </div>
-
-        <div className="mt-3">
-          <label className="block text-gray-700 font-medium">Image</label>
-          <div
-            {...getRootProps()}
-            className="border-2 border-dashed border-gray-300 p-4 rounded-lg flex flex-col items-center justify-center cursor-pointer"
-          >
-            <input {...getInputProps()} />
-            {isDragActive ? (
-              <p className="text-customblue">Drag & Drop the Image Here....</p>
-            ): newProduct.image?(
-              <div className="flex flex-col items-center">
-                <FiImage className="text-gray-500 text-3xl"/>
-                <p className="mt-2 text-gray-700">{newProduct.image.name}</p>
-              </div>
-            ):(
-              <>
-                <FiUpload className="text-gray-500 text-3xl"/>
-                <p className="mt-2 text-gray-700">Drag & Drop or Click to Upload</p>
-              </>
-            )}
+        {/* Form Tag with onSubmit Handler */}
+        <form onSubmit={handleSubmit}>
+          {/* Image Upload */}
+          <div className="mt-3">
+            <label className="block text-gray-700 font-medium">Image</label>
+            <div
+              {...getRootProps()}
+              className="border-2 border-dashed border-gray-300 p-4 rounded-lg flex flex-col items-center justify-center cursor-pointer"
+            >
+              <input {...getInputProps()} />
+              {isDragActive ? (
+                <p className="text-customblue">
+                  Drag & Drop the Image Here....
+                </p>
+              ) : newProduct.image ? (
+                <div className="flex flex-col items-center">
+                  <FiImage className="text-gray-500 text-3xl" />
+                  <p className="mt-2 text-gray-700">
+                    {newProduct.image.name}
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <FiUpload className="text-gray-500 text-3xl" />
+                  <p className="mt-2 text-gray-700">
+                    Drag & Drop or Click to Upload
+                  </p>
+                </>
+              )}
+            </div>
           </div>
-        </div>
-        {/* Product Name */}
-        <div>
-          <label className="block text-gray-700 font-medium">Product Name</label>
-          <input
-            type="text"
-            className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-            value={newProduct.name}
-            onChange={(e) =>
-              setNewProduct({ ...newProduct, name: e.target.value })
-            }
-          />
-        </div>
-
-        {/* Category */}
-        <div className="mt-3">
-          <label className="block text-gray-700 font-medium">Category</label>
-          <select
-            className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-            value={newProduct.category}
-            onChange={(e) =>
-              setNewProduct({ ...newProduct, category: e.target.value })
-            }
-          >
-            <option value="">Select Category</option>
-            {menuData.map((menu) => (
-              <option key={menu.id} value={menu.name}>
-                {menu.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        {/* Portion & Price Section */}
-        {productSizes.map((size, index) => (
-        <div key={index} className="flex items-center justify-center gap-2 mt-3">
-            {/* Portion Dropdown */}
+          {/* Product Name */}
+          <div className="mt-3">
+            <label className="block text-gray-700 font-medium">
+              Product Name
+            </label>
+            <input
+              type="text"
+              className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+              value={newProduct.name}
+              onChange={(e) =>
+                setNewProduct({ ...newProduct, name: e.target.value })
+              }
+            />
+          </div>
+          {/* Category */}
+          <div className="mt-3">
+            <label className="block text-gray-700 font-medium">Category</label>
             <select
+              className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+              value={newProduct.category}
+              onChange={(e) =>
+                setNewProduct({ ...newProduct, category: e.target.value })
+              }
+            >
+              <option value="">Select Category</option>
+              {menusLoading ? (
+                <option value="">Loading Categories</option>
+              ) : (
+                menus.map((option) => (
+                  <option key={option.id} value={option.name}>
+                    {option.name}
+                  </option>
+                ))
+              )}
+            </select>
+          </div>
+          {/* Portion & Price Section */}
+          {productSizes.map((size, index) => (
+            <div
+              key={index}
+              className="flex items-center justify-center gap-2 mt-3"
+            >
+              {/* Portion Dropdown */}
+              <select
                 className="flex-1 border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                 value={size.size}
-                onChange={(e) => handleSizeChange(index, "size", e.target.value)}
+                onChange={(e) =>
+                  handleSizeChange(index, "size", e.target.value)
+                }
               >
                 <option value="">Select Portion</option>
-                {portionOptions.map((option, i) => (
-                  <option key={i} value={option.name}>
-                    {option.name} - {option.serves} 
-                  </option>
-                ))}
+                {portionsLoading ? (
+                  <option value="">Loading Portions...</option>
+                ) : (
+                  portions.map((option) => (
+                    <option key={option.id} value={option.name}>
+                      {option.name} - {option.serves}
+                    </option>
+                  ))
+                )}
               </select>
-            {/* Price Input */}
-            <input
-            type="text"
-            placeholder="Rs. 0.00"
-            className="flex-1 border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-            value={size.price}
-            onChange={(e) =>
-                handleSizeChange(index, "price", e.target.value)
-            }
-            />
-            <div className="shrink-0">
-            <button
-                className="bg-customred text-white px-3 py-2 rounded-md hover:bg-red-600"
-                onClick={() => handleRemoveSize(index)}
-            >
-                Remove
-            </button>
+              {/* Price Input */}
+              <input
+                type="text"
+                placeholder="Rs. 0.00"
+                className="flex-1 border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                value={size.price}
+                onChange={(e) =>
+                  handleSizeChange(index, "price", e.target.value)
+                }
+              />
+              <div className="shrink-0">
+                <button
+                  type="button"
+                  className="bg-customred text-white px-3 py-2 rounded-md hover:bg-red-600"
+                  onClick={() => handleRemoveSize(index)}
+                >
+                  Remove
+                </button>
+              </div>
             </div>
-        </div>
-        ))}
-        <div className="justify-center items-center mt-5">
-        <button
-          className="w-[30%] mt-3 bg-customblue text-white py-2 rounded-md hover:bg-blue-800"
-          onClick={handleAddSize}
-        >
-          + Add Portion
-        </button>
-        </div>
-        {/* Description */}
-        <div className="mt-3">
-          <label className="block text-gray-700 font-medium">Description</label>
-          <textarea
-            className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-            value={newProduct.description}
-            onChange={(e) =>
-              setNewProduct({ ...newProduct, description: e.target.value })
-            }
-          ></textarea>
-        </div>
-        {/* Buttons */}
-        <div className="mt-5 flex justify-center items-center">
-          <button
-            className="bg-customblue w-[30%] text-white px-5 py-2 rounded-md hover:bg-blue-800"
-            onClick={() => {
-              console.log(newProduct, productSizes);
-              onClose();
-            }}
-          >
-            Create
-          </button>
-        </div>
+          ))}
+          <div className="justify-center items-center mt-5">
+            <button
+              type="button"
+              className="w-[30%] mt-3 bg-customblue text-white py-2 rounded-md hover:bg-blue-800"
+              onClick={handleAddSize}
+            >
+              + Add Portion
+            </button>
+          </div>
+          {/* Description */}
+          <div className="mt-3">
+            <label className="block text-gray-700 font-medium">
+              Description
+            </label>
+            <textarea
+              className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+              value={newProduct.description}
+              onChange={(e) =>
+                setNewProduct({ ...newProduct, description: e.target.value })
+              }
+            ></textarea>
+          </div>
+          {/* Submit Button */}
+          <div className="mt-5 flex justify-center items-center">
+            <button
+              type="submit"
+              className="bg-customblue w-[30%] text-white px-5 py-2 rounded-md hover:bg-blue-800"
+            >
+              {loading ? "Creating..." : "Create"}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

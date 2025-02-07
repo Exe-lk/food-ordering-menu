@@ -1,49 +1,54 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FiMenu } from "react-icons/fi";
 import SearchBar from "@/components/SearchBar";
 import Sidebar from "@/components/Sidebar";
 import Button from "@/components/Button";
-import portionOptions from "@/data/portionst+";
-import TableHeading from "@/components/Headings/TableHeading";
 import PortionCard from "@/components/Inventory/PortionCard";
 import Confirm from "@/components/PopUpModels/Confirm";
 import PortionCreate from "@/components/PopUpModels/PortionCreate";
 import Heading from "@/components/Headings/Heading";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { fetchPortions } from "@/redux/features/portionSlice";
+import PortionEdit from "@/components/PopUpModels/EditPopUps/PortionEdit";
 
 const Page = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const dispatch = useDispatch<any>();
+  const { portions, loading, fetched, error } = useSelector((state: RootState) => state.portionType);
+  const [localPortions, setLocalPortions] = useState(portions);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-  const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
-  const [portions, setPortions] = useState(portionOptions); 
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+   const [isEditOpen, setIsEditOpen] = useState(false);
 
-  // Edit portion
-  const handleEdit = (index: number) => {
-    console.log("Editing portion at index:", index);
-  };
-
-  // Open confirm modal before removing
-  const handleRemove = (index: number) => {
-    console.log("Preparing to remove portion at index:", index);
-    setSelectedProductId(index);
-    setIsConfirmOpen(true);
-  };
-
-  // Confirm and remove portion from the list
-  const confirmRemove = () => {
-    if (selectedProductId !== null) {
-      setPortions((prevPortions) => prevPortions.filter((_, i) => i !== selectedProductId));
-      console.log("Removed portion at index:", selectedProductId);
+  useEffect(() => {
+    if (!fetched) {
+      dispatch(fetchPortions());
     }
-    setIsConfirmOpen(false);
-    setSelectedProductId(null);
+  }, [fetched, dispatch]);
+
+  useEffect(() => {
+    if (portions.length > 0) {
+      setLocalPortions(portions);
+    }
+  }, [portions]);
+
+  const handleEdit = (index: number) => {
+    setSelectedIndex(index)
+    setIsEditOpen(true);
+  };
+
+  const handleRemove = (index: number) => {
+  };
+
+  const confirmRemove = () => {
   };
 
   return (
     <div className="p-4 min-h-screen bg-beige">
-      {/* Header Section */}
       <div className="flex items-center justify-between mb-6">
         <button onClick={() => setIsSidebarOpen(true)} className="text-2xl text-customblue">
           <FiMenu />
@@ -51,23 +56,33 @@ const Page = () => {
         <h1 className="text-3xl font-bold text-customblue">Portion Management</h1>
         <SearchBar placeholder="Search Portions" onSearch={setSearchQuery} />
       </div>
-
-      {/* Sidebar */}
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
-
-      {/* Create Portion Button */}
       <div className="flex space-x-4 mt-4 items-start justify-start w-full mb-3">
         <Button label="Create Portion" variant="primary" onClick={() => setIsPopupOpen(true)} />
       </div>
+      <Heading titles={["Portion Name", "Served Number"]} />
 
-      {/* Table Heading */}
-      <Heading titles={["Portion Name", "Served Number"]}/>
+      {loading ? (
+        <p>Loading...</p>
+      ) : localPortions.length > 0 ? (
+        <PortionCard portions={localPortions} onEdit={handleEdit} onRemove={handleRemove} />
+      ) : error ? (
+        <p className="text-red-500">{error}</p>
+      ) : (
+        <p className="text-black">No Portions Available</p>
+      )}
 
-      {/* Portion Cards - Display below TableHeading */}
-      <PortionCard portions={portions} onEdit={handleEdit} onRemove={handleRemove} />
-      <PortionCreate isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)}/>
-
-      {/* Confirm Delete Popup */}
+      <PortionCreate isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} />
+      {selectedIndex !== null &&(
+        <PortionEdit 
+        isOpen={isEditOpen} 
+        onClose={() => {
+          setIsEditOpen(false)
+          setSelectedIndex(null)
+        }}
+        portion={localPortions[selectedIndex]}
+        />
+      )}
       <Confirm
         message="Are you sure you want to remove the portion?"
         isOpen={isConfirmOpen}
