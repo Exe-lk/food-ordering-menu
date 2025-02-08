@@ -12,6 +12,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { fetchMenus, removeMenu } from "@/redux/features/menuSlice";
 import MenuEdit from "@/components/PopUpModels/EditPopUps/MenuEdit";
+import RecycleBinButton from "@/components/RecycleBin";
+import MenuRecycle from "@/components/RecycleBins/MenuRecycle";
+import RecycleModal from "@/components/RecycleModal";
 
 const Page = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -23,7 +26,9 @@ const Page = () => {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [selectedMenuIndex, setSelectedMenuIndex] = useState<number | null>(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isRecycleBinOpen, setIsRecycleBinOpen] = useState(false);
 
+  // Fetch menus if not already fetched
   useEffect(() => {
     if (!fetched) {
       dispatch(fetchMenus());
@@ -35,6 +40,10 @@ const Page = () => {
       setLocalMenus(menus);
     }
   }, [menus]);
+
+  const filteredMenus = localMenus.filter((menu) =>
+    menu.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const handleEdit = (index: number) => {
     setSelectedMenuIndex(index);
@@ -79,12 +88,15 @@ const Page = () => {
 
       {loading ? (
         <p>Loading...</p>
-      ) : localMenus.length > 0 ? (
-        <MenuCard menus={localMenus} onEdit={handleEdit} onRemove={handleRemove} />
+      ) : filteredMenus.length > 0 ? (
+        <MenuCard menus={filteredMenus} onEdit={handleEdit} onRemove={handleRemove} />
       ) : (
-        <p className="text-black">No menus available</p>
+        <p className="text-black">
+          {searchQuery ? "No menus found." : "No menus available."}
+        </p>
       )}
 
+      <RecycleBinButton onClick={() => setIsRecycleBinOpen(true)} />
       <MenuCreate isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} />
       {selectedMenuIndex !== null && (
         <MenuEdit
@@ -102,6 +114,8 @@ const Page = () => {
         onClose={() => setIsConfirmOpen(false)}
         onConfirm={confirmRemove}
       />
+
+     <RecycleModal isOpen={isRecycleBinOpen} onClose={() => setIsRecycleBinOpen(false)} recycleType="menu"/>
     </div>
   );
 };

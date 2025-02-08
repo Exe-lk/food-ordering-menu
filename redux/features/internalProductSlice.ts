@@ -8,7 +8,9 @@ import {
   where,
   getDocs,
   doc,
-  updateDoc
+  updateDoc,
+  deleteDoc,
+  getDoc
 } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { db, storage } from "@/config/firebase";
@@ -44,6 +46,11 @@ const initialState: InternalFoodState = {
   fetched: false,
 };
 
+export interface DeletedProduct {
+  id: string;
+  name: string;
+}
+
 export const fetchProducts = createAsyncThunk<
   InternalFood[],
   void,
@@ -77,6 +84,30 @@ export const fetchProducts = createAsyncThunk<
     return rejectWithValue(error.message);
   }
 });
+
+export const fetchDeletedProducts = createAsyncThunk<
+  DeletedProduct[],
+  void,
+  { rejectValue: string }
+>(
+  "internalFood/fetchDeletedProducts",
+  async (_, { rejectWithValue }) => {
+    try {
+      const q = query(
+        collection(db, "internalFood"),
+        where("isDeleted", "==", true)
+      );
+      const querySnapshot = await getDocs(q);
+      const deletedProducts: DeletedProduct[] = querySnapshot.docs.map((docSnap) => ({
+        id: docSnap.id,
+        name: docSnap.data().name,
+      }));
+      return deletedProducts;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
 
 // Add a new product
 export const addProduct = createAsyncThunk<
@@ -167,6 +198,28 @@ export const fetchCategory = createAsyncThunk<
   }
 );
 
+export const removeProduct = createAsyncThunk<
+  string,
+  { id: string },
+  { rejectValue: string }
+>(
+  "internalFood/removeProduct",
+  async ({ id }, { rejectWithValue }) => {
+    try {
+      const productRef = doc(db, "internalFood", id);
+      await updateDoc(productRef, {
+        isDeleted: true,
+        updated_at: serverTimestamp(),
+      });
+      return id;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+
+
 export const updateProduct = createAsyncThunk<
   InternalFood,
   {
@@ -216,6 +269,38 @@ export const updateProduct = createAsyncThunk<
     }
   }
 )
+
+export const deleteProduct = createAsyncThunk<
+  string,
+  { id: string },
+  { rejectValue: string }
+>(
+  "internalFood/deleteProduct",
+  async ({ id }, { rejectWithValue }) => {
+    try {
+      await deleteDoc(doc(db, "internalFood", id));
+      return id;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+export const restoreProduct = createAsyncThunk<
+  string,
+  { id: string },
+  { rejectValue: string }
+>(
+  "internalFood/restoreProduct",
+  async ({ id }, { rejectWithValue }) => {
+    try {
+      const productRef = doc(db, "internalFood", id);
+      await updateDoc(productRef, { isDeleted: false, updated_at: serverTimestamp() });
+      return id;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
 
 const internalFoodSlice = createSlice({
   name: "internalFood",
@@ -288,6 +373,34 @@ const internalFoodSlice = createSlice({
         );
       })
       .addCase(updateProduct.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload ?? "An error occurred";
+      });
+      builder
+      .addCase(removeProduct.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(removeProduct.fulfilled, (state, action: PayloadAction<string>) => {
+        state.loading = false;
+        state.internalFoods = state.internalFoods.filter(
+          (product) => product.id !== action.payload
+        );
+      })
+      .addCase(removeProduct.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload ?? "An error occurred";
+      });
+      builder
+      .addCase(restoreProduct.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(restoreProduct.fulfilled, (state, action: PayloadAction<string>) => {
+        state.loading = false;
+        state.fetched = false;
+      })
+      .addCase(restoreProduct.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload ?? "An error occurred";
       });

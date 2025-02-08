@@ -1,6 +1,6 @@
 "use client"
 import React from 'react'
-import Menu from '../../../../components/Menu'
+import Menu from '../../../../components/MenuSide/Menu'
 
 const page = () => {
 

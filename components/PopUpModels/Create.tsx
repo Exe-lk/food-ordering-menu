@@ -30,15 +30,13 @@ const Create = ({ onClose, isOpen }: ProductModalProps) => {
     description: "",
     image: null as File | null,
   });
-  // State to hold the preview URL for the uploaded image
+
   const [preview, setPreview] = useState<string>("");
 
-  // Update the preview whenever newProduct.image changes.
   useEffect(() => {
     if (newProduct.image) {
       const objectUrl = URL.createObjectURL(newProduct.image);
       setPreview(objectUrl);
-      // Revoke the object URL on cleanup to avoid memory leaks.
       return () => URL.revokeObjectURL(objectUrl);
     } else {
       setPreview("");

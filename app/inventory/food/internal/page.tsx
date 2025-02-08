@@ -10,25 +10,32 @@ import Create from "@/components/PopUpModels/Create";
 import Confirm from "@/components/PopUpModels/Confirm";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProducts, InternalFood } from "@/redux/features/internalProductSlice";
+import { fetchProducts, InternalFood, removeProduct } from "@/redux/features/internalProductSlice";
 import Edit from "@/components/PopUpModels/EditPopUps/Edit";
+import RecycleBinButton from "@/components/RecycleBin";
+import RecycleModal from "@/components/RecycleModal";
 
 const Page = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
- 
   const [selectedProduct, setSelectedProduct] = useState<InternalFood | null>(null);
   const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
+  // Store the product ID instead of an index
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+  const [isRecycleBinOpen, setIsRecycleBinOpen] = useState(false);
 
   const dispatch = useDispatch<AppDispatch>();
   const { internalFoods, loading, error, fetched } = useSelector(
     (state: RootState) => state.products
   );
 
-
-  const [localProducts, setLocalProducts] = useState(internalFoods);
+  useEffect(() => {
+    if (!fetched) {
+      dispatch(fetchProducts());
+    }
+  }, [fetched, dispatch]);
 
   const handleEdit = (productId: string) => {
     const product = internalFoods.find((p) => p.id === productId);
@@ -38,23 +45,18 @@ const Page = () => {
     }
   };
 
-  const handleRemove = (productId: number) => {
+  // Update handleRemove to use product ID
+  const handleRemove = (id: string) => {
+    setSelectedProductId(id);
+    setIsConfirmOpen(true);
   };
 
-  useEffect(() => {
-    if (!fetched) {
-      dispatch(fetchProducts());
+  const confirmRemove = async () => {
+    if (selectedProductId) {
+      await dispatch(removeProduct({ id: selectedProductId }));
+      setIsConfirmOpen(false);
+      setSelectedProductId(null);
     }
-  }, [fetched, dispatch]);
-
-  useEffect(() => {
-    if (internalFoods.length > 0) {
-      setLocalProducts(internalFoods);
-    }
-  }, [internalFoods]);
-
-  const confirmRemove = () => {
-    // Implement product removal functionality
   };
 
   return (
@@ -88,11 +90,12 @@ const Page = () => {
                 description={product.description}
                 portions={product.sizes}
                 onEdit={() => handleEdit(product.id)}
-                onRemove={() => handleRemove(Number(product.id))}
+                onRemove={() => handleRemove(product.id)}
               />
             ))
         )}
       </div>
+      <RecycleBinButton onClick={() => setIsRecycleBinOpen(true)} />
       <Create isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} />
       {selectedProduct && (
         <Edit
@@ -106,6 +109,11 @@ const Page = () => {
         isOpen={isConfirmOpen}
         onClose={() => setIsConfirmOpen(false)}
         onConfirm={confirmRemove}
+      />
+      <RecycleModal
+        isOpen={isRecycleBinOpen}
+        onClose={() => setIsRecycleBinOpen(false)}
+        recycleType="internal"
       />
     </div>
   );

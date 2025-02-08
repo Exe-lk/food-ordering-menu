@@ -73,7 +73,6 @@ const PortionRecycleBin = ({ isOpen, onClose }: RecycleBinModalProps) => {
             <div key={portion.id} className="flex items-center justify-between border-b py-2">
               <div>
                 <p className="font-bold">{portion.name}</p>
-                <p>Serves: {portion.serves}</p>
               </div>
               <div className="flex space-x-2">
                 <button

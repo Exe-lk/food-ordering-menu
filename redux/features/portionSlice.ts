@@ -41,7 +41,7 @@ const initialState: PortionState = {
 export const fetchPortions = createAsyncThunk<Portion[], void, { rejectValue: string }>(
   "portion/fetchPortions",
   async (_, { getState, rejectWithValue }) => {
-    const state = getState() as { portionType: PortionState }; // Updated reference
+    const state = getState() as { portionType: PortionState }; 
 
     if (state.portionType.fetched) return state.portionType.portions;
 
@@ -250,7 +250,20 @@ const portionSlice = createSlice({
       .addCase(updatePortion.rejected,(state, action) =>{
         state.loading =false;
         state.error = action.payload ?? "An Erro Occured"
-      })
+      });
+        builder
+            .addCase(restorePortion.pending, (state) => {
+              state.loading = true;
+              state.error = null;
+            })
+            .addCase(restorePortion.fulfilled, (state, action: PayloadAction<string>) => {
+              state.loading = false;
+              state.fetched = false;
+            })
+            .addCase(restorePortion.rejected, (state, action) => {
+              state.loading = false;
+              state.error = action.payload ?? "An error occurred";
+            })
   },
 });
 

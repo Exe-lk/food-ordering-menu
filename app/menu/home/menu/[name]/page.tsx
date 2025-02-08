@@ -4,13 +4,13 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FiMenu } from "react-icons/fi";
-import CartSection from "@/components/CartSection";
+import CartSection from "@/components/MenuSide/CartSection";
 import ProductCard from "@/components/ProductCard";
 import { RootState, AppDispatch } from "@/redux/store";
 import { fetchCategory } from "@/redux/features/internalProductSlice";
 import { setSelectedMenu } from "@/redux/features/menuSlice";
-import MenuRow from "@/components/MenuRow";
-import MenuOverlay from "@/components/MenuOverlay";
+import MenuRow from "@/components/MenuSide/MenuRow";
+import MenuOverlay from "@/components/MenuSide/MenuOverlay";
 
 const MenuPage = () => {
   const dispatch = useDispatch<AppDispatch>();

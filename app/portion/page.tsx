@@ -13,7 +13,8 @@ import { RootState } from "@/redux/store";
 import { fetchPortions, removePortion } from "@/redux/features/portionSlice";
 import PortionEdit from "@/components/PopUpModels/EditPopUps/PortionEdit";
 import RecycleBinButton from "@/components/RecycleBin";
-import PortionRecycleBin from "@/components/PortionRecycleBin";
+import PortionRecycleBin from "@/components/RecycleBins/PortionRecycleBin";
+import RecycleModal from "@/components/RecycleModal";
 
 const Page = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -106,7 +107,7 @@ const Page = () => {
         onClose={() => setIsConfirmOpen(false)}
         onConfirm={confirmRemove}
       />
-      <PortionRecycleBin isOpen={isRecycleBinOpen} onClose={() =>setIsRecycleBinOpen(false)}/>
+      <RecycleModal isOpen={isRecycleBinOpen} onClose={() => setIsRecycleBinOpen(false)} recycleType="menu"/>
     </div>
   );
 };
