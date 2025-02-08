@@ -1,18 +1,21 @@
 // src/app/CartPage.tsx
 "use client";
 
-import { removeFromCart, updateQuantity, clearCart} from "@/redux/features/cartSlice";
+import { removeFromCart, updateQuantity, clearCart } from "@/redux/features/cartSlice";
 import { RootState } from "@/redux/store";
-import React from "react";
+import React, { useState } from "react";
 import { FaArrowLeft, FaTrashAlt } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { placeOrder } from "@/redux/features/orderSlice";
-import Swal from 'sweetalert2'
+import Swal from "sweetalert2";
 
 const CartPage = () => {
   const dispatch = useDispatch<any>();
   const router = useRouter();
+  
+  // New state to track whether the order is being placed.
+  const [isPlacing, setIsPlacing] = useState(false);
 
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const subTotal = cartItems.reduce(
@@ -37,24 +40,25 @@ const CartPage = () => {
   };
 
   const handlePlaceOrder = async () => {
+    setIsPlacing(true);
     try {
-      const order = await dispatch(placeOrder()).unwrap()
+      const order = await dispatch(placeOrder()).unwrap();
       Swal.fire({
-        title:"Order Place Successfully",
-        icon:'success',
-        confirmButtonText:"Okay."
+        title: "Order Placed Successfully",
+        icon: "success",
+        confirmButtonText: "Okay.",
       });
-      dispatch(clearCart())
+      dispatch(clearCart());
     } catch (error) {
       Swal.fire({
-        title:"Failed to Place Order",
-        icon:'error',
-        confirmButtonText:"Try Again"
-      })
+        title: "Failed to Place Order",
+        icon: "error",
+        confirmButtonText: "Try Again",
+      });
+    } finally {
+      setIsPlacing(false);
     }
-  }
-
-  
+  };
 
   return (
     <div className="bg-black min-h-screen text-white p-4 flex flex-col">
@@ -135,9 +139,11 @@ const CartPage = () => {
       </div>
 
       <button 
-      onClick={handlePlaceOrder}
-      className="bg-blue-600 w-full py-3 text-center text-lg font-bold rounded-md mt-4">
-        Place Order
+        onClick={handlePlaceOrder}
+        disabled={isPlacing} // Disable the button while placing the order.
+        className="bg-blue-600 w-full py-3 text-center text-lg font-bold rounded-md mt-4 disabled:opacity-50"
+      >
+        {isPlacing ? "Placing..." : "Place Order"}
       </button>
     </div>
   );
