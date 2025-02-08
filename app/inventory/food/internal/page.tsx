@@ -10,30 +10,35 @@ import Create from "@/components/PopUpModels/Create";
 import Confirm from "@/components/PopUpModels/Confirm";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProducts } from "@/redux/features/internalProductSlice";
+import { fetchProducts, InternalFood } from "@/redux/features/internalProductSlice";
+import Edit from "@/components/PopUpModels/EditPopUps/Edit";
 
 const Page = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-  const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
+ 
+  const [selectedProduct, setSelectedProduct] = useState<InternalFood | null>(null);
+  const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
 
   const dispatch = useDispatch<AppDispatch>();
   const { internalFoods, loading, error, fetched } = useSelector(
     (state: RootState) => state.products
   );
 
-  // Optionally, if you want to have a local copy:
+
   const [localProducts, setLocalProducts] = useState(internalFoods);
 
-  const handleEdit = (productId: number) => {
-    // Implement edit functionality here
+  const handleEdit = (productId: string) => {
+    const product = internalFoods.find((p) => p.id === productId);
+    if (product) {
+      setSelectedProduct(product);
+      setIsEditPopupOpen(true);
+    }
   };
 
   const handleRemove = (productId: number) => {
-    setSelectedProductId(productId);
-    setIsConfirmOpen(true);
   };
 
   useEffect(() => {
@@ -82,13 +87,20 @@ const Page = () => {
                 name={product.name}
                 description={product.description}
                 portions={product.sizes}
-                onEdit={() => handleEdit(Number(product.id))}
+                onEdit={() => handleEdit(product.id)}
                 onRemove={() => handleRemove(Number(product.id))}
               />
             ))
         )}
       </div>
       <Create isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} />
+      {selectedProduct && (
+        <Edit
+          isOpen={isEditPopupOpen}
+          onClose={() => setIsEditPopupOpen(false)}
+          product={selectedProduct}
+        />
+      )}
       <Confirm
         message="Are you sure you want to remove the product?"
         isOpen={isConfirmOpen}

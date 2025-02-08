@@ -10,8 +10,10 @@ import PortionCreate from "@/components/PopUpModels/PortionCreate";
 import Heading from "@/components/Headings/Heading";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { fetchPortions } from "@/redux/features/portionSlice";
+import { fetchPortions, removePortion } from "@/redux/features/portionSlice";
 import PortionEdit from "@/components/PopUpModels/EditPopUps/PortionEdit";
+import RecycleBinButton from "@/components/RecycleBin";
+import PortionRecycleBin from "@/components/PortionRecycleBin";
 
 const Page = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -22,7 +24,8 @@ const Page = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isRecycleBinOpen, setIsRecycleBinOpen] = useState(false);
 
   useEffect(() => {
     if (!fetched) {
@@ -42,9 +45,22 @@ const Page = () => {
   };
 
   const handleRemove = (index: number) => {
+    setSelectedIndex(index);
+    setIsConfirmOpen(true);
   };
 
-  const confirmRemove = () => {
+  const confirmRemove = async () => {
+    if(selectedIndex !== null){
+      try {
+        await dispatch(removePortion({id:localPortions[selectedIndex].id})).unwrap();
+        dispatch(fetchPortions());
+        setIsConfirmOpen(false);
+        setSelectedIndex(null)
+
+      } catch (error) {
+        console.error("Error Removing Portion:", error);
+      }
+    }
   };
 
   return (
@@ -71,6 +87,7 @@ const Page = () => {
       ) : (
         <p className="text-black">No Portions Available</p>
       )}
+      <RecycleBinButton  onClick={() => setIsRecycleBinOpen(true)}/>
 
       <PortionCreate isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} />
       {selectedIndex !== null &&(
@@ -89,6 +106,7 @@ const Page = () => {
         onClose={() => setIsConfirmOpen(false)}
         onConfirm={confirmRemove}
       />
+      <PortionRecycleBin isOpen={isRecycleBinOpen} onClose={() =>setIsRecycleBinOpen(false)}/>
     </div>
   );
 };

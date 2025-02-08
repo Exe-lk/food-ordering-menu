@@ -7,6 +7,8 @@ import {
   query,
   where,
   getDocs,
+  doc,
+  updateDoc
 } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { db, storage } from "@/config/firebase";
@@ -42,7 +44,6 @@ const initialState: InternalFoodState = {
   fetched: false,
 };
 
-// Fetch all products (if needed)
 export const fetchProducts = createAsyncThunk<
   InternalFood[],
   void,
@@ -166,6 +167,56 @@ export const fetchCategory = createAsyncThunk<
   }
 );
 
+export const updateProduct = createAsyncThunk<
+  InternalFood,
+  {
+    id: string;
+    updatedProduct: {
+      name: string;
+      category: string;
+      description: string;
+      image?: File | null;
+      currentImageUrl?: string;
+    };
+    productSizes: FoodSize[];
+  },
+  { rejectValue: string }
+>(
+  "internalFood/updateProduct",
+  async({id, updatedProduct, productSizes}, {rejectWithValue})=>{
+    try {
+      let imageUrl = updatedProduct.currentImageUrl || "";
+      if(updatedProduct.image){
+        const imageRef = ref (storage, `internalFood/${updatedProduct.image.name}`);
+        await uploadBytes(imageRef, updatedProduct.image);
+        imageUrl = await getDownloadURL(imageRef)
+      }
+      const updateData = {
+        name:updatedProduct.name,
+        category: updatedProduct.category,
+        description:updatedProduct.description,
+        imageUrl,
+        sizes:productSizes,
+        updated_at:serverTimestamp(),
+      };
+      const productRef = doc(db,"internalFood",id);
+      await updateDoc(productRef,updateData)
+      return {
+        id,
+        name: updatedProduct.name,
+        category: updatedProduct.category,
+        description: updatedProduct.description,
+        imageUrl,
+        sizes: productSizes,
+        created_at: new Date().toISOString(),
+        isDeleted: false,
+      } as InternalFood;
+    } catch (error:any) {
+      return rejectWithValue(error.message);
+    }
+  }
+)
+
 const internalFoodSlice = createSlice({
   name: "internalFood",
   initialState,
@@ -221,6 +272,22 @@ const internalFoodSlice = createSlice({
         }
       )
       .addCase(fetchCategory.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload ?? "An error occurred";
+      });
+      builder
+      .addCase(updateProduct.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateProduct.fulfilled, (state, action: PayloadAction<InternalFood>) => {
+        state.loading = false;
+        // Replace the updated product in the list:
+        state.internalFoods = state.internalFoods.map((prod) =>
+          prod.id === action.payload.id ? action.payload : prod
+        );
+      })
+      .addCase(updateProduct.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload ?? "An error occurred";
       });
