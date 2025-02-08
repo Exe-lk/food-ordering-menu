@@ -15,8 +15,6 @@ interface ProductModalProps {
 
 const Create = ({ onClose, isOpen }: ProductModalProps) => {
   const dispatch = useDispatch<AppDispatch>();
-
-  // Make sure to select the correct slice's state (here "products" is assumed to be where addProduct loading is tracked)
   const { loading, error } = useSelector((state: RootState) => state.products);
   const { menus, loading: menusLoading } = useSelector(
     (state: RootState) => state.menuType

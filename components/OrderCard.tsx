@@ -3,42 +3,53 @@ import React, { useState } from "react";
 import { Menu } from "@headlessui/react";
 import { FiChevronDown } from "react-icons/fi";
 import { FaConciergeBell, FaClock, FaCheckCircle, FaUtensils } from "react-icons/fa";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/redux/store";
+import { updateOrderStatus } from "@/redux/features/orderSlice";
 
 interface OrderItem {
   name: string;
-  size: string;
+  size?: string;  
   quantity: number;
 }
 
 interface Order {
-  id: number;
-  name: string;
-  table: string;
+  id: string;
   items: OrderItem[];
-  total: string;
+  phoneNumber: string;
+  tableNumber: string;
   status: string;
+  created_at: string;
 }
+
 interface OrderCardProps {
   order: Order;
 }
+
 const statusOptions = [
   { value: "Pending", icon: FaClock, color: "text-[#D00000]" },
   { value: "Cooking", icon: FaConciergeBell, color: "text-[#FFBA08]" },
   { value: "Ready", icon: FaUtensils, color: "text-blue-500" },
   { value: "Served", icon: FaCheckCircle, color: "text-green-500" },
 ];
+
 const OrderCard = ({ order }: OrderCardProps) => {
+  const dispatch = useDispatch<AppDispatch>();
   const [status, setStatus] = useState(order.status);
+  
   const handleStatusChange = (newStatus: string) => {
     setStatus(newStatus);
+    dispatch(updateOrderStatus({id:order.id, status:newStatus}))
   };
+
   const currentStatus = statusOptions.find((opt) => opt.value === status);
+
   return (
     <div className="border rounded-lg shadow-md p-4 bg-white grid grid-cols-3 gap-4 text-center hover:bg-gray-300 transition-all duration-300 cursor-pointer">
       {/* Table Info */}
       <div className="flex items-center justify-center">
         <div className="w-8 h-8 flex items-center justify-center bg-gray-200 rounded-lg border border-black">
-          <span className="text-sm font-semibold text-black">{order.table}</span>
+          <span className="text-sm font-semibold text-black">{order.tableNumber}</span>
         </div>
         <div className="ml-4 flex items-center">
           {currentStatus?.icon && (
@@ -47,13 +58,13 @@ const OrderCard = ({ order }: OrderCardProps) => {
         </div>
       </div>
       {/* Order Items */}
-      <div className="flex flex-col justify-center border-r border-l border-gray-500 lg:px-14 items-start xl:px-36 ">
-          {order.items.map((item, index) => (
-            <p key={index} className="text-gray-600 text-md mb-2">
-              {item.name} - {item.size} x {item.quantity}
-            </p>
-          ))}
-        </div>
+      <div className="flex flex-col justify-center border-r border-l border-gray-500 lg:px-14 items-start xl:px-36">
+        {order.items.map((item, index) => (
+          <p key={index} className="text-gray-600 text-md mb-2">
+            {item.name} {item.size && `- ${item.size}`} x {item.quantity}
+          </p>
+        ))}
+      </div>
       {/* Status Dropdown */}
       <div className="flex flex-col items-center justify-center">
         <Menu as="div" className="relative inline-block">
@@ -62,7 +73,7 @@ const OrderCard = ({ order }: OrderCardProps) => {
             style={{
               boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
               border: "1px solid #E5E7EB",
-              width: "200px", // Adjust as needed for the exact width
+              width: "200px",
             }}
           >
             <div className="flex items-center">

@@ -1,7 +1,9 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FiMenu } from "react-icons/fi";
-import { orders as initialOrders } from "@/data/order";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "@/redux/store";
+import { fetchOrders } from "@/redux/features/orderSlice";
 import Sidebar from "@/components/Sidebar";
 import SearchBar from "@/components/SearchBar";
 import TableHeading from "@/components/Headings/TableHeading";
@@ -9,9 +11,14 @@ import OrderCard from "@/components/OrderCard";
 
 const Page = () => {
   const [activeFilter, setActiveFilter] = useState("All");
-  const [orders, setOrders] = useState(initialOrders);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const dispatch = useDispatch<AppDispatch>();
+  const {orders, loading, error} = useSelector((state:RootState) => state.order)
+  useEffect(() =>{
+    dispatch(fetchOrders());
+  },[dispatch])
+
 
   const filteredOrders =
     activeFilter === "All"
@@ -19,11 +26,6 @@ const Page = () => {
       : orders.filter((order) => order.status === activeFilter);
 
       const handleStatusChange = (id: number, newStatus: string) => {
-        setOrders((prevOrders) =>
-          prevOrders.map((order) =>
-            order.id === id ? { ...order, status: newStatus } : order
-          )
-        );
       };
 
   return (
