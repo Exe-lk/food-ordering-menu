@@ -110,9 +110,7 @@ const Create = ({ onClose, isOpen }: ProductModalProps) => {
             <FiX />
           </button>
         </div>
-        {/* Form with onSubmit Handler */}
         <form onSubmit={handleSubmit}>
-          {/* Image Upload */}
           <div className="mt-3">
             <label className="block text-gray-700 font-medium">Image</label>
             <div

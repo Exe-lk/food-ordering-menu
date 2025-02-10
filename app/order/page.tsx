@@ -8,6 +8,7 @@ import Sidebar from "@/components/Sidebar";
 import SearchBar from "@/components/SearchBar";
 import TableHeading from "@/components/Headings/TableHeading";
 import OrderCard from "@/components/OrderCard";
+import { subScribeToOrders } from "@/service/orderService";
 
 const Page = () => {
   const [activeFilter, setActiveFilter] = useState("All");
@@ -15,8 +16,12 @@ const Page = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const dispatch = useDispatch<AppDispatch>();
   const {orders, loading, error} = useSelector((state:RootState) => state.order)
+  
   useEffect(() =>{
-    dispatch(fetchOrders());
+    const unsubscribe = subScribeToOrders(dispatch);
+    return () =>{
+      unsubscribe();
+    };
   },[dispatch])
 
 

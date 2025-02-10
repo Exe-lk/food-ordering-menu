@@ -22,7 +22,6 @@ const Page = () => {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<InternalFood | null>(null);
   const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
-  // Store the product ID instead of an index
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [isRecycleBinOpen, setIsRecycleBinOpen] = useState(false);
 

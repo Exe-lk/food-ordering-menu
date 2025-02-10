@@ -233,7 +233,6 @@ const portionSlice = createSlice({
       })
       .addCase(addPortion.fulfilled, (state, action: PayloadAction<Portion>) => {
         state.loading = false;
-        // Optionally, add the new portion to the local state array.
         state.portions.push(action.payload);
       })
       .addCase(addPortion.rejected, (state, action) => {
