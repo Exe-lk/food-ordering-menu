@@ -11,6 +11,7 @@ import {
   serverTimestamp,
   query,
   where,
+  deleteDoc,
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
@@ -165,6 +166,64 @@ export const removeMenu = createAsyncThunk<
   }
 );
 
+export const deleteMenu = createAsyncThunk<
+string,
+{id:string},
+{rejectValue:string}
+>(
+  'menu/deleteMenu',
+  async ({id}, {rejectWithValue}) =>{
+    try {
+      await deleteDoc(doc(db, "menuType", id));
+      return id
+    } catch (error:any) {
+      return rejectWithValue(error.message);
+    }
+  }
+)
+
+export const restoreMenu = createAsyncThunk<
+string,
+{id:string},
+{rejectValue:string}
+>(
+  "menu/restoreMenu",
+  async({id}, {rejectWithValue}) =>{
+    try {
+      const menuRef = doc(db, "menuType", id);
+      await updateDoc(menuRef, {isDeleted:false, update_at:serverTimestamp()});
+      return id;
+    } catch (error:any) {
+      return rejectWithValue(error.message)
+    }
+  }
+)
+
+export const fetchDeletedMenus = createAsyncThunk<Menu[], void, { rejectValue: string }>(
+  "menu/fetchDeletedMenus",
+  async (_, { rejectWithValue }) => {
+    try {
+      const q = query(
+        collection(db, "menuType"),
+        where("isDeleted", "==", true)
+      );
+      const querySnapshot = await getDocs(q);
+      const menus = querySnapshot.docs.map((docSnap) => ({
+        id: docSnap.id,
+        name: docSnap.data().name,
+        isDeleted: docSnap.data().isDeleted ?? false,
+        created_at:
+          docSnap.data().created_at?.toDate().toISOString() ||
+          new Date().toISOString(),
+        imageUrl: docSnap.data().imageUrl || "",
+      }));
+      return menus;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 const menuSlice = createSlice({
   name: "menu",
   initialState,
@@ -234,6 +293,19 @@ const menuSlice = createSlice({
         state.loading = false;
         state.error = action.payload ?? "An Error Occurred";
       });
+        builder
+            .addCase(restoreMenu.pending, (state) => {
+              state.loading = true;
+              state.error = null;
+            })
+            .addCase(restoreMenu.fulfilled, (state, action: PayloadAction<string>) => {
+              state.loading = false;
+              state.fetched = false;
+            })
+            .addCase(restoreMenu.rejected, (state, action) => {
+              state.loading = false;
+              state.error = action.payload ?? "An error occurred";
+            })
   },
 });
 

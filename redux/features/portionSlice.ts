@@ -4,6 +4,7 @@ import {
   collection,
   doc,
   getDoc,
+  deleteDoc,
   getDocs,
   addDoc,
   setDoc,
@@ -20,6 +21,7 @@ export interface Portion {
   serves: string;
   created_at: string;
   isDeleted: boolean;
+  update_at?:string;
 }
 
 interface PortionState {
@@ -39,7 +41,7 @@ const initialState: PortionState = {
 export const fetchPortions = createAsyncThunk<Portion[], void, { rejectValue: string }>(
   "portion/fetchPortions",
   async (_, { getState, rejectWithValue }) => {
-    const state = getState() as { portionType: PortionState }; // Updated reference
+    const state = getState() as { portionType: PortionState }; 
 
     if (state.portionType.fetched) return state.portionType.portions;
 
@@ -95,6 +97,89 @@ export const addPortion = createAsyncThunk<Portion, { name: string; serves: stri
     }
   }
 );
+
+export const deletePortion = createAsyncThunk<
+  string,
+  { id: string },
+  { rejectValue: string }
+>(
+  "portion/deletePortion",
+  async ({ id }, { rejectWithValue }) => {
+    try {
+      await deleteDoc(doc(db, "portionType", id));
+      return id;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+export const restorePortion = createAsyncThunk<
+  string,
+  { id: string },
+  { rejectValue: string }
+>(
+  "portion/restorePortion",
+  async ({ id }, { rejectWithValue }) => {
+    try {
+      const portionRef = doc(db, "portionType", id);
+      await updateDoc(portionRef, { isDeleted: false, update_at: serverTimestamp() });
+      return id;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const removePortion = createAsyncThunk<
+string,
+{id:string},
+{rejectValue:string}
+>(
+  "portion/removePortion",
+  async ({id}, {rejectWithValue}) =>{
+    try {
+      const menuRef = doc(db,"portionType",id);
+      const docSnap = await getDoc(menuRef);
+      if(!docSnap.exists()){
+        return rejectWithValue("No Document to update")
+      }
+      await updateDoc(menuRef,{
+        isDeleted:true,
+        update_at:serverTimestamp()
+      });
+      return id
+    } catch (error:any) {
+      return rejectWithValue(error.message)
+    }
+  }
+)
+
+export const fetchDeletedPortions = createAsyncThunk<
+  Portion[],
+  void,
+  { rejectValue: string }
+>(
+  "portion/fetchDeletedPortions",
+  async (_, { rejectWithValue }) => {
+    try {
+      const q = query(collection(db, "portionType"), where("isDeleted", "==", true));
+      const querySnapshot = await getDocs(q);
+      const portions = querySnapshot.docs.map((docSnap) => ({
+        id: docSnap.id,
+        name: docSnap.data().name,
+        serves: docSnap.data().serves,
+        isDeleted: docSnap.data().isDeleted ?? true,
+        created_at: docSnap.data().created_at?.toDate().toISOString() || new Date().toISOString(),
+      }));
+      return portions;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+
+
 
 export const updatePortion = createAsyncThunk<
 string,
@@ -165,7 +250,20 @@ const portionSlice = createSlice({
       .addCase(updatePortion.rejected,(state, action) =>{
         state.loading =false;
         state.error = action.payload ?? "An Erro Occured"
-      })
+      });
+        builder
+            .addCase(restorePortion.pending, (state) => {
+              state.loading = true;
+              state.error = null;
+            })
+            .addCase(restorePortion.fulfilled, (state, action: PayloadAction<string>) => {
+              state.loading = false;
+              state.fetched = false;
+            })
+            .addCase(restorePortion.rejected, (state, action) => {
+              state.loading = false;
+              state.error = action.payload ?? "An error occurred";
+            })
   },
 });
 

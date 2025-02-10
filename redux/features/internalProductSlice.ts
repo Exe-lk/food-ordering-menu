@@ -7,6 +7,10 @@ import {
   query,
   where,
   getDocs,
+  doc,
+  updateDoc,
+  deleteDoc,
+  getDoc
 } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { db, storage } from "@/config/firebase";
@@ -42,7 +46,11 @@ const initialState: InternalFoodState = {
   fetched: false,
 };
 
-// Fetch all products (if needed)
+export interface DeletedProduct {
+  id: string;
+  name: string;
+}
+
 export const fetchProducts = createAsyncThunk<
   InternalFood[],
   void,
@@ -76,6 +84,30 @@ export const fetchProducts = createAsyncThunk<
     return rejectWithValue(error.message);
   }
 });
+
+export const fetchDeletedProducts = createAsyncThunk<
+  DeletedProduct[],
+  void,
+  { rejectValue: string }
+>(
+  "internalFood/fetchDeletedProducts",
+  async (_, { rejectWithValue }) => {
+    try {
+      const q = query(
+        collection(db, "internalFood"),
+        where("isDeleted", "==", true)
+      );
+      const querySnapshot = await getDocs(q);
+      const deletedProducts: DeletedProduct[] = querySnapshot.docs.map((docSnap) => ({
+        id: docSnap.id,
+        name: docSnap.data().name,
+      }));
+      return deletedProducts;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
 
 // Add a new product
 export const addProduct = createAsyncThunk<
@@ -166,6 +198,110 @@ export const fetchCategory = createAsyncThunk<
   }
 );
 
+export const removeProduct = createAsyncThunk<
+  string,
+  { id: string },
+  { rejectValue: string }
+>(
+  "internalFood/removeProduct",
+  async ({ id }, { rejectWithValue }) => {
+    try {
+      const productRef = doc(db, "internalFood", id);
+      await updateDoc(productRef, {
+        isDeleted: true,
+        updated_at: serverTimestamp(),
+      });
+      return id;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+
+
+export const updateProduct = createAsyncThunk<
+  InternalFood,
+  {
+    id: string;
+    updatedProduct: {
+      name: string;
+      category: string;
+      description: string;
+      image?: File | null;
+      currentImageUrl?: string;
+    };
+    productSizes: FoodSize[];
+  },
+  { rejectValue: string }
+>(
+  "internalFood/updateProduct",
+  async({id, updatedProduct, productSizes}, {rejectWithValue})=>{
+    try {
+      let imageUrl = updatedProduct.currentImageUrl || "";
+      if(updatedProduct.image){
+        const imageRef = ref (storage, `internalFood/${updatedProduct.image.name}`);
+        await uploadBytes(imageRef, updatedProduct.image);
+        imageUrl = await getDownloadURL(imageRef)
+      }
+      const updateData = {
+        name:updatedProduct.name,
+        category: updatedProduct.category,
+        description:updatedProduct.description,
+        imageUrl,
+        sizes:productSizes,
+        updated_at:serverTimestamp(),
+      };
+      const productRef = doc(db,"internalFood",id);
+      await updateDoc(productRef,updateData)
+      return {
+        id,
+        name: updatedProduct.name,
+        category: updatedProduct.category,
+        description: updatedProduct.description,
+        imageUrl,
+        sizes: productSizes,
+        created_at: new Date().toISOString(),
+        isDeleted: false,
+      } as InternalFood;
+    } catch (error:any) {
+      return rejectWithValue(error.message);
+    }
+  }
+)
+
+export const deleteProduct = createAsyncThunk<
+  string,
+  { id: string },
+  { rejectValue: string }
+>(
+  "internalFood/deleteProduct",
+  async ({ id }, { rejectWithValue }) => {
+    try {
+      await deleteDoc(doc(db, "internalFood", id));
+      return id;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+export const restoreProduct = createAsyncThunk<
+  string,
+  { id: string },
+  { rejectValue: string }
+>(
+  "internalFood/restoreProduct",
+  async ({ id }, { rejectWithValue }) => {
+    try {
+      const productRef = doc(db, "internalFood", id);
+      await updateDoc(productRef, { isDeleted: false, updated_at: serverTimestamp() });
+      return id;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 const internalFoodSlice = createSlice({
   name: "internalFood",
   initialState,
@@ -221,6 +357,50 @@ const internalFoodSlice = createSlice({
         }
       )
       .addCase(fetchCategory.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload ?? "An error occurred";
+      });
+      builder
+      .addCase(updateProduct.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateProduct.fulfilled, (state, action: PayloadAction<InternalFood>) => {
+        state.loading = false;
+        // Replace the updated product in the list:
+        state.internalFoods = state.internalFoods.map((prod) =>
+          prod.id === action.payload.id ? action.payload : prod
+        );
+      })
+      .addCase(updateProduct.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload ?? "An error occurred";
+      });
+      builder
+      .addCase(removeProduct.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(removeProduct.fulfilled, (state, action: PayloadAction<string>) => {
+        state.loading = false;
+        state.internalFoods = state.internalFoods.filter(
+          (product) => product.id !== action.payload
+        );
+      })
+      .addCase(removeProduct.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload ?? "An error occurred";
+      });
+      builder
+      .addCase(restoreProduct.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(restoreProduct.fulfilled, (state, action: PayloadAction<string>) => {
+        state.loading = false;
+        state.fetched = false;
+      })
+      .addCase(restoreProduct.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload ?? "An error occurred";
       });

@@ -1,10 +1,10 @@
-import MenuType from '@/components/MenuSide/MenuType'
+import Login from '@/components/Login'
 import React from 'react'
 
 const page = () => {
   return (
     <>
-      <MenuType/>
+        <Login/>
     </>
   )
 }

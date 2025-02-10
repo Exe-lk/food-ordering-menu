@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp, getDocs, updateDoc, doc } from "firebase/firestore";
 import { db } from "@/config/firebase";
 import { RootState } from "@/redux/store";
 import { CartItem } from "./cartSlice";
@@ -11,6 +11,7 @@ export interface Order {
     tableNumber: string;
     status: string;
     created_at: string;
+    update_at?:string;
 }
 interface OrderState {
     orders: Order[];
@@ -24,6 +25,29 @@ const initialState: OrderState = {
     loading: false,
     error: null,
 };
+
+export const fetchOrders = createAsyncThunk<Order[], void, {rejectValue:string}>(
+    "order/fetchOrders",
+    async(_,{rejectWithValue}) =>{
+        try {
+            const querySnapshot = await getDocs(collection(db,"orders"));
+            const orders = querySnapshot.docs.map((docSnap) =>{
+                const data = docSnap.data();
+                return{
+                    id:docSnap.id,
+                    items:data.items,
+                    phoneNumber:data.phoneNumber,
+                    tableNumber:data.tableNumber,
+                    status:data.status,
+                    created_at:data.created_at?.toDate().toISOString() || new Date().toISOString(),
+                };
+            });
+            return orders
+        } catch (error:any) {
+            return rejectWithValue(error.message)
+        }
+    }
+)
 
 export const placeOrder = createAsyncThunk<
   Order,
@@ -55,7 +79,7 @@ export const placeOrder = createAsyncThunk<
             items:cartItems,
             phoneNumber,
             tableNumber,
-            status:"pending",
+            status:"Pending",
             created_at:new Date().toISOString()
         };
         return order;
@@ -65,6 +89,25 @@ export const placeOrder = createAsyncThunk<
     }
 });
 
+export const updateOrderStatus = createAsyncThunk<
+{id:string;status:string},
+{id:string, status:string},
+{rejectValue:string}
+>(
+    "order/updateOrderStatus",
+    async({id,status},{rejectWithValue}) =>{
+        try {
+            const orderRef = doc(db,"orders",id);
+            await updateDoc(orderRef,{
+                status:status,
+                update_at:serverTimestamp(),
+            });
+            return {id, status};
+        } catch (error:any) {
+            return rejectWithValue(error.message)
+        }
+    }
+)
 const orderSlice = createSlice({
     name:"order",
     initialState,
@@ -82,6 +125,28 @@ const orderSlice = createSlice({
         .addCase(placeOrder.rejected,(state, action) =>{
             state.loading = false;
             state.error = action.payload || "An Error Occurred"
+        })
+        .addCase(fetchOrders.pending,(state) =>{
+            state.loading = true;
+            state.error = null;
+        })
+        .addCase(fetchOrders.fulfilled,(state,action:PayloadAction<Order[]>) =>{
+            state.loading = false;
+            state.orders = action.payload
+        })
+        .addCase(fetchOrders.rejected,(state, action) =>{
+            state.loading = false;
+            state.error = action.payload || "An Error Occured"
+        })
+        .addCase(updateOrderStatus.fulfilled, (state, action: PayloadAction<{ id: string; status: string }>) => {
+            const { id, status } = action.payload;
+            const orderIndex = state.orders.findIndex((order) => order.id === id);
+            if (orderIndex !== -1) {
+              state.orders[orderIndex].status = status;
+            }
+        })
+        .addCase(updateOrderStatus.rejected, (state, action) => {
+            state.error = action.payload || "Failed to update order status";
         });
     }
 });

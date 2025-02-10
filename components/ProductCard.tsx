@@ -1,6 +1,6 @@
 "use client"
 import React, { useState } from 'react'
-import PortionPopUp from './PortionPopUp';
+import PortionPopUp from './MenuSide/PortionPopUp';
 
 
 interface ProductCardProps {
