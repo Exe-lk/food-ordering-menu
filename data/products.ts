@@ -1,179 +1,200 @@
 export const products: Record<string, any[]> = {
-    Italian: [
+    Cocktails: [
         {
             id: 1,
-            name: "Garlic Pasta",
+            name: "Margarita",
             portions: [
-                { size: "Regular", price: "800" },
-                { size: "Large", price: "1800" }
+                { size: "Regular", price: "1200" },
+                { size: "Large", price: "2200" }
             ],
-            description: "A creamy pasta infused with the rich flavor of roasted garlic.",
-            category: "Italian",
-            image: "/assets/Italian/garlic.jpg"
+            description: "A refreshing tequila-based cocktail with lime juice and triple sec.",
+            category: "Cocktails",
+            image: "/assets/barmenu/1.webp"
         },
         {
             id: 2,
-            name: "Spicy Pasta",
+            name: "Mojito",
             portions: [
-                { size: "Regular", price: "800" },
-                { size: "Large", price: "1800" }
+                { size: "Regular", price: "1100" },
+                { size: "Large", price: "2000" }
             ],
-            description: "Delicious pasta with a bold and spicy kick.",
-            category: "Italian",
-            image: '/assets/Italian/spicy.webp'
+            description: "A Cuban classic made with white rum, fresh mint, lime, and soda.",
+            category: "Cocktails",
+            image: "/assets/cocktails/mojito.jpg"
         },
         {
             id: 3,
-            name: "Carbonara",
+            name: "Old Fashioned",
             portions: [
-                { size: "Regular", price: "800" },
-                { size: "Large", price: "1800" }
+                { size: "Regular", price: "1400" },
+                { size: "Large", price: "2500" }
             ],
-            description: "Classic Italian pasta made with creamy sauce, pancetta, and Parmesan cheese.",
-            category: "Italian",
-            image: '/assets/Italian/carbonara.jpeg'
+            description: "A timeless whiskey cocktail with bitters, sugar, and an orange twist.",
+            category: "Cocktails",
+            image: "/assets/cocktails/old.jpg"
         },
         {
             id: 4,
-            name: "Alfredo",
+            name: "Negroni",
             portions: [
-                { size: "Regular", price: "800" },
-                { size: "Large", price: "1800" }
+                { size: "Regular", price: "1300" },
+                { size: "Large", price: "2400" }
             ],
-            description: "Rich and creamy pasta topped with Parmesan and butter.",
-            category: "Italian",
-            image: '/assets/Italian/alfredo.jpg'
-        },
-        {
-            id: 5,
-            name: "Cheese Pizza",
-            portions: [
-                { size: "Medium", price: "800" },
-                { size: "Large", price: "1800" },
-                { size: "Extra Large", price: "2800" }
-            ],
-            description: "Classic cheese pizza with a perfectly crispy crust.",
-            category: "Italian",
-            image: '/assets/Italian/cheesepizza.jpg'
+            description: "A balanced mix of gin, Campari, and sweet vermouth.",
+            category: "Cocktails",
+            image: "/assets/cocktails/negroni.jpg"
         },
     ],
 
-    Chinese: [
+    Beers: [
+        {
+            id: 5,
+            name: "Lager",
+            portions: [
+                { size: "Pint", price: "800" },
+                { size: "Pitcher", price: "2500" }
+            ],
+            description: "Crisp and refreshing light beer with a smooth finish.",
+            category: "Beers",
+            image: "/assets/beer/1.jpg"
+        },
         {
             id: 6,
-            name: "Sour Pork",
+            name: "IPA",
             portions: [
-                { size: "Regular", price: "800" },
-                { size: "Large", price: "1800" }
+                { size: "Pint", price: "900" },
+                { size: "Pitcher", price: "2700" }
             ],
-            description: "A tangy and savory pork dish with a perfect balance of flavors.",
-            category: "Chinese",
-            image: "/assets/chineese/dish1.jpg"
+            description: "Hoppy and aromatic India Pale Ale with bold flavors.",
+            category: "Beers",
+            image: "/assets/beer/2.jpg"
         },
         {
             id: 7,
-            name: "Dim Sum",
+            name: "Stout",
             portions: [
-                { size: "Regular", price: "800" },
-                { size: "Large", price: "1800" }
+                { size: "Pint", price: "950" },
+                { size: "Pitcher", price: "2800" }
             ],
-            description: "A delightful assortment of bite-sized Chinese dumplings.",
-            category: "Chinese",
-            image: '/assets/chineese/dish2.jpg'
+            description: "Dark and rich beer with notes of coffee and chocolate.",
+            category: "Beers",
+            image: "/assets/beer/3.jpg"
         },
         {
             id: 8,
-            name: "Kung Pao",
+            name: "Pilsner",
             portions: [
-                { size: "Regular", price: "800" },
-                { size: "Large", price: "1800" }
+                { size: "Pint", price: "850" },
+                { size: "Pitcher", price: "2600" }
             ],
-            description: "Spicy stir-fry with chicken, peanuts, and vegetables.",
-            category: "Chinese",
-            image: '/assets/chineese/dish3.jpg'
-        },
-        {
-            id: 9,
-            name: "Fried Rice",
-            portions: [
-                { size: "Regular", price: "800" },
-                { size: "Large", price: "1800" }
-            ],
-            description: "Classic fried rice with vegetables and your choice of protein.",
-            category: "Chinese",
-            image: '/assets/chineese/dish4.jpg'
+            description: "A light, crisp, and slightly hoppy golden beer.",
+            category: "Beers",
+            image: "/assets/beer/4.jpg"
         },
     ],
 
-    Dessert: [
+    Wines: [
+        {
+            id: 9,
+            name: "Chardonnay",
+            portions: [
+                { size: "Glass", price: "1200" },
+                { size: "Bottle", price: "5000" }
+            ],
+            description: "A smooth and buttery white wine with hints of oak.",
+            category: "Wines",
+            image: "/assets/wines/1.webp"
+        },
         {
             id: 10,
-            name: "Sundaes",
+            name: "Merlot",
             portions: [
-                { size: "Regular", price: "800" },
-                { size: "Large", price: "1800" }
+                { size: "Glass", price: "1300" },
+                { size: "Bottle", price: "5200" }
             ],
-            description: "A creamy and delicious ice cream treat topped with syrup and nuts.",
-            category: "Dessert",
-            image: "/assets/dessert/item1.jpg"
+            description: "A rich and velvety red wine with dark fruit flavors.",
+            category: "Wines",
+            image: "/assets/wines/2.jpg"
         },
         {
             id: 11,
-            name: "Brownies",
+            name: "Rosé",
             portions: [
-                { size: "Regular", price: "800" },
-                { size: "Large", price: "1800" }
+                { size: "Glass", price: "1100" },
+                { size: "Bottle", price: "4800" }
             ],
-            description: "Rich and fudgy chocolate brownies, perfect for dessert lovers.",
-            category: "Dessert",
-            image: "/assets/dessert/item2.jpg"
+            description: "A refreshing and fruity pink wine perfect for any occasion.",
+            category: "Wines",
+            image: "/assets/wines/3.webp"
         },
         {
             id: 12,
-            name: "Chocolate Mousse",
+            name: "Cabernet Sauvignon",
             portions: [
-                { size: "Regular", price: "800" },
-                { size: "Large", price: "1800" }
+                { size: "Glass", price: "1400" },
+                { size: "Bottle", price: "5400" }
             ],
-            description: "Light and airy mousse with a rich chocolate flavor.",
-            category: "Dessert",
-            image: '/assets/dessert/item3.jpg'
+            description: "A bold and full-bodied red wine with dark berry flavors.",
+            category: "Wines",
+            image: "/assets/wines/4.jpg"
         },
     ],
 
-    Coffees: [
+    Spirits: [
         {
             id: 13,
-            name: "Americano",
+            name: "Whiskey",
             portions: [
-                { size: "Regular", price: "800" },
-                { size: "Large", price: "1800" }
+                { size: "Single", price: "1500" },
+                { size: "Double", price: "2800" }
             ],
-            description: "A strong and bold black coffee to keep you energized.",
-            category: "Coffee",
-            image: "/assets/coffee/coffee2.jpg"
+            description: "A smooth and aged whiskey with deep smoky notes.",
+            category: "Spirits",
+            image: "/assets/spirits/whiskey.jpg"
         },
         {
             id: 14,
-            name: "Espresso",
+            name: "Vodka",
             portions: [
-                { size: "Regular", price: "800" },
-                { size: "Large", price: "1800" }
+                { size: "Single", price: "1300" },
+                { size: "Double", price: "2500" }
             ],
-            description: "Intense and flavorful shot of espresso for coffee enthusiasts.",
-            category: "Coffee",
-            image: "/assets/coffee/coffee3.jpg"
+            description: "A clean and crisp spirit, perfect for mixing or sipping straight.",
+            category: "Spirits",
+            image: "/assets/spirits/vodka.jpg"
         },
         {
             id: 15,
-            name: "Cappuccino",
+            name: "Gin",
             portions: [
-                { size: "Regular", price: "800" },
-                { size: "Large", price: "1800" }
+                { size: "Single", price: "1400" },
+                { size: "Double", price: "2600" }
             ],
-            description: "Creamy coffee with steamed milk and a frothy top.",
-            category: "Coffee",
-            image: '/assets/coffee/coffee2.jpg'
+            description: "A fragrant and herbal gin with notes of juniper and citrus.",
+            category: "Spirits",
+            image: "/assets/spirits/gin.jpg"
+        },
+        {
+            id: 16,
+            name: "Rum",
+            portions: [
+                { size: "Single", price: "1350" },
+                { size: "Double", price: "2550" }
+            ],
+            description: "A sweet and smooth rum perfect for tropical drinks.",
+            category: "Spirits",
+            image: "/assets/spirits/rum.webp"
+        },
+        {
+            id: 17,
+            name: "Tequila",
+            portions: [
+                { size: "Single", price: "1600" },
+                { size: "Double", price: "3000" }
+            ],
+            description: "A bold and earthy tequila perfect for shots or mixing.",
+            category: "Spirits",
+            image: "/assets/spirits/tequila.jpg"
         },
     ],
 };

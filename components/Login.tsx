@@ -5,13 +5,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { fetchEmployees } from "@/redux/features/employeeSlice";
 import { RootState } from "@/redux/store";
+import { logLogin } from "@/redux/features/loginLogSlice";
 
 const Login = () => {
   // Local state for form fields
   const [selectedRole, setSelectedRole] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  // Local state for login loading
   const [loginLoading, setLoginLoading] = useState(false);
 
   const dispatch = useDispatch<any>();
@@ -26,9 +26,7 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoginLoading(true); // Set loading to true when login starts
-
-    // Check the credentials synchronously (simulate async behavior if needed)
+    setLoginLoading(true); // S
     const foundEmployee = employees.find(
       (emp) =>
         emp.username === username &&
@@ -39,7 +37,14 @@ const Login = () => {
     if (foundEmployee) {
       localStorage.setItem("Name", foundEmployee.name);
       localStorage.setItem("empId", foundEmployee.empId);
-      localStorage.setItem("role", foundEmployee.role)
+      localStorage.setItem("role", foundEmployee.role);
+      dispatch(
+        logLogin({
+          name:foundEmployee.name,
+          username:foundEmployee.username,
+          id:foundEmployee.empId
+        })
+      )
       router.push("/order");
     } else {
       alert("Invalid credentials. Please check your username, password, and role.");

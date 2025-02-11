@@ -2,33 +2,23 @@
 const menuData = [
     {
       id:1,
-      name: "Italian",
-      image: "/assets/menus/menu1.jpg",
+      name: "Cocktails",
+      image: "/assets/barmenu/1.webp",
     },
     {
       id:2,
-      name: "Chinese",
-      image: "/assets/menus/menu2.jpg",
+      name: "Beers",
+      image: "/assets/barmenu/2.webp",
     },
     {
       id:3,
-      name: "Dessert",
-      image: "/assets/menus/menu4.jpg",
+      name: "Wines",
+      image: "/assets/barmenu/3.jpg",
     },
     {
       id:4,
-      name: "Beverages",
-      image: "/assets/menus/menu5.jpg",
-    },
-    {
-      id:5,
-      name: "Coffees",
-      image: "/assets/menus/menu6.jpg",
-    },
-    {   
-        id:6,
-        name: "Mexican",
-        image: "/assets/menus/menu3.jpg",
+      name: "Spirits",
+      image: "/assets/barmenu/4.jpg",
     },
   ];
   
