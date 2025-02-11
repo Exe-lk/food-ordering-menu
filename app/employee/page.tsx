@@ -57,43 +57,42 @@ const page = () => {
       }
     }
   return (
-    <div className='p-4 min-h-screen bg-beige'>
-        <div className='flex items-center justify-between mb-6'>
-            <button onClick={() => setIsSidebarOpen(true)} className='text-2xl text-customblue'>
-                <FiMenu/>
-            </button>
-            <h1 className='text-3xl font-bold text-customblue'>Employee Management</h1>
-            <SearchBar placeholder='Search Employees' onSearch={setSearchQuery}/>
-        </div>
-        <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)}/>
-        <div className="flex space-x-4 mt-4 items-start justify-start w-full mb-3">
-          <Button onClick={() => setIsPopupOpen(true)} label="Create Item" variant="primary"/>
-        </div>
-        <EmployeeHeading/>
-        {loading ?(
-          <p>Loading..</p>
-        ): localEmployees.length > 0 ?(
-          <EmployeeCard employees={localEmployees} onEdit={handleEdit} onRemove={handleRemove}/>
-        ):error ?(
-          <p className='text-red-500'>{error}</p>
-        ):(
-          <p className='text-black'>No Available Employees</p>
-        )}
-        <RecycleBinButton onClick={() => setIsRecycleBinOpen(true)}/>
+    <div className='flex'>
+      <Sidebar/>
+      <div className='p-4 min-h-screen bg-beige ml-14 w-full'>
+          <div className='flex items-center justify-between mb-6'>
+              <h1 className='text-3xl font-bold text-customblue'>Employee Management</h1>
+              <SearchBar placeholder='Search Employees' onSearch={setSearchQuery}/>
+          </div>
+          <div className="flex space-x-4 mt-4 items-start justify-start w-full mb-3">
+            <Button onClick={() => setIsPopupOpen(true)} label="Create Item" variant="primary"/>
+          </div>
+          <EmployeeHeading/>
+          {loading ?(
+            <p>Loading..</p>
+          ): localEmployees.length > 0 ?(
+            <EmployeeCard employees={localEmployees} onEdit={handleEdit} onRemove={handleRemove}/>
+          ):error ?(
+            <p className='text-red-500'>{error}</p>
+          ):(
+            <p className='text-black'>No Available Employees</p>
+          )}
+          <RecycleBinButton onClick={() => setIsRecycleBinOpen(true)}/>
 
-        <CreateEmployee isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)}/>
-        {selectedIndex !== null &&(
-           <EmployeeEdit
-           isOpen={isEditOpen}
-           onClose={() => {
-            setIsEditOpen(false)
-            setSelectedIndex(null)
-          }}
-          employee={localEmployees[selectedIndex]}
-          />
-        )}
-       
-        <Confirm message='Are you sure you want to remove Employee?' isOpen={isConfirmOpen} onClose={() => setIsConfirmOpen(false)} onConfirm={confirmRemove}/>
+          <CreateEmployee isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)}/>
+          {selectedIndex !== null &&(
+            <EmployeeEdit
+            isOpen={isEditOpen}
+            onClose={() => {
+              setIsEditOpen(false)
+              setSelectedIndex(null)
+            }}
+            employee={localEmployees[selectedIndex]}
+            />
+          )}
+        
+          <Confirm message='Are you sure you want to remove Employee?' isOpen={isConfirmOpen} onClose={() => setIsConfirmOpen(false)} onConfirm={confirmRemove}/>
+      </div>
     </div>
   )
 }

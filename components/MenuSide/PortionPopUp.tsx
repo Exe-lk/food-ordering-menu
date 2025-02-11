@@ -16,8 +16,6 @@ const PortionPopUp = ({ name, portions, image, onClose }: PortionPopUpProps) => 
     { size: string; quantity: number }[]
   >([]);
   const dispatch = useDispatch();
-
-  // Adjust the quantity for a given portion.
   const handleQuantityChange = (size: string, change: number) => {
     setSelectedPortions((prev) => {
       const existingPortion = prev.find((p) => p.size === size);
@@ -28,8 +26,6 @@ const PortionPopUp = ({ name, portions, image, onClose }: PortionPopUpProps) => 
       return [...prev, { size, quantity: 1 }];
     });
   };
-
-  // When "Add" is clicked, dispatch an addToCart action for each selected portion.
   const handleAddToCart = () => {
     if (selectedPortions.length > 0) {
       selectedPortions.forEach(({ size, quantity }) => {

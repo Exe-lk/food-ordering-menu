@@ -69,17 +69,13 @@ const Page = () => {
   };
 
   return (
-    <div className="p-4 min-h-screen bg-beige">
+    <div className="flex">
+      <Sidebar/>
+      <div className="p-4 min-h-screen bg-beige ml-14 w-full">
       <div className="flex items-center justify-between mb-6">
-        <button onClick={() => setIsSidebarOpen(true)} className="text-2xl text-customblue">
-          <FiMenu />
-        </button>
         <h1 className="text-3xl font-bold text-customblue">Menu Management</h1>
         <SearchBar placeholder="Search Menu" onSearch={setSearchQuery} />
       </div>
-
-      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
-
       <div className="flex space-x-4 mt-4 items-start justify-start w-full mb-3">
         <Button label="Create Menu" variant="primary" onClick={() => setIsPopupOpen(true)} />
       </div>
@@ -116,6 +112,7 @@ const Page = () => {
       />
 
      <RecycleModal isOpen={isRecycleBinOpen} onClose={() => setIsRecycleBinOpen(false)} recycleType="menu"/>
+    </div>
     </div>
   );
 };

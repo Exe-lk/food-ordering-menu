@@ -34,23 +34,16 @@ const Page = () => {
       };
 
   return (
-    <div className="p-4 min-h-screen bg-beige" >
+    <div className="flex">
+      <Sidebar/>
+      <div className="p-4 min-h-screen bg-beige ml-14 w-full" >
       {/* Header Section */}
       <div className="flex items-center justify-between mb-6">
-        <button 
-        onClick={() => setIsSidebarOpen(true)}
-        className="text-2xl text-customblue">
-          <FiMenu />
-        </button>
         <h1 className="text-3xl font-bold text-customblue text-center">
           Order Management
         </h1>
        <SearchBar placeholder="Search Orders" onSearch={setSearchQuery} />
       </div>
-      <Sidebar
-        isOpen={isSidebarOpen}
-        onClose={() => setIsSidebarOpen(false)}
-      />
       {/* Filter Buttons */}
       <div className="flex space-x-2 mb-6">
         {["All", "Served", "Ready", "Cooking", "Pending"].map((filter) => (
@@ -76,6 +69,7 @@ const Page = () => {
           />
         ))}
       </div>
+    </div>
     </div>
   );
 };

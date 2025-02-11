@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { FiChevronDown, FiChevronUp, FiX } from "react-icons/fi";
-import { useRouter } from "next/navigation";
+import { FiChevronDown, FiChevronUp, FiX, FiChevronLeft, FiChevronRight, FiClipboard, FiBox, FiBookOpen, FiGrid, FiUser, FiLogOut, FiLayers } from "react-icons/fi";
+import { usePathname, useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 
 interface SideBarProps {
@@ -9,19 +9,21 @@ interface SideBarProps {
   onClose: () => void;
 }
 
-const Sidebar = ({ isOpen, onClose }: SideBarProps) => {
+const Sidebar = () => {
   const router = useRouter();
+  const pathname = usePathname();
   const [isFoodMenuOpen, setIsFoodMenuOpen] = useState(false);
   const [isIngredientsMenuOpen, setIsIngredientsMenuOpen] = useState(false);
   const [userRole, setUserRole] = useState<string | null>(null);
-
-  // Get the user role from localStorage once the component mounts
+  const [isExpanded, setIsExpanded] = useState(false);
+  const isActiveLink = (href: string) => {
+    return pathname === href || pathname.startsWith(href);
+  };
+  const isFoodActive = isActiveLink("/inventory/food");
   useEffect(() => {
     const role = localStorage.getItem("role");
     setUserRole(role);
   }, []);
-
-  // Updated async logout handler using SweetAlert2 confirmation
   const handleLogout = async () => {
     const result = await Swal.fire({
       title: "Confirm Logout",
@@ -34,62 +36,83 @@ const Sidebar = ({ isOpen, onClose }: SideBarProps) => {
     });
 
     if (result.isConfirmed) {
-      // Clear user data and navigate to /login
       localStorage.removeItem("Name");
       localStorage.removeItem("empId");
       localStorage.removeItem("role");
       router.push("/login");
     }
   };
-
-  if (!isOpen) return null;
   const limitedRoles = ["Kitchen", "Waiter", "Cashier"];
   const showLimitedMenu = userRole && limitedRoles.includes(userRole);
 
   return (
-    <div className="fixed top-0 left-0 w-1/4 h-full bg-white shadow-lg z-50 flex flex-col">
+    <div className={`h-full bg-white shadow-lg transition-[width] duration-300 ${isExpanded ? "w-[18rem]":"w-14"} fixed top-0 left-0 flex flex-col`}>
       {/* Close Button */}
       <div className="flex justify-end p-4">
-        <button onClick={onClose} className="text-black text-2xl">
-          <FiX />
+        <button 
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="text-customblue text-xl focus:outline-none"
+          aria-label={isExpanded ? "Collapse Sidebar" : "Expand SideBar"}
+        >
+          {isExpanded ? <FiChevronLeft/>:<FiChevronRight/>}
         </button>
       </div>
-
-      {/* Navigation Links */}
       <div className="flex-1 overflow-y-auto">
         <ul className="p-4 space-y-4">
-          {/* Order Management tab is always visible */}
           <li>
-            <a href="/order" className="block text-xl text-gray-800">
-              Order Management
+            <a href="/order" 
+            className={`flex items-center p-1 rounded-md text-xl transition-colors duration-200 ${
+                isActiveLink("/order")
+                  ? "bg-gray-300"
+                  : "text-gray-800 hover:bg-gray-100"
+              }`}>
+             <FiClipboard className="text-xl text-customblue"/>
+             {isExpanded && (
+              <span className="text-lg text-gray-800">Order Management</span>
+             )}
             </a>
           </li>
-
-          {/* If the user is not one of the limited roles (e.g. Admin), display the rest of the menu */}
           {!showLimitedMenu && (
             <>
               <li>
                 <button
                   onClick={() => setIsFoodMenuOpen(!isFoodMenuOpen)}
-                  className="w-full flex justify-between items-center text-xl text-gray-800"
+                  className={`w-full flex justify-between items-center p-1 rounded-md text-xl transition-colors duration-200 ${
+                    isFoodActive
+                      ? "bg-gray-300"
+                      : "text-gray-800 hover:bg-gray-100"
+                  }`}
                 >
-                  Food Inventory
-                  {isFoodMenuOpen ? <FiChevronUp /> : <FiChevronDown />}
+                  <div className="flex items-center space-x-2">
+                    <FiBox className="text-xl text-customblue"/>
+                    {isExpanded && (
+                      <span className="text-lg text-gray-700">Food Inventory</span>
+                    )}
+                  </div>
+                  {isExpanded &&
+                    (isFoodMenuOpen ? <FiChevronUp/> : <FiChevronDown/>)
+                  }
                 </button>
-                {isFoodMenuOpen && (
-                  <ul className="pl-4 mt-2 space-y-4">
+                {isExpanded && isFoodMenuOpen &&(
+                  <ul className="pl-8 mt-1 space-y-1">
                     <li>
-                      <a
-                        href="/inventory/food/internal"
-                        className="block text-gray-800 text-lg"
+                      <a href="/inventory/food/internal"
+                        className={`block p-1 rounded text-base transition-colors duration-200 ${
+                          isActiveLink("/inventory/food/internal")
+                            ? "bg-gray-300"
+                            : "text-gray-700 hover:bg-gray-100"
+                        }`}
                       >
                         Internal
                       </a>
                     </li>
                     <li>
-                      <a
-                        href="/inventory/food/external"
-                        className="block text-gray-800 text-lg"
+                      <a href="/inventory/food/external"
+                        className={`block p-1 rounded text-base transition-colors duration-200 ${
+                          isActiveLink("/inventory/food/internal")
+                            ? "bg-gray-300"
+                            : "text-gray-700 hover:bg-gray-100"
+                        }`}
                       >
                         External
                       </a>
@@ -98,40 +121,70 @@ const Sidebar = ({ isOpen, onClose }: SideBarProps) => {
                 )}
               </li>
               <li>
-                <a href="/portion" className="block text-gray-800 text-xl">
-                  Portion Management
+                <a href="/portion" 
+                className={`flex items-center p-1 rounded-md text-xl transition-colors duration-200 ${
+                  isActiveLink("/portion")
+                    ? "bg-gray-300"
+                    : "text-gray-800 hover:bg-gray-100"
+                }`}>
+                  <FiLayers className="text-customblue text-xl"/>
+                  {isExpanded &&(
+                    <span className="text-lg text-gray-700">Portion Management</span>
+                  )}
                 </a>
               </li>
               <li>
                 <a
                   href="/inventory/ingredients"
-                  className="block text-gray-800 text-xl"
+                  className={`flex items-center p-1 rounded-md text-xl transition-colors duration-200 ${
+                    isActiveLink("/inventory/ingredients")
+                      ? "bg-gray-300"
+                      : "text-gray-800 hover:bg-gray-100"
+                  }`}
                 >
-                  Ingredients Inventory
+                  <FiBookOpen className="text-customblue text-xl"/>
+                  {isExpanded &&(
+                    <span className="text-lg text-gray-700">Ingredients Inventory</span>
+                  )}
                 </a>
               </li>
               <li>
-                <a href="/menutype" className="block text-gray-800 text-xl">
-                  Menu Management
+                <a href="/menutype" 
+                className={`flex items-center p-1 rounded-md text-xl transition-colors duration-200 ${
+                  isActiveLink("/menuType")
+                    ? "bg-gray-300"
+                    : "text-gray-800 hover:bg-gray-100"
+                }`}>
+                 <FiGrid className="text-customblue text-xl"/>
+                 {isExpanded && (
+                  <span className="text-lg text-gray-700">Menu Management</span>
+                 )}
                 </a>
               </li>
               <li>
-                <a href="/employee" className="block text-gray-800 text-xl">
-                  Employee Management
+                <a href="/employee" 
+                className={`flex items-center p-1 rounded-md text-xl transition-colors duration-200 ${
+                  isActiveLink("/employee")
+                    ? "bg-gray-300"
+                    : "text-gray-800 hover:bg-gray-100"
+                }`}>
+                 <FiUser className="text-customblue text-xl"/>
+                 {isExpanded &&(
+                  <span className="text-lg text-gray-700">Employee Management</span>
+                 )}
                 </a>
               </li>
             </>
           )}
         </ul>
       </div>
-
-      {/* Logout Button */}
       <div className="p-4">
-        <button
+      <button
           onClick={handleLogout}
-          className="w-full bg-red-500 text-white font-bold py-2 rounded-md"
+          className="flex items-center space-x-2 w-full bg-red-500 text-white font-bold py-2 px-2 rounded-md hover:bg-red-600"
         >
-          Log Out
+          <FiLogOut className="text-2xl" />
+          {isExpanded && <span>Log Out</span>}
         </button>
       </div>
     </div>
