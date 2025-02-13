@@ -32,6 +32,8 @@ export interface InternalFood {
   created_at: string;
   updated_at?: string;
   isDeleted: boolean;
+  created_by?:string;
+  updated_by?:string;
 }
 
 interface InternalFoodState {
@@ -135,6 +137,9 @@ export const addProduct = createAsyncThunk<
         imageUrl = await getDownloadURL(imageRef);
       }
 
+
+      const created_by = localStorage.getItem("Name") || "Unknown";
+
       const productData = {
         name: newProduct.name,
         category: newProduct.category,
@@ -142,6 +147,7 @@ export const addProduct = createAsyncThunk<
         imageUrl,
         sizes: productSizes,
         created_at: serverTimestamp(),
+        created_by,
         isDeleted: false,
       };
 
@@ -156,6 +162,7 @@ export const addProduct = createAsyncThunk<
         isDeleted: false,
         sizes: productSizes,
         created_at: new Date().toISOString(),
+        created_by,
       } as InternalFood;
     } catch (error: any) {
       return rejectWithValue(error.message);
@@ -244,6 +251,7 @@ export const updateProduct = createAsyncThunk<
         await uploadBytes(imageRef, updatedProduct.image);
         imageUrl = await getDownloadURL(imageRef);
       }
+      const updated_by = localStorage.getItem("Name") || "Unknown";
       const updateData = {
         name: updatedProduct.name,
         category: updatedProduct.category,
@@ -251,6 +259,7 @@ export const updateProduct = createAsyncThunk<
         imageUrl,
         sizes: productSizes,
         updated_at: serverTimestamp(),
+        updated_by,
       };
       const productRef = doc(db, "internalFood", id);
       await updateDoc(productRef, updateData);
@@ -263,6 +272,7 @@ export const updateProduct = createAsyncThunk<
         sizes: productSizes,
         created_at: new Date().toISOString(),
         isDeleted: false,
+        updated_by
       } as InternalFood;
     } catch (error: any) {
       return rejectWithValue(error.message);

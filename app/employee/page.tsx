@@ -4,7 +4,6 @@ import EmployeeHeading from '@/components/Headings/EmployeeHeading';
 import SearchBar from '@/components/SearchBar';
 import Sidebar from '@/components/Sidebar';
 import React, { useEffect, useState } from 'react'
-import { FiMenu } from 'react-icons/fi';
 import { fetchEmployees, removeEmployee } from '@/redux/features/employeeSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '@/redux/store';

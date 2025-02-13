@@ -7,6 +7,7 @@ import cartSliceReducer from './features/cartSlice'
 import orderSliceReducer from './features/orderSlice'
 import employeeSliceReducer from './features/employeeSlice'
 import loginLogSliceReducer  from './features/loginLogSlice'
+import supplierSliceReducer from './features/supplierSlice'
 
 
 const store = configureStore({
@@ -19,6 +20,7 @@ const store = configureStore({
     order:orderSliceReducer,
     employee:employeeSliceReducer,
     loginLog:loginLogSliceReducer,
+    supplier:supplierSliceReducer,
 
   },
 });

@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { FiChevronDown, FiChevronUp, FiX, FiChevronLeft, FiChevronRight, FiClipboard, FiBox, FiBookOpen, FiGrid, FiUser, FiLogOut, FiLayers } from "react-icons/fi";
+import { FiChevronDown, FiChevronUp, FiX, FiChevronLeft, FiChevronRight, FiClipboard, FiBox, FiBookOpen, FiGrid, FiUser, FiLogOut, FiLayers, FiUsers } from "react-icons/fi";
 import { usePathname, useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 
@@ -61,7 +61,7 @@ const Sidebar = () => {
         <ul className="p-4 space-y-4">
           <li>
             <a href="/order" 
-            className={`flex items-center p-1 rounded-md text-xl transition-colors duration-200 ${
+            className={`flex items-center p-1 rounded-md text-xl transition-colors duration-200 space-x-2 ${
                 isActiveLink("/order")
                   ? "bg-gray-300"
                   : "text-gray-800 hover:bg-gray-100"
@@ -77,7 +77,7 @@ const Sidebar = () => {
               <li>
                 <button
                   onClick={() => setIsFoodMenuOpen(!isFoodMenuOpen)}
-                  className={`w-full flex justify-between items-center p-1 rounded-md text-xl transition-colors duration-200 ${
+                  className={`w-full flex justify-between items-center p-1 rounded-md text-xl transition-colors duration-200 space-x-2 ${
                     isFoodActive
                       ? "bg-gray-300"
                       : "text-gray-800 hover:bg-gray-100"
@@ -122,7 +122,7 @@ const Sidebar = () => {
               </li>
               <li>
                 <a href="/portion" 
-                className={`flex items-center p-1 rounded-md text-xl transition-colors duration-200 ${
+                className={`flex items-center p-1 rounded-md text-xl transition-colors duration-200 space-x-2 ${
                   isActiveLink("/portion")
                     ? "bg-gray-300"
                     : "text-gray-800 hover:bg-gray-100"
@@ -136,7 +136,7 @@ const Sidebar = () => {
               <li>
                 <a
                   href="/inventory/ingredients"
-                  className={`flex items-center p-1 rounded-md text-xl transition-colors duration-200 ${
+                  className={`flex items-center p-1 rounded-md text-xl transition-colors duration-200 space-x-2 ${
                     isActiveLink("/inventory/ingredients")
                       ? "bg-gray-300"
                       : "text-gray-800 hover:bg-gray-100"
@@ -150,7 +150,7 @@ const Sidebar = () => {
               </li>
               <li>
                 <a href="/menutype" 
-                className={`flex items-center p-1 rounded-md text-xl transition-colors duration-200 ${
+                className={`flex items-center p-1 rounded-md text-xl transition-colors duration-200 space-x-2 ${
                   isActiveLink("/menuType")
                     ? "bg-gray-300"
                     : "text-gray-800 hover:bg-gray-100"
@@ -163,7 +163,7 @@ const Sidebar = () => {
               </li>
               <li>
                 <a href="/employee" 
-                className={`flex items-center p-1 rounded-md text-xl transition-colors duration-200 ${
+                className={`flex items-center p-1 rounded-md text-xl transition-colors duration-200 space-x-2 ${
                   isActiveLink("/employee")
                     ? "bg-gray-300"
                     : "text-gray-800 hover:bg-gray-100"
@@ -172,6 +172,20 @@ const Sidebar = () => {
                  {isExpanded &&(
                   <span className="text-lg text-gray-700">Employee Management</span>
                  )}
+                </a>
+              </li>
+              <li>
+                <a href="/supplier"
+                className={`flex items-center p-1 rounded-md text-xl transition-colors duration-200 space-x-2 ${
+
+                  isActiveLink("/supplier")
+                  ? "bg-gray-300"
+                  :"text-gray-800 hover:bg-gray-100"
+                }`}>
+                  <FiUsers className="text-customblue text-xl"/>
+                  {isExpanded &&(
+                    <span className="text-lg text-gray-700">Supplier Management</span>
+                  )}
                 </a>
               </li>
             </>

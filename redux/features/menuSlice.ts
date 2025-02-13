@@ -23,6 +23,9 @@ export interface Menu {
   created_at: string;
   update_at?: string;
   imageUrl: string;
+  menu_type?:string;
+  created_by?:string;
+  updated_by?:string;
 }
 
 interface MenuState {
@@ -51,7 +54,8 @@ export const fetchMenus = createAsyncThunk<Menu[], void, { rejectValue: string }
     try {
       const q = query(
         collection(db, "menuType"),
-        where("isDeleted", "==", false)
+        where("isDeleted", "==", false),
+        where("menu_type", "==", "Food")
       );
       const querySnapshot = await getDocs(q);
       const menus = querySnapshot.docs.map((docSnap) => ({
@@ -62,6 +66,7 @@ export const fetchMenus = createAsyncThunk<Menu[], void, { rejectValue: string }
           docSnap.data().created_at?.toDate().toISOString() ||
           new Date().toISOString(),
         imageUrl: docSnap.data().imageUrl || "",
+        menu_type:docSnap.data().menu_type,
       }));
       return menus;
     } catch (error: any) {
@@ -73,9 +78,9 @@ export const fetchMenus = createAsyncThunk<Menu[], void, { rejectValue: string }
 // Add Menu
 export const addMenu = createAsyncThunk<
   Menu,
-  { menuName: string; image: File },
+  { menuName: string; image: File, menu_type:string },
   { rejectValue: string }
->("menu/addMenu", async ({ menuName, image }, { rejectWithValue }) => {
+>("menu/addMenu", async ({ menuName, image, menu_type }, { rejectWithValue }) => {
   try {
     const q = query(
       collection(db, "menuType"),
@@ -90,12 +95,15 @@ export const addMenu = createAsyncThunk<
     const imageRef = ref(storage, `menuTypes/${image.name}`);
     await uploadBytes(imageRef, image);
     const imageUrl = await getDownloadURL(imageRef);
+    const created_by = localStorage.getItem("Name") || "Unknown";
 
     const menuData = {
       name: menuName,
       isDeleted: false,
       created_at: serverTimestamp(),
       imageUrl,
+      menu_type,
+      created_by
     };
 
     const docRef = await addDoc(collection(db, "menuType"), menuData);
@@ -105,6 +113,7 @@ export const addMenu = createAsyncThunk<
       isDeleted: false,
       created_at: new Date().toISOString(),
       imageUrl,
+      menu_type
     };
   } catch (error: any) {
     return rejectWithValue(error.message);
@@ -114,13 +123,14 @@ export const addMenu = createAsyncThunk<
 // Updated Update Menu Thunk
 export const updateMenu = createAsyncThunk<
   { id: string; oldName: string; updatedMenuName: string },
-  { id: string; updatedMenuName: string; image?: File | null },
+  { id: string; updatedMenuName: string; image?: File | null; menu_type: string },
   { rejectValue: string }
 >(
   "menu/updateMenu",
-  async ({ id, updatedMenuName, image }, { rejectWithValue }) => {
+  async ({ id, updatedMenuName, image, menu_type }, { rejectWithValue }) => {
     try {
       const menuRef = doc(db, "menuType", id);
+      const updated_by = localStorage.getItem("Name") || "Unknown";
       // Get the current (old) menu data
       const menuSnap = await getDoc(menuRef);
       if (!menuSnap.exists()) {
@@ -128,10 +138,12 @@ export const updateMenu = createAsyncThunk<
       }
       const oldName = menuSnap.data().name;
 
-      // Prepare update data for the menu document
+      // Prepare update data for the menu document, including the updated menu type.
       const updateData: any = {
         name: updatedMenuName,
         update_at: serverTimestamp(),
+        updated_by,
+        menu_type,
       };
 
       if (image) {
@@ -141,17 +153,15 @@ export const updateMenu = createAsyncThunk<
         updateData.imageUrl = imageUrl;
       }
 
-      // Update the menu document
       await updateDoc(menuRef, updateData);
 
-      // Now update internalFood documents where category === oldName
+      // Update internalFood documents where category === oldName if needed.
       const foodsQuery = query(
         collection(db, "internalFood"),
         where("category", "==", oldName)
       );
       const querySnapshot = await getDocs(foodsQuery);
 
-      // Use a batch write to update all matching documents
       const batch = writeBatch(db);
       querySnapshot.forEach((docSnap) => {
         const foodRef = doc(db, "internalFood", docSnap.id);
@@ -168,6 +178,7 @@ export const updateMenu = createAsyncThunk<
     }
   }
 );
+
 // Remove Menu
 export const removeMenu = createAsyncThunk<
   string,

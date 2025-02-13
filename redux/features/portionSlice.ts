@@ -13,14 +13,14 @@ import {
   where,
   updateDoc,
 } from "firebase/firestore";
-import { stat } from "fs";
-
 export interface Portion {
   id: string;
   name: string;
   serves: string;
   created_at: string;
   isDeleted: boolean;
+  created_by?:string;
+  updated_by?:string;
   update_at?:string;
 }
 
@@ -77,11 +77,14 @@ export const addPortion = createAsyncThunk<Portion, { name: string; serves: stri
         return rejectWithValue("Portion Already Exists");
       }
 
+      const created_by = localStorage.getItem("Name") || "Unknown";
+
       const portionData = {
         name,
         serves,
         created_at: serverTimestamp(),
         isDeleted: false,
+        created_by
       };
 
       const docRef = await addDoc(collection(db, "portionType"), portionData);
@@ -189,11 +192,13 @@ string,
   "portion/portionType",
   async ({id, updatedName, updatedServes}, {rejectWithValue}) =>{
     try {
+      const updated_by = localStorage.getItem("Name") || "Unknown";
       const portionRef = doc(db,"portionType",id);
       const updateData:any ={
         name:updatedName,
         serves:updatedServes,
-        update_at:serverTimestamp()
+        update_at:serverTimestamp(),
+        updated_by
       };
 
       await updateDoc(portionRef, updateData);
