@@ -20,7 +20,6 @@ const Menu = () => {
     }
   }, [fetched, dispatch]);
 
-  // Handle Menu Click: dispatch selected menu and navigate
   const handleMenuClick = (name: string) => {
     dispatch(setSelectedMenu(name));
     router.push(`/menu/home/menu/${name}`);

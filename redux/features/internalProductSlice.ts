@@ -1,4 +1,4 @@
-
+// src/redux/features/internalFoodSlice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import {
   collection,
@@ -10,10 +10,12 @@ import {
   doc,
   updateDoc,
   deleteDoc,
-  getDoc
+  getDoc,
 } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { db, storage } from "@/config/firebase";
+// Import the updateMenu thunk from the menu slice
+import { updateMenu } from "@/redux/features/menuSlice";
 
 export interface FoodSize {
   size: string;
@@ -30,6 +32,8 @@ export interface InternalFood {
   created_at: string;
   updated_at?: string;
   isDeleted: boolean;
+  created_by?:string;
+  updated_by?:string;
 }
 
 interface InternalFoodState {
@@ -133,6 +137,9 @@ export const addProduct = createAsyncThunk<
         imageUrl = await getDownloadURL(imageRef);
       }
 
+
+      const created_by = localStorage.getItem("Name") || "Unknown";
+
       const productData = {
         name: newProduct.name,
         category: newProduct.category,
@@ -140,6 +147,7 @@ export const addProduct = createAsyncThunk<
         imageUrl,
         sizes: productSizes,
         created_at: serverTimestamp(),
+        created_by,
         isDeleted: false,
       };
 
@@ -154,6 +162,7 @@ export const addProduct = createAsyncThunk<
         isDeleted: false,
         sizes: productSizes,
         created_at: new Date().toISOString(),
+        created_by,
       } as InternalFood;
     } catch (error: any) {
       return rejectWithValue(error.message);
@@ -218,8 +227,6 @@ export const removeProduct = createAsyncThunk<
   }
 );
 
-
-
 export const updateProduct = createAsyncThunk<
   InternalFood,
   {
@@ -236,24 +243,26 @@ export const updateProduct = createAsyncThunk<
   { rejectValue: string }
 >(
   "internalFood/updateProduct",
-  async({id, updatedProduct, productSizes}, {rejectWithValue})=>{
+  async ({ id, updatedProduct, productSizes }, { rejectWithValue }) => {
     try {
       let imageUrl = updatedProduct.currentImageUrl || "";
-      if(updatedProduct.image){
-        const imageRef = ref (storage, `internalFood/${updatedProduct.image.name}`);
+      if (updatedProduct.image) {
+        const imageRef = ref(storage, `internalFood/${updatedProduct.image.name}`);
         await uploadBytes(imageRef, updatedProduct.image);
-        imageUrl = await getDownloadURL(imageRef)
+        imageUrl = await getDownloadURL(imageRef);
       }
+      const updated_by = localStorage.getItem("Name") || "Unknown";
       const updateData = {
-        name:updatedProduct.name,
+        name: updatedProduct.name,
         category: updatedProduct.category,
-        description:updatedProduct.description,
+        description: updatedProduct.description,
         imageUrl,
-        sizes:productSizes,
-        updated_at:serverTimestamp(),
+        sizes: productSizes,
+        updated_at: serverTimestamp(),
+        updated_by,
       };
-      const productRef = doc(db,"internalFood",id);
-      await updateDoc(productRef,updateData)
+      const productRef = doc(db, "internalFood", id);
+      await updateDoc(productRef, updateData);
       return {
         id,
         name: updatedProduct.name,
@@ -263,12 +272,13 @@ export const updateProduct = createAsyncThunk<
         sizes: productSizes,
         created_at: new Date().toISOString(),
         isDeleted: false,
+        updated_by
       } as InternalFood;
-    } catch (error:any) {
+    } catch (error: any) {
       return rejectWithValue(error.message);
     }
   }
-)
+);
 
 export const deleteProduct = createAsyncThunk<
   string,
@@ -285,6 +295,7 @@ export const deleteProduct = createAsyncThunk<
     }
   }
 );
+
 export const restoreProduct = createAsyncThunk<
   string,
   { id: string },
@@ -360,23 +371,27 @@ const internalFoodSlice = createSlice({
         state.loading = false;
         state.error = action.payload ?? "An error occurred";
       });
-      builder
+    // updateProduct cases
+    builder
       .addCase(updateProduct.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateProduct.fulfilled, (state, action: PayloadAction<InternalFood>) => {
-        state.loading = false;
-        // Replace the updated product in the list:
-        state.internalFoods = state.internalFoods.map((prod) =>
-          prod.id === action.payload.id ? action.payload : prod
-        );
-      })
+      .addCase(
+        updateProduct.fulfilled,
+        (state, action: PayloadAction<InternalFood>) => {
+          state.loading = false;
+          state.internalFoods = state.internalFoods.map((prod) =>
+            prod.id === action.payload.id ? action.payload : prod
+          );
+        }
+      )
       .addCase(updateProduct.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload ?? "An error occurred";
       });
-      builder
+    // removeProduct cases
+    builder
       .addCase(removeProduct.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -391,7 +406,8 @@ const internalFoodSlice = createSlice({
         state.loading = false;
         state.error = action.payload ?? "An error occurred";
       });
-      builder
+    // restoreProduct cases
+    builder
       .addCase(restoreProduct.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -404,6 +420,16 @@ const internalFoodSlice = createSlice({
         state.loading = false;
         state.error = action.payload ?? "An error occurred";
       });
+    // Extra reducer: Update internal food category when menu is updated
+    builder.addCase(
+      updateMenu.fulfilled,
+      (state, action: PayloadAction<{ id: string; oldName: string; updatedMenuName: string }>) => {
+        const { oldName, updatedMenuName } = action.payload;
+        state.internalFoods = state.internalFoods.map((food) =>
+          food.category === oldName ? { ...food, category: updatedMenuName } : food
+        );
+      }
+    );
   },
 });
 

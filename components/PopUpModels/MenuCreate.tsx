@@ -13,6 +13,7 @@ interface MenuProps{
 
 const MenuCreate = ({isOpen, onClose}:MenuProps) => {
     const [menuName, setMenuName] = useState("");
+    const [menuType, setMenuType] = useState("");
     const dispatch = useDispatch<any>();
     const [image, setImage] = useState<File | null>(null);
     const {loading, error} = useSelector((state:RootState) => state.menuType);
@@ -22,7 +23,7 @@ const MenuCreate = ({isOpen, onClose}:MenuProps) => {
         if (!menuName || !image) return;
     
         try {
-            await dispatch(addMenu({menuName, image})).unwrap(); 
+            await dispatch(addMenu({menuName, image, menu_type:menuType})).unwrap(); 
             setMenuName("");
             dispatch(fetchMenus());
             onClose();
@@ -53,6 +54,21 @@ const MenuCreate = ({isOpen, onClose}:MenuProps) => {
                     className='w-full border rounded-md p-2 text-black'
                     placeholder='Ex: Italian'
                 />
+            </div>
+            <div className="mb-3">
+            <label className="block text-gray-700 font-medium">Menu Type</label>
+            <select
+                value={menuType}
+                onChange={(e) => setMenuType(e.target.value)}
+                className="w-full border rounded-md p-2 text-black"
+                required
+            >
+                <option value="" disabled>
+                Select Menu Type
+                </option>
+                <option value="Bar">Bar</option>
+                <option value="Food">Food</option>
+            </select>
             </div>
             <div className='mb-3'>
                 <label htmlFor="#" className='block text-gray-700 font-medium'>Upload Image</label>

@@ -22,7 +22,6 @@ const Page = () => {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<InternalFood | null>(null);
   const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
-  // Store the product ID instead of an index
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [isRecycleBinOpen, setIsRecycleBinOpen] = useState(false);
 
@@ -60,15 +59,13 @@ const Page = () => {
   };
 
   return (
-    <div className="p-4 min-h-screen bg-beige">
+    <div className="flex">
+      <Sidebar/>
+      <div className="p-4 min-h-screen bg-beige ml-14 w-full">
       <div className="flex items-center justify-between mb-6">
-        <button onClick={() => setIsSidebarOpen(true)} className="text-2xl text-customblue">
-          <FiMenu />
-        </button>
         <h1 className="text-3xl font-bold text-customblue">Internal Food Item Management</h1>
         <SearchBar placeholder="Search Products" onSearch={setSearchQuery} />
       </div>
-      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       <div className="flex space-x-4 mt-4 items-start justify-start w-full mb-3">
         <Button onClick={() => setIsPopupOpen(true)} label="Create Item" variant="primary" />
       </div>
@@ -115,6 +112,7 @@ const Page = () => {
         onClose={() => setIsRecycleBinOpen(false)}
         recycleType="internal"
       />
+    </div>
     </div>
   );
 };

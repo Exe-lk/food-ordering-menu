@@ -57,7 +57,6 @@ const MenuPage = () => {
             <ProductCard
               key={food.id}
               name={food.name}
-              // Map the sizes array to portions (if needed)
               portions={food.sizes.map((size) => ({
                 size: size.size,
                 price: size.price,

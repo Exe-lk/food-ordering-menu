@@ -12,6 +12,7 @@ import {
   query,
   where,
   deleteDoc,
+  writeBatch
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
@@ -22,6 +23,9 @@ export interface Menu {
   created_at: string;
   update_at?: string;
   imageUrl: string;
+  menu_type?:string;
+  created_by?:string;
+  updated_by?:string;
 }
 
 interface MenuState {
@@ -34,9 +38,8 @@ interface MenuState {
 
 const initialState: MenuState = {
   menus: [],
-  selectedMenu: typeof window !== "undefined"
-    ? localStorage.getItem("selectedMenu") || ""
-    : "",
+  selectedMenu:
+    typeof window !== "undefined" ? localStorage.getItem("selectedMenu") || "" : "",
   loading: false,
   error: null,
   fetched: false,
@@ -46,13 +49,13 @@ const initialState: MenuState = {
 export const fetchMenus = createAsyncThunk<Menu[], void, { rejectValue: string }>(
   "menu/fetchMenus",
   async (_, { getState, rejectWithValue }) => {
-    // Assume the slice is mounted under "menuType" in the store.
     const state = getState() as { menuType: MenuState };
     if (state.menuType.fetched) return state.menuType.menus;
     try {
       const q = query(
         collection(db, "menuType"),
-        where("isDeleted", "==", false)
+        where("isDeleted", "==", false),
+        where("menu_type", "==", "Food")
       );
       const querySnapshot = await getDocs(q);
       const menus = querySnapshot.docs.map((docSnap) => ({
@@ -63,6 +66,7 @@ export const fetchMenus = createAsyncThunk<Menu[], void, { rejectValue: string }
           docSnap.data().created_at?.toDate().toISOString() ||
           new Date().toISOString(),
         imageUrl: docSnap.data().imageUrl || "",
+        menu_type:docSnap.data().menu_type,
       }));
       return menus;
     } catch (error: any) {
@@ -74,9 +78,9 @@ export const fetchMenus = createAsyncThunk<Menu[], void, { rejectValue: string }
 // Add Menu
 export const addMenu = createAsyncThunk<
   Menu,
-  { menuName: string; image: File },
+  { menuName: string; image: File, menu_type:string },
   { rejectValue: string }
->("menu/addMenu", async ({ menuName, image }, { rejectWithValue }) => {
+>("menu/addMenu", async ({ menuName, image, menu_type }, { rejectWithValue }) => {
   try {
     const q = query(
       collection(db, "menuType"),
@@ -91,12 +95,15 @@ export const addMenu = createAsyncThunk<
     const imageRef = ref(storage, `menuTypes/${image.name}`);
     await uploadBytes(imageRef, image);
     const imageUrl = await getDownloadURL(imageRef);
+    const created_by = localStorage.getItem("Name") || "Unknown";
 
     const menuData = {
       name: menuName,
       isDeleted: false,
       created_at: serverTimestamp(),
       imageUrl,
+      menu_type,
+      created_by
     };
 
     const docRef = await addDoc(collection(db, "menuType"), menuData);
@@ -106,25 +113,37 @@ export const addMenu = createAsyncThunk<
       isDeleted: false,
       created_at: new Date().toISOString(),
       imageUrl,
+      menu_type
     };
   } catch (error: any) {
     return rejectWithValue(error.message);
   }
 });
 
-// Update Menu
+// Updated Update Menu Thunk
 export const updateMenu = createAsyncThunk<
-  string,
-  { id: string; updatedMenuName: string; image?: File | null },
+  { id: string; oldName: string; updatedMenuName: string },
+  { id: string; updatedMenuName: string; image?: File | null; menu_type: string },
   { rejectValue: string }
 >(
   "menu/updateMenu",
-  async ({ id, updatedMenuName, image }, { rejectWithValue }) => {
+  async ({ id, updatedMenuName, image, menu_type }, { rejectWithValue }) => {
     try {
       const menuRef = doc(db, "menuType", id);
+      const updated_by = localStorage.getItem("Name") || "Unknown";
+      // Get the current (old) menu data
+      const menuSnap = await getDoc(menuRef);
+      if (!menuSnap.exists()) {
+        return rejectWithValue("Menu not found");
+      }
+      const oldName = menuSnap.data().name;
+
+      // Prepare update data for the menu document, including the updated menu type.
       const updateData: any = {
         name: updatedMenuName,
         update_at: serverTimestamp(),
+        updated_by,
+        menu_type,
       };
 
       if (image) {
@@ -133,8 +152,27 @@ export const updateMenu = createAsyncThunk<
         const imageUrl = await getDownloadURL(imageRef);
         updateData.imageUrl = imageUrl;
       }
+
       await updateDoc(menuRef, updateData);
-      return updatedMenuName;
+
+      // Update internalFood documents where category === oldName if needed.
+      const foodsQuery = query(
+        collection(db, "internalFood"),
+        where("category", "==", oldName)
+      );
+      const querySnapshot = await getDocs(foodsQuery);
+
+      const batch = writeBatch(db);
+      querySnapshot.forEach((docSnap) => {
+        const foodRef = doc(db, "internalFood", docSnap.id);
+        batch.update(foodRef, {
+          category: updatedMenuName,
+          updated_at: serverTimestamp(),
+        });
+      });
+      await batch.commit();
+
+      return { id, oldName, updatedMenuName };
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -167,37 +205,37 @@ export const removeMenu = createAsyncThunk<
 );
 
 export const deleteMenu = createAsyncThunk<
-string,
-{id:string},
-{rejectValue:string}
+  string,
+  { id: string },
+  { rejectValue: string }
 >(
-  'menu/deleteMenu',
-  async ({id}, {rejectWithValue}) =>{
+  "menu/deleteMenu",
+  async ({ id }, { rejectWithValue }) => {
     try {
       await deleteDoc(doc(db, "menuType", id));
-      return id
-    } catch (error:any) {
+      return id;
+    } catch (error: any) {
       return rejectWithValue(error.message);
     }
   }
-)
+);
 
 export const restoreMenu = createAsyncThunk<
-string,
-{id:string},
-{rejectValue:string}
+  string,
+  { id: string },
+  { rejectValue: string }
 >(
   "menu/restoreMenu",
-  async({id}, {rejectWithValue}) =>{
+  async ({ id }, { rejectWithValue }) => {
     try {
       const menuRef = doc(db, "menuType", id);
-      await updateDoc(menuRef, {isDeleted:false, update_at:serverTimestamp()});
+      await updateDoc(menuRef, { isDeleted: false, update_at: serverTimestamp() });
       return id;
-    } catch (error:any) {
-      return rejectWithValue(error.message)
+    } catch (error: any) {
+      return rejectWithValue(error.message);
     }
   }
-)
+);
 
 export const fetchDeletedMenus = createAsyncThunk<Menu[], void, { rejectValue: string }>(
   "menu/fetchDeletedMenus",
@@ -231,9 +269,9 @@ const menuSlice = createSlice({
     // This action stores the currently selected menu name.
     setSelectedMenu: (state, action: PayloadAction<string>) => {
       state.selectedMenu = action.payload;
-   if (typeof window !== "undefined") {
-    localStorage.setItem("selectedMenu", action.payload);
-  }
+      if (typeof window !== "undefined") {
+        localStorage.setItem("selectedMenu", action.payload);
+      }
     },
     resetFetched: (state) => {
       state.fetched = false;
@@ -292,20 +330,20 @@ const menuSlice = createSlice({
       .addCase(removeMenu.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload ?? "An Error Occurred";
+      })
+      // restoreMenu
+      .addCase(restoreMenu.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(restoreMenu.fulfilled, (state, action: PayloadAction<string>) => {
+        state.loading = false;
+        state.fetched = false;
+      })
+      .addCase(restoreMenu.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload ?? "An error occurred";
       });
-        builder
-            .addCase(restoreMenu.pending, (state) => {
-              state.loading = true;
-              state.error = null;
-            })
-            .addCase(restoreMenu.fulfilled, (state, action: PayloadAction<string>) => {
-              state.loading = false;
-              state.fetched = false;
-            })
-            .addCase(restoreMenu.rejected, (state, action) => {
-              state.loading = false;
-              state.error = action.payload ?? "An error occurred";
-            })
   },
 });
 
