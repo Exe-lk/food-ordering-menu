@@ -192,6 +192,18 @@ export const removeMenu = createAsyncThunk<
       if (!docSnap.exists()) {
         return rejectWithValue("No document to update");
       }
+
+      const menuData = docSnap.data()
+      const menuName = menuData.name;
+      const productsQuery = query(
+        collection(db,"internalFood"),
+        where("category","==",menuName),
+        where("isDeleted","==", false)
+      );
+      const productSnapshot = await getDocs(productsQuery)
+      if (!productSnapshot.empty) {
+        return rejectWithValue("Cannot remove menu as it has associated products");
+      }
       await updateDoc(menuRef, {
         isDeleted: true,
         update_at: serverTimestamp(),
