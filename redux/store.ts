@@ -8,6 +8,9 @@ import orderSliceReducer from './features/orderSlice'
 import employeeSliceReducer from './features/employeeSlice'
 import loginLogSliceReducer  from './features/loginLogSlice'
 import supplierSliceReducer from './features/supplierSlice'
+import externalFoodSliceReducer from './features/externalProductSlice'
+import categorySliceReducer from './features/ingredientCategorySlice'
+import ingredientSliceReducer from './features/ingredientsSlice'
 
 
 const store = configureStore({
@@ -21,6 +24,9 @@ const store = configureStore({
     employee:employeeSliceReducer,
     loginLog:loginLogSliceReducer,
     supplier:supplierSliceReducer,
+    externalFood:externalFoodSliceReducer,
+    categories: categorySliceReducer,
+    ingredients:ingredientSliceReducer
 
   },
 });

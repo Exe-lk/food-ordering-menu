@@ -9,14 +9,15 @@ import { logLogin } from "@/redux/features/loginLogSlice";
 
 const Login = () => {
   // Local state for form fields
-  const [selectedRole, setSelectedRole] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loginLoading, setLoginLoading] = useState(false);
 
   const dispatch = useDispatch<any>();
   const router = useRouter();
-  const { employees, loading, error } = useSelector((state: RootState) => state.employee);
+  const { employees, loading, error } = useSelector(
+    (state: RootState) => state.employee
+  );
 
   useEffect(() => {
     if (!employees.length) {
@@ -26,12 +27,11 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoginLoading(true); // S
+    setLoginLoading(true);
+    
+    // Find the employee by matching username and password only
     const foundEmployee = employees.find(
-      (emp) =>
-        emp.username === username &&
-        emp.password === password &&
-        emp.role === selectedRole
+      (emp) => emp.username === username && emp.password === password
     );
 
     if (foundEmployee) {
@@ -40,16 +40,16 @@ const Login = () => {
       localStorage.setItem("role", foundEmployee.role);
       dispatch(
         logLogin({
-          name:foundEmployee.name,
-          username:foundEmployee.username,
-          id:foundEmployee.empId
+          name: foundEmployee.name,
+          username: foundEmployee.username,
+          id: foundEmployee.empId,
         })
-      )
+      );
       router.push("/order");
     } else {
-      alert("Invalid credentials. Please check your username, password, and role.");
+      alert("Invalid credentials. Please check your username and password.");
     }
-    setLoginLoading(false); 
+    setLoginLoading(false);
   };
 
   return (
@@ -70,26 +70,10 @@ const Login = () => {
             Welcome Back!
           </h2>
           <p className="text-gray-600 mb-6 text-center text-sm">
-            Please select your role and enter valid credentials to proceed
+            Please enter your username and password to proceed
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <select
-                className="w-full px-4 py-2 border border-gray-300 rounded-md text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                value={selectedRole}
-                onChange={(e) => setSelectedRole(e.target.value)}
-                required
-              >
-                <option value="" disabled>
-                  Please Select Your Role
-                </option>
-                <option value="Kitchen">Kitchen</option>
-                <option value="Admin">Admin</option>
-                <option value="Cashier">Cashier</option>
-                <option value="Waiter">Waiter</option>
-              </select>
-            </div>
             <div>
               <input
                 type="text"

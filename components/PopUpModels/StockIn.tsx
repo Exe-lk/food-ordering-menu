@@ -1,23 +1,51 @@
 "use client";
 import React, { useState } from "react";
 import { FiX } from "react-icons/fi";
-
+import { useDispatch } from "react-redux";
+import { stockIn } from "@/redux/features/ingredientsSlice";
+import { AppDispatch } from "@/redux/store";
 interface StockInProps {
   isOpen: boolean;
   onClose: () => void;
+  ingredientId:string;
   ingredientName: string;
   category: string;
 }
 
-const StockIn = ({ isOpen, onClose, ingredientName, category }: StockInProps) => {
+const StockIn = ({ isOpen, onClose, ingredientId, ingredientName, category }: StockInProps) => {
   const [quantity, setQuantity] = useState("");
+  const [brand, setBrand] = useState("");
   const [costPrice, setCostPrice] = useState("");
   const [unit, setUnit] = useState("");
   const [supplier, setSupplier] = useState("");
-  const [description, setDescription] = useState("");
   const [dateIn, setDateIn] = useState("");
+  const dispatch = useDispatch<AppDispatch>();
 
   if (!isOpen) return null;
+
+  const handleSubmit = (e:React.FormEvent) =>{
+    e.preventDefault();
+
+    dispatch(
+      stockIn({
+        id:ingredientId,
+        quantity,
+        costPrice,
+        unit,
+        brand,
+        supplier,
+        dateIn
+      })
+    );
+
+    setQuantity("");
+    setCostPrice("");
+    setUnit("");
+    setSupplier("");
+    setDateIn("");
+    onClose();
+  }
+
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -31,7 +59,7 @@ const StockIn = ({ isOpen, onClose, ingredientName, category }: StockInProps) =>
         </button>
         {/* Heading */}
         <h2 className="text-2xl font-bold mb-4 text-customblue">Stock In</h2>
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-2 gap-4 mb-4 text-customblue">
             {/* Ingredient Name */}
             <div className="col-span-2">
@@ -60,6 +88,8 @@ const StockIn = ({ isOpen, onClose, ingredientName, category }: StockInProps) =>
               <label className="block font-semibold mb-1">Brand</label>
               <input
                 type="text"
+                value={brand}
+                onChange={(e) => setBrand(e.target.value)}
                 placeholder="Enter brand"
                 className="w-full border border-gray-300 rounded-md px-3 py-2"
               />
@@ -80,7 +110,7 @@ const StockIn = ({ isOpen, onClose, ingredientName, category }: StockInProps) =>
             <div>
               <label className="block font-semibold mb-1">Quantity</label>
               <input
-                type="text"
+                type="number"
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
                 className="w-full border border-gray-300 rounded-md px-3 py-2"
@@ -126,18 +156,6 @@ const StockIn = ({ isOpen, onClose, ingredientName, category }: StockInProps) =>
               />
             </div>
           </div>
-
-          {/* Description */}
-          <div className="mb-4">
-            <label className="block font-semibold mb-1 text-customblue">Description</label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full border border-gray-300 rounded-md px-3 py-2"
-              rows={4}
-            />
-          </div>
-
           {/* Buttons */}
           <div className="flex justify-center">
             <button

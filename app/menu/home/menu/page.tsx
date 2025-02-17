@@ -6,7 +6,7 @@ const page = () => {
 
   return (
    <>
-        <Menu/>
+        <Menu type='Food'/>
    </>
   )
 }

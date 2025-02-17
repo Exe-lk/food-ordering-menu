@@ -18,7 +18,7 @@ const PortionCreate = ({isOpen, onClose}:PortionProps) => {
     if(!isOpen) return null;
 
     const handleCreate = async () =>{
-        if(!portionName || !portionServe) return;
+        if(!portionName) return;
 
         try {
             await dispatch(addPortion({name:portionName, serves:portionServe})).unwrap();

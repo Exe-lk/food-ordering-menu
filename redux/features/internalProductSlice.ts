@@ -270,7 +270,7 @@ export const updateProduct = createAsyncThunk<
         description: updatedProduct.description,
         imageUrl,
         sizes: productSizes,
-        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
         isDeleted: false,
         updated_by
       } as InternalFood;

@@ -1,23 +1,47 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FiX } from "react-icons/fi";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "@/redux/store";
+import { fetchCategories } from "@/redux/features/ingredientCategorySlice";
+import { addIngredients } from "@/redux/features/ingredientsSlice";
+
 import ingredientCategories from "@/data/ingredientCategories";
 interface ProductModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 const IngredientCreate = ({ isOpen, onClose }: ProductModalProps) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const {loading, error} = useSelector((state:RootState) => state.ingredients)
+  const {categories, loading:categoryLoading} = useSelector(
+    (state:RootState) => state.categories
+  )
+
   const [newIngredient, setNewIngredient] = useState({
     name: "",
     category: "",
-    brand: "",
-    costPrice: "",
-    quantity: "",
     unit: "",
-    dateIn: "",
-    supplier: "",
     description: "",
   });
+
+  useEffect(() =>{
+    dispatch(fetchCategories())
+  },[dispatch]);
+
+  const handleSubmit = async (e:React.FormEvent<HTMLFormElement>) =>{
+    e.preventDefault();
+    const resultAction = await dispatch(addIngredients({newIngredients:newIngredient}));
+    if(resultAction.meta.requestStatus === "fulfilled"){
+      setNewIngredient({
+        name:"",
+        category:"",
+        description:"",
+        unit:""
+      });
+      onClose();
+    }
+  }
 
   if (!isOpen) return null;
 
@@ -32,7 +56,7 @@ const IngredientCreate = ({ isOpen, onClose }: ProductModalProps) => {
             </button>
         </div>
         {/* Form */}
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-customblue font-medium mb-1">
               Ingredient Name
@@ -59,103 +83,16 @@ const IngredientCreate = ({ isOpen, onClose }: ProductModalProps) => {
               }
             >
               <option value="">Select category</option>
-              {ingredientCategories.map((category) => (
-                <option key={category} value={category} className="text-black">
-                  {category}
-                </option>
-              ))}
+              {categoryLoading ? (
+                <option value="">Loading Categories</option>
+              ):(
+                categories.map((option) =>(
+                  <option key={option.id} value={option.name}>
+                    {option.name}
+                  </option>
+                ))
+              )}
             </select>
-          </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <div>
-              <label className="block text-customblue font-medium mb-1">
-                Brand
-              </label>
-              <input
-                type="text"
-                className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400 text-black"
-                placeholder="Enter brand"
-                value={newIngredient.brand}
-                onChange={(e) =>
-                  setNewIngredient({ ...newIngredient, brand: e.target.value })
-                }
-              />
-            </div>
-            <div>
-              <label className="block text-customblue font-medium mb-1">
-                Cost Price
-              </label>
-              <input
-                type="number"
-                className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400 text-black"
-                placeholder="LKR 0.00"
-                value={newIngredient.costPrice}
-                onChange={(e) =>
-                  setNewIngredient({ ...newIngredient, costPrice: e.target.value })
-                }
-              />
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <div>
-              <label className="block text-customblue font-medium mb-1 ">
-                Quantity
-              </label>
-              <input
-                type="number"
-                className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400 text-black"
-                placeholder="Enter quantity"
-                value={newIngredient.quantity}
-                onChange={(e) =>
-                  setNewIngredient({ ...newIngredient, quantity: e.target.value })
-                }
-              />
-            </div>
-            <div>
-              <label className="block text-customblue font-medium mb-1">Unit</label>
-              <select
-                className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400 text-black"
-                value={newIngredient.unit}
-                onChange={(e) =>
-                  setNewIngredient({ ...newIngredient, unit: e.target.value })
-                }
-              >
-                <option value="">Select unit</option>
-                <option value="Kg">Kg</option>
-                <option value="g">g</option>
-                <option value="L">L</option>
-                <option value="ml">ml</option>
-              </select>
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <div>
-              <label className="block text-customblue font-medium mb-1">
-                Date In
-              </label>
-              <input
-                type="date"
-                className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400 text-black"
-                value={newIngredient.dateIn}
-                onChange={(e) =>
-                  setNewIngredient({ ...newIngredient, dateIn: e.target.value })
-                }
-              />
-            </div>
-            <div>
-              <label className="block text-customblue font-medium mb-1">
-                Supplier
-              </label>
-              <input
-                type="text"
-                className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400 text-black"
-                placeholder="Enter supplier name"
-                value={newIngredient.supplier}
-                onChange={(e) =>
-                  setNewIngredient({ ...newIngredient, supplier: e.target.value })
-                }
-              />
-            </div>
           </div>
           <div className="mb-6">
             <label className="block text-customblue font-medium mb-1">
@@ -176,10 +113,10 @@ const IngredientCreate = ({ isOpen, onClose }: ProductModalProps) => {
           </div>
           <div className="flex justify-center">
             <button
-              type="button"
+              type="submit"
               className="bg-customblue text-white px-6 py-2 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-400"
             >
-              Create
+              {loading ? "Creating...":"Create"}
             </button>
           </div>
         </form>

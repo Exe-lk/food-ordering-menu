@@ -63,7 +63,11 @@ export const fetchPortions = createAsyncThunk<Portion[], void, { rejectValue: st
   }
 );
 
-export const addPortion = createAsyncThunk<Portion, { name: string; serves: string }, { rejectValue: string }>(
+export const addPortion = createAsyncThunk<
+  Portion,
+  { name: string; serves?: string }, // serves is now optional
+  { rejectValue: string }
+>(
   "portion/addPortion",
   async ({ name, serves }, { rejectWithValue }) => {
     try {
@@ -81,7 +85,7 @@ export const addPortion = createAsyncThunk<Portion, { name: string; serves: stri
 
       const portionData = {
         name,
-        serves,
+        serves: serves || "", // if not provided, default to empty string
         created_at: serverTimestamp(),
         isDeleted: false,
         created_by
@@ -91,7 +95,7 @@ export const addPortion = createAsyncThunk<Portion, { name: string; serves: stri
       return {
         id: docRef.id,
         name,
-        serves,
+        serves: serves || "",
         created_at: new Date().toISOString(),
         isDeleted: false,
       };

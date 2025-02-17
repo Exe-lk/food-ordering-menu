@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { db } from "@/config/firebase";
 import { collection, doc, getDoc, setDoc,serverTimestamp,query, where, getDocs, updateDoc, addDoc, deleteDoc } from "firebase/firestore";
 import { RootState } from "../store";
-interface Supplier{
+export interface Supplier{
     id:string;
     name:string;
     address:string;
@@ -83,7 +83,7 @@ export const addSupplier = createAsyncThunk<Supplier,{name:string; address:strin
                 isDeleted:false,
                 created_by
             };
-            const docRef = await addDoc(collection(db,"supplier"),supplierData);
+            const docRef = await addDoc(collection(db,"suppliers"),supplierData);
             return{
                 id:docRef.id,
                 name,

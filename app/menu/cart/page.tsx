@@ -46,7 +46,9 @@ const CartPage = () => {
       Swal.fire({
         title: "Order Placed Successfully",
         icon: "success",
-        confirmButtonText: "Okay.",
+        timer: 2000,
+        timerProgressBar: true,
+        showConfirmButton: false,
       });
       dispatch(clearCart());
     } catch (error) {

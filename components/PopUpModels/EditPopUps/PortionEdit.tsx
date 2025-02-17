@@ -26,7 +26,6 @@ const PortionEdit = ({ isOpen, onClose, portion }: PortionEditProps) => {
   const [portionName, setPortionName] = useState(portion.name);
   const [serves, setServes] = useState(portion.serves);
 
-  // Update fields when a new portion is passed in.
   useEffect(() => {
     if (portion) {
       setPortionName(portion.name);
@@ -35,7 +34,6 @@ const PortionEdit = ({ isOpen, onClose, portion }: PortionEditProps) => {
   }, [portion]);
 
   const handleUpdate = async () => {
-    // Only update if name or serves have changed
     if (portionName === portion.name && serves === portion.serves) return;
 
     try {

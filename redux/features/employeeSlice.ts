@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { db } from "@/config/firebase";
-import { collection, doc, getDoc, setDoc, serverTimestamp, query, where, getDocs, updateDoc, addDoc } from "firebase/firestore";
+import { collection, doc, getDoc, setDoc, serverTimestamp, query, where, getDocs, updateDoc, addDoc, deleteDoc } from "firebase/firestore";
 import { RootState } from "../store";
 
 interface Employee{
@@ -30,6 +30,11 @@ const initialState: EmployeeState ={
     fetched:false,
 }
 
+export interface DeletedEmployee{
+    id:string;
+    name:string;
+}
+
 export const fetchEmployees = createAsyncThunk<
   Employee[],
   void,
@@ -37,9 +42,7 @@ export const fetchEmployees = createAsyncThunk<
 >(
   "employee/fetchEmployees",
   async (_, { getState, rejectWithValue }) => {
-    // Change the key from 'employees' to 'employee'
     const state = getState() as { employee: EmployeeState };
-    if (state.employee.fetched) return state.employee.employees;
     try {
       const q = query(
         collection(db, "employee"),
@@ -69,6 +72,29 @@ export const fetchEmployees = createAsyncThunk<
   }
 );
 
+export const fetchDeletedEmployees = createAsyncThunk<
+DeletedEmployee[],
+void,
+{rejectValue:string}
+>(
+    "employee/fetchDeletedEmployees",
+    async (_, {rejectWithValue}) =>{
+        try {
+            const q = query(
+                collection(db,"employee"),
+                where("isDeleted",'==', true)
+            );
+            const querySnapshot = await getDocs(q);
+            const employees:DeletedEmployee[] = querySnapshot.docs.map((docSnap) => ({
+                id:docSnap.id,
+                name:docSnap.data().name,
+            }));
+            return employees;
+        } catch (error:any) {
+            return rejectWithValue(error.message)
+        }
+    }
+)
 
 export const addEmployee = createAsyncThunk<Employee, {name:string; empId:string; username:string; password:string; role:string, contact:string},{rejectValue:string}>(
     "employee/addEmployee",
@@ -152,6 +178,39 @@ string,
             return updatedEmpId
         } catch (error:any) {
             return rejectWithValue(error.message)
+        }
+    }
+)
+
+export const deleteEmployee = createAsyncThunk<
+string,
+{id:string},
+{rejectValue:string}
+>(
+    "employee/deleteEmployee",
+    async ({id}, {rejectWithValue}) =>{
+        try {
+            await deleteDoc(doc(db,"employee",id));
+            return id;
+        } catch (error:any) {
+            return rejectWithValue(error.message)
+        }
+    }
+)
+
+export const restoreEmployee = createAsyncThunk<
+string,
+{id:string},
+{rejectValue:string}
+>(
+    "employee/resoreEmployee",
+    async ({id}, {rejectWithValue}) =>{
+        try {
+            const employeeRef = doc(db, "employee",id);
+            await updateDoc(employeeRef,{isDeleted:false, updated_at:serverTimestamp()})
+            return id;
+        } catch (error:any) {
+            return rejectWithValue(error.message);
         }
     }
 )

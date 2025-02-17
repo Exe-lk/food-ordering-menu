@@ -1,22 +1,25 @@
 import React from 'react'
 
+interface supplier{
+  name:string;
+}
 interface ExternalCardProps{
     category: string;
     brand: string;
-    productName: string;
-    quantity: number;
+    name: string;
+    quantity: string;
     unit: string;
     manufactureDate: string;
-    expireDate: string;
+    expiryDate: string;
     dateIn: string;
-    costPrice: number;
-    supplier: string;
+    costPrice: string;
+    supplier: supplier[];
     description: string;
     onEdit:() => void;
     onRemove:() => void;
 }
 
-const ExternalCard = ({category, brand, productName, quantity, dateIn, costPrice, supplier, onEdit, onRemove}:ExternalCardProps) => {
+const ExternalCard = ({category, brand, name, quantity, dateIn, costPrice, supplier, onEdit, onRemove}:ExternalCardProps) => {
   return (
     <div className='grid grid-cols-9 items-center border rounded-lg shadow-md p-4 mb-4 bg-white hover:bg-gray-300 transition-all duration-300 cursor-pointer'>
         <div className='text-gray-900 font-bold items-center justify-center text-center'>
@@ -26,7 +29,7 @@ const ExternalCard = ({category, brand, productName, quantity, dateIn, costPrice
             {brand}
         </div>
         <div className='text-gray-900 font-bold px-2 items-center justify-center text-center'>
-            {productName}
+            {name}
         </div>
         <div className='text-gray-900 font-bold px-2 items-center justify-center text-center'>
             {quantity}
@@ -38,7 +41,11 @@ const ExternalCard = ({category, brand, productName, quantity, dateIn, costPrice
             {costPrice}
         </div>
         <div className='text-gray-900 font-bold px-2 items-center justify-center text-center'>
-            {supplier}
+            {supplier.map((sup, index) => (
+              <div key={index} className='text-sm text-gray-800 text-center items-center justify-center border-l border-r border-gray-600'>
+                {sup.name}
+              </div>
+            ))}
         </div>
         <div className="flex space-x-2 justify-center px-2">
         <button
