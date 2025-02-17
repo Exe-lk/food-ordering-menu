@@ -3,10 +3,14 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
-import { fetchMenus, setSelectedMenu } from "@/redux/features/menuSlice";
+import { fetchMenus, fetchMenusByType, resetFetched, setSelectedMenu } from "@/redux/features/menuSlice";
 import { RootState } from "@/redux/store";
 
-const Menu = () => {
+interface MenuProps {
+  type: string;
+}
+
+const Menu = ({type}:MenuProps) => {
   const dispatch = useDispatch<any>();
   const router = useRouter();
 
@@ -15,10 +19,10 @@ const Menu = () => {
   );
 
   useEffect(() => {
-    if (!fetched) {
-      dispatch(fetchMenus());
-    }
-  }, [fetched, dispatch]);
+    dispatch(resetFetched());
+    dispatch(fetchMenusByType(type));
+  }, [dispatch, type]);
+  
 
   const handleMenuClick = (name: string) => {
     dispatch(setSelectedMenu(name));

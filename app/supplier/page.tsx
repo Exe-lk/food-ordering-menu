@@ -12,6 +12,7 @@ import SupplierHeading from '@/components/Headings/SupplierHeading';
 import SupplierCard from '@/components/SupplierCard';
 import SupplierCreate from '@/components/PopUpModels/SupplierCreate';
 import EditSupplier from '@/components/PopUpModels/EditPopUps/EditSupplier';
+import RecycleModal from '@/components/RecycleModal';
 
 const page = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -92,7 +93,13 @@ const page = () => {
                 supplier={localSuppliers[selectedIndex]}
                 />
             )}
-
+            <Confirm
+                message='Are you sure you want to delete the Supplier?'
+                isOpen={isConfirmOpen}
+                onClose={() => setIsConfirmOpen(false)}
+                onConfirm={confirmRemove}
+            />
+            <RecycleModal isOpen={isRecycleBinOpen} onClose={() => setIsRecycleBinOpen(false)} recycleType='supplier'/>
         </div>
     </div>
   )

@@ -12,8 +12,8 @@ import RecycleBinButton from '@/components/RecycleBin';
 import CreateEmployee from '@/components/PopUpModels/CreateEmployee';
 import Confirm from '@/components/PopUpModels/Confirm';
 import EmployeeEdit from '@/components/PopUpModels/EditPopUps/EmployeeEdit';
+import RecycleModal from '@/components/RecycleModal';
 const page = () => {
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const dispatch = useDispatch<any>();
     const {employees, loading, fetched, error} = useSelector((state:RootState) => state.employee)
@@ -79,16 +79,22 @@ const page = () => {
           <RecycleBinButton onClick={() => setIsRecycleBinOpen(true)}/>
 
           <CreateEmployee isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)}/>
-          {selectedIndex !== null &&(
+          {isEditOpen && selectedIndex !== null && (
             <EmployeeEdit
-            isOpen={isEditOpen}
-            onClose={() => {
-              setIsEditOpen(false)
-              setSelectedIndex(null)
-            }}
-            employee={localEmployees[selectedIndex]}
+              isOpen={isEditOpen}
+              onClose={() => {
+                setIsEditOpen(false);
+                setSelectedIndex(null);
+              }}
+              employee={localEmployees[selectedIndex]}
             />
           )}
+          <RecycleModal
+            isOpen={isRecycleBinOpen}
+            onClose={() => setIsRecycleBinOpen(false)}
+            recycleType='employee'
+          />
+
         
           <Confirm message='Are you sure you want to remove Employee?' isOpen={isConfirmOpen} onClose={() => setIsConfirmOpen(false)} onConfirm={confirmRemove}/>
       </div>

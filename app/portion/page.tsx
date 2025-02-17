@@ -105,7 +105,7 @@ const Page = () => {
         onClose={() => setIsConfirmOpen(false)}
         onConfirm={confirmRemove}
       />
-      <RecycleModal isOpen={isRecycleBinOpen} onClose={() => setIsRecycleBinOpen(false)} recycleType="menu"/>
+      <RecycleModal isOpen={isRecycleBinOpen} onClose={() => setIsRecycleBinOpen(false)} recycleType="portion"/>
     </div>
     </div>
   );

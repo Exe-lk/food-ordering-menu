@@ -1,19 +1,10 @@
+// MenuEdit.tsx
 "use client";
 import React, { useState, useEffect } from "react";
 import { FiX } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { updateMenu, fetchMenus, resetFetched } from "@/redux/features/menuSlice";
-
-interface Menu {
-  id: string;
-  name: string;
-  isDeleted: boolean;
-  created_at: string;
-  menu_type: string;
-  update_at?: string;
-  imageUrl: string;
-}
+import { updateMenu, fetchMenus, resetFetched, Menu } from "@/redux/features/menuSlice";
 
 interface MenuEditProps {
   isOpen: boolean;
@@ -25,7 +16,7 @@ const MenuEdit = ({ isOpen, onClose, menu }: MenuEditProps) => {
   const dispatch = useDispatch<any>();
   const { loading } = useSelector((state: RootState) => state.menuType);
   const [menuName, setMenuName] = useState(menu.name);
-  const [menuType, setMenuType] = useState(menu.menu_type);
+  const [menuType, setMenuType] = useState(menu.menu_type || "Food");
   const [image, setImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState(menu.imageUrl);
 
@@ -33,7 +24,7 @@ const MenuEdit = ({ isOpen, onClose, menu }: MenuEditProps) => {
   useEffect(() => {
     if (menu) {
       setMenuName(menu.name);
-      setMenuType(menu.menu_type);
+      setMenuType(menu.menu_type || "Food");
       setPreviewUrl(menu.imageUrl);
       setImage(null);
     }
@@ -41,7 +32,7 @@ const MenuEdit = ({ isOpen, onClose, menu }: MenuEditProps) => {
 
   const handleUpdate = async () => {
     // Only update if any field has changed.
-    if (menuName === menu.name && !image && menuType === menu.menu_type) return;
+    if (menuName === menu.name && !image && menuType === (menu.menu_type || "Food")) return;
 
     try {
       await dispatch(

@@ -39,7 +39,8 @@ const EmployeeCard = ({ employees, onEdit, onRemove }: EmployeeCardProps) => {
               Edit
             </button>
             <button
-              onClick={() => onRemove(index)}
+
+              onClick={(e) => onRemove(index)}
               className="px-4 py-2 text-white bg-red-800 rounded-md shadow-lg"
             >
               Remove

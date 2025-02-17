@@ -5,11 +5,16 @@ import Swal from 'sweetalert2'
 import { fetchDeletedMenus, deleteMenu, removeMenu, Menu, restoreMenu } from '@/redux/features/menuSlice'
 import { fetchDeletedPortions, deletePortion,restorePortion, Portion } from '@/redux/features/portionSlice'
 import { fetchDeletedProducts,deleteProduct,restoreProduct, DeletedProduct } from '@/redux/features/internalProductSlice'
+import { fetchDeletedSuppliers, deleteSupplier, restoreSupplier,Supplier } from '@/redux/features/supplierSlice'
+import { fetchDeletedExternalProducts, deleteExternalProduct, restoreExternalProduct, ExternalFood } from '@/redux/features/externalProductSlice'
+import { fetchDeletedCategory, deleteCategory, restoreCategory } from '@/redux/features/ingredientCategorySlice'
+import { fetchDeletedEmployees, deleteEmployee, restoreEmployee } from '@/redux/features/employeeSlice'
+import { fetchDeletedIngredients, deleteIngredient, restoreIngredient } from '@/redux/features/ingredientsSlice'
 
 interface RecycleProps{
     isOpen:boolean;
     onClose:() => void;
-    recycleType: "menu" | "portion" | "internal"
+    recycleType: "menu" | "portion" | "internal" | "supplier" | "external" | "category" | "employee" | "ingredient"
 }
 
 type Item = Menu | Portion | DeletedProduct
@@ -37,6 +42,36 @@ const RecycleModal = ({isOpen, onClose, recycleType}:RecycleProps) => {
             delete:deleteProduct,
             label:"internal"
         },
+        supplier:{
+          fetchDeleted:fetchDeletedSuppliers,
+          restore:restoreSupplier,
+          delete:deleteSupplier,
+          label:"supplier"
+        },
+        external:{
+          fetchDeleted: fetchDeletedExternalProducts,
+          restore: restoreExternalProduct,
+          delete: deleteExternalProduct,
+          label: "external"
+        },
+        category:{
+          fetchDeleted:fetchDeletedCategory,
+          restore:restoreCategory,
+          delete:deleteCategory,
+          label:"category"
+        },
+        employee:{
+          fetchDeleted:fetchDeletedEmployees,
+          restore:restoreEmployee,
+          delete:deleteEmployee,
+          label:"employee"
+        },
+        ingredient:{
+          fetchDeleted:fetchDeletedIngredients,
+          restore:restoreIngredient,
+          delete:deleteIngredient,
+          label:"ingredient"
+        }
     };
     const currentActions = actions[recycleType]
 

@@ -55,7 +55,6 @@ export const fetchMenus = createAsyncThunk<Menu[], void, { rejectValue: string }
       const q = query(
         collection(db, "menuType"),
         where("isDeleted", "==", false),
-        where("menu_type", "==", "Food")
       );
       const querySnapshot = await getDocs(q);
       const menus = querySnapshot.docs.map((docSnap) => ({
@@ -262,6 +261,33 @@ export const fetchDeletedMenus = createAsyncThunk<Menu[], void, { rejectValue: s
   }
 );
 
+export const fetchMenusByType = createAsyncThunk<Menu[], string, { rejectValue: string }>(
+  "menu/fetchMenusByType",
+  async (menuType, { rejectWithValue }) => {
+    try {
+      const q = query(
+        collection(db, "menuType"),
+        where("isDeleted", "==", false),
+        where("menu_type", "==", menuType)
+      );
+      const querySnapshot = await getDocs(q);
+      const menus = querySnapshot.docs.map((docSnap) => ({
+        id: docSnap.id,
+        name: docSnap.data().name,
+        isDeleted: docSnap.data().isDeleted ?? false,
+        created_at:
+          docSnap.data().created_at?.toDate().toISOString() ||
+          new Date().toISOString(),
+        imageUrl: docSnap.data().imageUrl || "",
+        menu_type: docSnap.data().menu_type,
+      }));
+      return menus;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 const menuSlice = createSlice({
   name: "menu",
   initialState,
@@ -290,6 +316,19 @@ const menuSlice = createSlice({
         state.fetched = true;
       })
       .addCase(fetchMenus.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload ?? "An error occurred";
+      })
+      .addCase(fetchMenusByType.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchMenusByType.fulfilled, (state, action: PayloadAction<Menu[]>) => {
+        state.loading = false;
+        state.menus = action.payload;
+        state.fetched = true;
+      })
+      .addCase(fetchMenusByType.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload ?? "An error occurred";
       })

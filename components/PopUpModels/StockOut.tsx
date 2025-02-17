@@ -1,18 +1,36 @@
 "use client"
 import React,{useState} from 'react'
 import { FiX } from 'react-icons/fi';
+import { useDispatch } from 'react-redux';
+import { stockOut } from '@/redux/features/ingredientsSlice';
+import { AppDispatch } from '@/redux/store';
 
 interface StockInProps {
     isOpen: boolean;
     onClose: () => void;
+    ingredientId:string;
     ingredientName: string;
     category: string;
   }
 
-const StockOut = ({isOpen, onClose, ingredientName, category}:StockInProps) => {
+const StockOut = ({isOpen, onClose, ingredientId, ingredientName, category}:StockInProps) => {
     const [quantity, setQuantity] = useState("");
     const [reason, setReason] = useState("");
     const [dateOut, setDateOut] = useState("");
+    const dispatch = useDispatch<AppDispatch>()
+
+    const handleSubmit = (e:React.FormEvent) =>{
+        e.preventDefault();
+
+        // Dispatch the stockOut thunk with the required data
+        dispatch(stockOut({ id: ingredientId, quantity, reason, dateOut }));
+    
+        // Optionally clear form fields
+        setQuantity("");
+        setReason("");
+        setDateOut("");
+        onClose();
+    }
 
     if(!isOpen) return null;
   return (
@@ -25,7 +43,7 @@ const StockOut = ({isOpen, onClose, ingredientName, category}:StockInProps) => {
                 <FiX />
             </button>
             <h2 className="text-2xl font-bold mb-4 text-customblue">Stock Out</h2>
-            <form action="#">
+            <form onSubmit={handleSubmit}>
                 <div className="grid grid-cols-2 gap-4 mb-4 text-customblue">
                     <div className="col-span-2">
                         <label htmlFor="#" className="block font-semibold mb-1">
@@ -77,7 +95,7 @@ const StockOut = ({isOpen, onClose, ingredientName, category}:StockInProps) => {
                     <textarea
                         value={reason}
                         onChange={(e) => setReason(e.target.value)}
-                        className="w-full border border-gray-300 rounded-md px-3 py-2"
+                        className="w-full border border-gray-300 rounded-md px-3 py-2 text-black"
                         rows={4}
                     />
                 </div>

@@ -40,19 +40,36 @@ const EmployeeEdit = ({isOpen, onClose, employee}:EmployeeEditProps) => {
         }
     },[employee]);
 
-    const handleSubmit = async () =>{
-        if(name === employee.name && username === employee.username && empId === employee.empId && role === employee.role && password === employee.password && contact === employee.contact) return;
-
-        try {
-            await dispatch(
-                updateEmployee({id:employee.id, updatedName:employee.name, updatedUsername:employee.username, updatedPassword:employee.password, updatedContact:employee.contact, updatedEmpId:employee.empId, updatedRole:employee.role})
-            ).unwrap();
-            dispatch(fetchEmployees());
-            onClose();
-        } catch (error) {
-            console.error("Error updating portion:", error);
-        }
-    }
+    const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault(); 
+      if (
+        name === employee.name &&
+        username === employee.username &&
+        empId === employee.empId &&
+        role === employee.role &&
+        password === employee.password &&
+        contact === employee.contact
+      ) return;
+    
+      try {
+        await dispatch(
+          updateEmployee({
+            id: employee.id,
+            updatedName: name,
+            updatedUsername: username,
+            updatedPassword: password,
+            updatedContact: contact,
+            updatedEmpId: empId,
+            updatedRole: role,
+          })
+        ).unwrap();
+        dispatch(fetchEmployees());
+        onClose();
+      } catch (error) {
+        console.error("Error updating employee:", error);
+      }
+    };
+    
 
 
   return (
@@ -60,7 +77,7 @@ const EmployeeEdit = ({isOpen, onClose, employee}:EmployeeEditProps) => {
          <div className="bg-white p-6 rounded-lg shadow-lg w-[450px] relative">
            {/* Header */}
            <div className="flex items-center justify-between mb-4">
-             <h2 className="text-xl font-semibold text-gray-900">Create Employee</h2>
+             <h2 className="text-xl font-semibold text-gray-900">Update Employee</h2>
              <button onClick={onClose} className="text-gray-500 text-2xl hover:text-gray-700">
                <FiX />
              </button>
@@ -89,7 +106,7 @@ const EmployeeEdit = ({isOpen, onClose, employee}:EmployeeEditProps) => {
                    type="text"
                    name="empId"
                    value={empId}
-                   onChange={(e) => setName(e.target.value)}
+                   onChange={(e) => setEmpID(e.target.value)}
                    className="w-full p-2 border border-gray-300 rounded mt-1"
                    required
                  />
@@ -102,7 +119,7 @@ const EmployeeEdit = ({isOpen, onClose, employee}:EmployeeEditProps) => {
                    type="text"
                    name="username"
                    value={username}
-                   onChange={(e) => setName(e.target.value)}
+                   onChange={(e) => setUsername(e.target.value)}
                    className="w-full p-2 border border-gray-300 rounded mt-1"
                    required
                  />
@@ -115,7 +132,7 @@ const EmployeeEdit = ({isOpen, onClose, employee}:EmployeeEditProps) => {
                    type="password"
                    name="password"
                    value={password}
-                   onChange={(e) => setName(e.target.value)}
+                   onChange={(e) => setPassword(e.target.value)}
                    className="w-full p-2 border border-gray-300 rounded mt-1"
                    required
                  />
@@ -127,7 +144,7 @@ const EmployeeEdit = ({isOpen, onClose, employee}:EmployeeEditProps) => {
                  <select
                    name="role"
                    value={role}
-                   onChange={(e) => setName(e.target.value)}
+                   onChange={(e) => setRole(e.target.value)}
                    className="w-full p-2 border border-gray-300 rounded mt-1"
                    required
                  >
@@ -145,7 +162,7 @@ const EmployeeEdit = ({isOpen, onClose, employee}:EmployeeEditProps) => {
                    type="text"
                    name="contact"
                    value={contact}
-                   onChange={(e) => setName(e.target.value)}
+                   onChange={(e) => setContact(e.target.value)}
                    className="w-full p-2 border border-gray-300 rounded mt-1"
                    required
                  />
@@ -156,7 +173,7 @@ const EmployeeEdit = ({isOpen, onClose, employee}:EmployeeEditProps) => {
                  type="submit"
                  className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
                >
-                 Create
+                 Update
                </button>
              </div>
            </form>

@@ -16,7 +16,6 @@ import RecycleBinButton from "@/components/RecycleBin";
 import RecycleModal from "@/components/RecycleModal";
 
 const Page = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -24,7 +23,9 @@ const Page = () => {
   const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [isRecycleBinOpen, setIsRecycleBinOpen] = useState(false);
+  const [filterType, setFilterType] = useState("All");
 
+  const {menus:allmenus} = useSelector((state:RootState) => state.menuType);
   const dispatch = useDispatch<AppDispatch>();
   const { internalFoods, loading, error, fetched } = useSelector(
     (state: RootState) => state.products
@@ -58,6 +59,18 @@ const Page = () => {
     }
   };
 
+  const filteredProducts = internalFoods.filter((product) =>{
+    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
+    let matchesFilter = true;
+    if(filterType !== "All"){
+      const menu = allmenus.find(
+        (m) => m.name.toLocaleLowerCase() === product.category.toLocaleLowerCase()
+      );
+      matchesFilter = menu? menu.menu_type === filterType : false;
+    }
+    return matchesSearch && matchesFilter;
+  })
+
   return (
     <div className="flex">
       <Sidebar/>
@@ -69,27 +82,53 @@ const Page = () => {
       <div className="flex space-x-4 mt-4 items-start justify-start w-full mb-3">
         <Button onClick={() => setIsPopupOpen(true)} label="Create Item" variant="primary" />
       </div>
+      <div className="flex space-x-4 mb-3 items-end justify-end">
+      <button
+          className={`px-4 py-2 rounded ${
+            filterType === "All" ? "bg-blue-500 text-white" : "bg-gray-200 text-black"
+          }`}
+          onClick={() => setFilterType("All")}
+        >
+          All
+        </button>
+        <button
+          className={`px-4 py-2 rounded ${
+            filterType === "Bar" ? "bg-blue-500 text-white" : "bg-gray-200 text-black"
+          }`}
+          onClick={() => setFilterType("Bar")}
+        >
+          Bar
+        </button>
+        <button
+          className={`px-4 py-2 rounded ${
+            filterType === "Food" ? "bg-blue-500 text-white" : "bg-gray-200 text-black"
+          }`}
+          onClick={() => setFilterType("Food")}
+        >
+          Food
+        </button>
+      </div>
       <TableHeading headings={["Name", "Portion & Price", "Description", "Actions"]} />
       <div className="mt-4">
-        {loading ? (
+        {loading ?(
           <p>Loading...</p>
-        ) : error ? (
-          <p>Error: {error}</p>
-        ) : (
-          internalFoods
-            .filter((product) =>
-              product.name.toLowerCase().includes(searchQuery.toLowerCase())
-            )
-            .map((product) => (
-              <InternalCard
-                key={product.id}
-                name={product.name}
-                description={product.description}
-                portions={product.sizes}
-                onEdit={() => handleEdit(product.id)}
-                onRemove={() => handleRemove(product.id)}
-              />
-            ))
+        ): error ? (
+          <p className="text-red-500">{error}</p>
+        ): filteredProducts.length > 0? (
+          filteredProducts.map((product) =>(
+            <InternalCard
+              key={product.id}
+              name={product.name}
+              description={product.description}
+              portions={product.sizes}
+              onEdit={()=> handleEdit(product.id)}
+              onRemove={() => handleRemove(product.id)}
+            />
+          ))
+        ):(
+          <p className="text-black">
+            {searchQuery ? "No Products found" : "No Products Available"}
+          </p>
         )}
       </div>
       <RecycleBinButton onClick={() => setIsRecycleBinOpen(true)} />

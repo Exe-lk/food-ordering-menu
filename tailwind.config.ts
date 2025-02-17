@@ -19,7 +19,8 @@ export default {
         customblue:"#2B4674",
         customred:"#D00000",
         customgreen:"#38B000",
-        customorange:"#F48C06"
+        customorange:"#F48C06",
+        customGold:"#C77A4B"
       },
     },
   },
