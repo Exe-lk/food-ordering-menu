@@ -1,6 +1,5 @@
 "use client"
 import React, { useEffect, useState } from "react";
-import { ingredients } from "@/data/ingredients";
 import SearchBar from "@/components/SearchBar";
 import Sidebar from "@/components/Sidebar";
 import Confirm from "@/components/PopUpModels/Confirm";

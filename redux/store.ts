@@ -11,6 +11,8 @@ import supplierSliceReducer from './features/supplierSlice'
 import externalFoodSliceReducer from './features/externalProductSlice'
 import categorySliceReducer from './features/ingredientCategorySlice'
 import ingredientSliceReducer from './features/ingredientsSlice'
+import stockInSliceReducer from './features/stockInSlice'
+import stockOutSliceReducer from './features/stockOutSlice'
 
 
 const store = configureStore({
@@ -26,7 +28,9 @@ const store = configureStore({
     supplier:supplierSliceReducer,
     externalFood:externalFoodSliceReducer,
     categories: categorySliceReducer,
-    ingredients:ingredientSliceReducer
+    ingredients:ingredientSliceReducer,
+    stockIn:stockInSliceReducer,
+    stockOut:stockOutSliceReducer,
 
   },
 });

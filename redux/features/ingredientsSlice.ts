@@ -105,9 +105,9 @@ export const stockIn = createAsyncThunk<
   Ingredient, 
   {
     id: string;
-    quantity: string;
+    quantity: string; // Quantity entered in the form (the amount to add)
     costPrice: string;
-    brand:string;
+    brand: string;
     unit: string;
     supplier: string;
     dateIn: string;
@@ -127,21 +127,30 @@ export const stockIn = createAsyncThunk<
       if (!currentIngredient) {
         return rejectWithValue("Ingredient not found in state");
       }
+      
+      // Convert the current quantity and the additional quantity to numbers and add them.
+      const currentQty = parseFloat(currentIngredient.quantity) || 0;
+      const additionalQty = parseFloat(quantity) || 0;
+      const newQuantity = (currentQty + additionalQty).toString();
+
       const ingredientRef = doc(db, "ingredients", id);
       const updated_by = localStorage.getItem("Name") || "Unknown";
+      
+      // Update the ingredient with the new (summed) quantity
       await updateDoc(ingredientRef, {
-        quantity,
+        quantity: newQuantity,
         updated_at: serverTimestamp(),
         updated_by,
       });
+      
+      // Create a stockIn record that logs the added quantity (from the form)
       const stockInCollectionRef = collection(db, "stockInRecords");
       const stockInRecord = {
         ingredientId: id,
         ingredientName: currentIngredient.name,
         category: currentIngredient.category,
         brand,
-        previousQuantity: currentIngredient.quantity,
-        newQuantity: quantity,
+        quantity, // the added quantity from the form
         costPrice,
         unit,
         supplier,
@@ -150,9 +159,10 @@ export const stockIn = createAsyncThunk<
         created_by: updated_by,
       };
       await addDoc(stockInCollectionRef, stockInRecord);
+      
       return {
         ...currentIngredient,
-        quantity,
+        quantity: newQuantity,
         updated_at: new Date().toISOString(),
         updated_by,
       } as Ingredient;
@@ -161,6 +171,7 @@ export const stockIn = createAsyncThunk<
     }
   }
 );
+
 
 export const addIngredients = createAsyncThunk<
 Ingredient,
@@ -302,9 +313,7 @@ export const stockOut = createAsyncThunk<
         ingredientId: id,
         ingredientName: currentIngredient.name,
         category: currentIngredient.category,
-        previousQuantity: currentIngredient.quantity,
         stockOutQuantity: quantity,
-        newQuantity: newQuantity,
         reason,
         dateOut,
         created_at: serverTimestamp(),

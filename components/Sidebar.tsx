@@ -216,6 +216,31 @@ const Sidebar = () => {
                         Ingredients
                       </a>
                     </li>
+                    {/* New Options */}
+                    <li>
+                      <a
+                        href="/inventory/ingredients/stockIn"
+                        className={`block p-1 rounded text-base transition-colors duration-200 ${
+                          isActiveLink("/inventory/ingredients/stockin")
+                            ? "bg-gray-100 text-black"
+                            : "text-gray-700 hover:bg-gray-100"
+                        }`}
+                      >
+                        Stock In Records
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="/inventory/ingredients/stockOut"
+                        className={`block p-1 rounded text-base transition-colors duration-200 ${
+                          isActiveLink("/inventory/ingredients/stockout")
+                            ? "bg-gray-100 text-black"
+                            : "text-gray-700 hover:bg-gray-100"
+                        }`}
+                      >
+                        Stock Out Records
+                      </a>
+                    </li>
                   </ul>
                 )}
               </li>
