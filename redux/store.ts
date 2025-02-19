@@ -13,6 +13,7 @@ import categorySliceReducer from './features/ingredientCategorySlice'
 import ingredientSliceReducer from './features/ingredientsSlice'
 import stockInSliceReducer from './features/stockInSlice'
 import stockOutSliceReducer from './features/stockOutSlice'
+import transactionSliceReducer from './features/transactionSlice'
 
 
 const store = configureStore({
@@ -31,6 +32,7 @@ const store = configureStore({
     ingredients:ingredientSliceReducer,
     stockIn:stockInSliceReducer,
     stockOut:stockOutSliceReducer,
+    transactions:transactionSliceReducer,
 
   },
 });

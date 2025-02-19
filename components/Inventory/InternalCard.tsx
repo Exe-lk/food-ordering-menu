@@ -1,5 +1,6 @@
 "use client"
 import React from 'react';
+import ActionButton from '../ActionButton';
 
 interface Portion {
   size: string;
@@ -33,20 +34,7 @@ const InternalCard = ({ name, description, portions, onEdit, onRemove }: CardPro
       <div className="text-gray-700 text-sm px-2 border-r border-gray-600">{description}</div>
 
       {/* Actions Column */}
-      <div className="flex space-x-2 justify-center px-2">
-        <button
-          onClick={onEdit}
-          className="px-4 py-2 w-24 text-white bg-customblue hover:bg-blue-900 rounded-md cursor-pointer"
-        >
-          Edit
-        </button>
-        <button
-          onClick={onRemove}
-          className="px-4 py-2 w-24 text-white bg-red-800 rounded-md"
-        >
-          Remove
-        </button>
-      </div>
+      <ActionButton onEdit={onEdit} onRemove={onRemove} />
     </div>
   );
 };
