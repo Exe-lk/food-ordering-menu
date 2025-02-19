@@ -1,4 +1,5 @@
 import React from 'react'
+import ActionButton from '../ActionButton';
 
 interface supplier{
   name:string;
@@ -47,20 +48,7 @@ const ExternalCard = ({category, brand, name, quantity, dateIn, costPrice, suppl
               </div>
             ))}
         </div>
-        <div className="flex space-x-2 justify-center px-2">
-        <button
-          onClick={onEdit}
-          className="px-4 py-2 w-24 text-white bg-customblue hover:bg-blue-900 rounded-md cursor-pointer"
-        >
-          Edit
-        </button>
-        <button
-          onClick={onRemove}
-          className="px-4 py-2 w-24 text-white bg-red-800 rounded-md"
-        >
-          Remove
-        </button>
-      </div>
+        <ActionButton onEdit={onEdit} onRemove={onRemove} />
     </div>
   )
 }

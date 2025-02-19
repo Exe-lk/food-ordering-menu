@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { MdDeleteOutline, MdOutlineModeEdit } from "react-icons/md";
 
 interface Portion {
   name: string;
@@ -23,18 +24,19 @@ const PortionCard = ({ portions, onEdit, onRemove }: PortionCardProps) => {
           <div className="text-black font-semibold w-40 text-center">{portion.name}</div>
           <div className="text-gray-700 w-40 text-center">{portion.serves}</div> 
           <div className="flex space-x-2 justify-center w-96"> 
-            <button
-              onClick={() => onEdit(index)}
-              className="px-4 py-2 w-24 text-white bg-customblue hover:bg-blue-900 rounded-md shadow-lg cursor-pointer"
-            >
-              Edit
-            </button>
-            <button
-              onClick={() => onRemove(index)}
-              className="px-4 py-2 w-24 text-white bg-red-800 rounded-md cursor-pointer shadow-lg"
-            >
-              Remove
-            </button>
+          <button
+            onClick={() => onEdit(index)}
+            className="flex items-center justify-center text-white w-16 bg-customGold hover:bg-orange-900 rounded-md shadow-lg text-center text-xl"
+          >
+            <MdOutlineModeEdit />
+          </button>
+          <button
+            onClick={() => onRemove(index)}
+            className="flex items-center justify-center px-4 py-2 w-16 text-white bg-red-800 rounded-md cursor-pointer shadow-lg text-center text-xl"
+          >
+            <MdDeleteOutline />
+          </button>
+
           </div>
         </div>
       ))}

@@ -105,9 +105,9 @@ export const stockIn = createAsyncThunk<
   Ingredient, 
   {
     id: string;
-    quantity: string;
+    quantity: string; 
     costPrice: string;
-    brand:string;
+    brand: string;
     unit: string;
     supplier: string;
     dateIn: string;
@@ -127,32 +127,45 @@ export const stockIn = createAsyncThunk<
       if (!currentIngredient) {
         return rejectWithValue("Ingredient not found in state");
       }
+      
+     
+      const currentQty = parseFloat(currentIngredient.quantity) || 0;
+      const additionalQty = parseFloat(quantity) || 0;
+      const newQuantity = (currentQty + additionalQty).toString();
+
       const ingredientRef = doc(db, "ingredients", id);
       const updated_by = localStorage.getItem("Name") || "Unknown";
+      
+      
       await updateDoc(ingredientRef, {
-        quantity,
+        quantity: newQuantity,
         updated_at: serverTimestamp(),
         updated_by,
       });
-      const stockInCollectionRef = collection(db, "stockInRecords");
-      const stockInRecord = {
+      
+      
+      const transactionCollectionRef = collection(db, "transactions");
+      const transactionRecord = {
         ingredientId: id,
         ingredientName: currentIngredient.name,
         category: currentIngredient.category,
         brand,
+        transactionType: "StockIn",
         previousQuantity: currentIngredient.quantity,
-        newQuantity: quantity,
+        addedQuantity: quantity,
+        newQuantity: newQuantity,
         costPrice,
         unit,
         supplier,
-        dateIn,
+        date: dateIn,
         created_at: serverTimestamp(),
         created_by: updated_by,
       };
-      await addDoc(stockInCollectionRef, stockInRecord);
+      await addDoc(transactionCollectionRef, transactionRecord);
+      
       return {
         ...currentIngredient,
-        quantity,
+        quantity: newQuantity,
         updated_at: new Date().toISOString(),
         updated_by,
       } as Ingredient;
@@ -161,6 +174,8 @@ export const stockIn = createAsyncThunk<
     }
   }
 );
+
+
 
 export const addIngredients = createAsyncThunk<
 Ingredient,
@@ -265,11 +280,15 @@ export const stockOut = createAsyncThunk<
     quantity: string;
     reason: string;
     dateOut: string;
+    unit: string;
   },
   { rejectValue: string; state: RootState }
 >(
   "ingredients/stockOut",
-  async ({ id, quantity, reason, dateOut }, { getState, rejectWithValue }) => {
+  async (
+    { id, quantity, reason, dateOut, unit },
+    { getState, rejectWithValue }
+  ) => {
     try {
       // Find the ingredient in state
       const state = getState();
@@ -280,16 +299,20 @@ export const stockOut = createAsyncThunk<
         return rejectWithValue("Ingredient not found in state");
       }
 
-      // Convert quantities to numbers and check for valid input
+      // Validate and compute new quantity
       const currentQty = parseFloat(currentIngredient.quantity) || 0;
       const stockOutQty = parseFloat(quantity);
       if (isNaN(stockOutQty) || stockOutQty <= 0) {
         return rejectWithValue("Invalid stock out quantity");
       }
       if (stockOutQty > currentQty) {
-        return rejectWithValue("Stock out quantity cannot exceed available quantity");
+        return rejectWithValue(
+          "Stock out quantity cannot exceed available quantity"
+        );
       }
       const newQuantity = (currentQty - stockOutQty).toString();
+
+      // Update the ingredient's quantity in Firestore
       const ingredientRef = doc(db, "ingredients", id);
       const updated_by = localStorage.getItem("Name") || "Unknown";
       await updateDoc(ingredientRef, {
@@ -297,20 +320,30 @@ export const stockOut = createAsyncThunk<
         updated_at: serverTimestamp(),
         updated_by,
       });
-      const stockOutCollectionRef = collection(db, "stockOutRecords");
-      const stockOutRecord = {
+
+      // Automatically calculate the total cost price based on the ingredient's costPrice per unit
+      const costPerUnit = parseFloat(currentIngredient.costPrice) || 0;
+      const totalCostPrice = (costPerUnit * stockOutQty).toFixed(2);
+
+      // Create a transaction record in the "transactions" collection
+      const transactionCollectionRef = collection(db, "transactions");
+      const transactionRecord = {
         ingredientId: id,
         ingredientName: currentIngredient.name,
         category: currentIngredient.category,
-        previousQuantity: currentIngredient.quantity,
-        stockOutQuantity: quantity,
-        newQuantity: newQuantity,
+        transactionType: "StockOut",
+        previousQuantity: currentIngredient.quantity, // before deduction
+        quantity, // issued quantity
+        remainingQuantity: newQuantity, // after deduction
         reason,
-        dateOut,
+        date: dateOut,
+        costPrice: totalCostPrice, // calculated total cost for issued quantity
+        unit, // selected unit
         created_at: serverTimestamp(),
         created_by: updated_by,
       };
-      await addDoc(stockOutCollectionRef, stockOutRecord);
+      await addDoc(transactionCollectionRef, transactionRecord);
+
       return {
         ...currentIngredient,
         quantity: newQuantity,
@@ -322,6 +355,8 @@ export const stockOut = createAsyncThunk<
     }
   }
 );
+
+
 
 const ingredientsSlice = createSlice({
     name:"ingredients",

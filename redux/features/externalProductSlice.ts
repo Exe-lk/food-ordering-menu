@@ -22,7 +22,7 @@ export interface ExternalFood {
   manufactureDate: string;
   expiryDate: string;
   dateIn: string;
-  supplier: suppliers[]; // supplier is now an array of supplier objects
+  supplier: suppliers[]; 
   description: string;
   unit: string;
   costPrice: string;

@@ -15,6 +15,7 @@ import {
   FiLayers,
   FiUsers,
 } from "react-icons/fi";
+import { MdQrCode2 } from "react-icons/md";
 import { usePathname, useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 
@@ -61,15 +62,20 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`h-full bg-white shadow-lg transition-[width] duration-300 ${
+      className={`h-full bg-black shadow-lg transition-[width] duration-300 ${
         isExpanded ? "w-[18rem]" : "w-14"
       } fixed top-0 left-0 flex flex-col`}
     >
       {/* Collapse/Expand Button */}
-      <div className="flex justify-end p-4">
+      <div className="flex items-center justify-between p-4">
+        {isExpanded &&(
+          <div>
+            <img src="/assets/vertical.png" alt="Logo" className="h-10 w-24" />
+          </div>
+        )}
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="text-customblue text-xl focus:outline-none"
+          className="text-customGold text-xl focus:outline-none"
           aria-label={isExpanded ? "Collapse Sidebar" : "Expand Sidebar"}
         >
           {isExpanded ? <FiChevronLeft /> : <FiChevronRight />}
@@ -83,13 +89,13 @@ const Sidebar = () => {
               href="/order"
               className={`flex items-center p-1 rounded-md text-xl transition-colors duration-200 space-x-2 ${
                 isActiveLink("/order")
-                  ? "bg-gray-300"
-                  : "text-gray-800 hover:bg-gray-100"
+                  ? "bg-gray-800"
+                  : "text-customGold hover:bg-gray-800"
               }`}
             >
-              <FiClipboard className="text-xl text-customblue" />
+              <FiClipboard className="text-xl text-customGold" />
               {isExpanded && (
-                <span className="text-lg text-gray-800">
+                <span className="text-lg text-white">
                   Order Management
                 </span>
               )}
@@ -103,14 +109,14 @@ const Sidebar = () => {
                   onClick={() => setIsFoodMenuOpen(!isFoodMenuOpen)}
                   className={`w-full flex justify-between items-center p-1 rounded-md text-xl transition-colors duration-200 space-x-2 ${
                     isFoodActive
-                      ? "bg-gray-300"
-                      : "text-gray-800 hover:bg-gray-100"
+                      ? "bg-gray-800"
+                      : "text-customGold hover:bg-gray-800"
                   }`}
                 >
                   <div className="flex items-center space-x-2">
-                    <FiBox className="text-xl text-customblue" />
+                    <FiBox className="text-xl text-customGold" />
                     {isExpanded && (
-                      <span className="text-lg text-gray-700">
+                      <span className="text-lg text-white">
                         Food Inventory
                       </span>
                     )}
@@ -125,8 +131,8 @@ const Sidebar = () => {
                         href="/inventory/food/internal"
                         className={`block p-1 rounded text-base transition-colors duration-200 ${
                           isActiveLink("/inventory/food/internal")
-                            ? "bg-gray-300"
-                            : "text-gray-700 hover:bg-gray-100"
+                            ? "bg-gray-800"
+                            : "text-customGold hover:bg-gray-800"
                         }`}
                       >
                         Internal
@@ -137,8 +143,8 @@ const Sidebar = () => {
                         href="/inventory/food/external"
                         className={`block p-1 rounded text-base transition-colors duration-200 ${
                           isActiveLink("/inventory/food/external")
-                            ? "bg-gray-300"
-                            : "text-gray-700 hover:bg-gray-100"
+                            ? "bg-gray-800"
+                            : "text-customGold hover:bg-gray-800"
                         }`}
                       >
                         External
@@ -153,13 +159,13 @@ const Sidebar = () => {
                   href="/portion"
                   className={`flex items-center p-1 rounded-md text-xl transition-colors duration-200 space-x-2 ${
                     isActiveLink("/portion")
-                      ? "bg-gray-300"
-                      : "text-gray-800 hover:bg-gray-100"
+                        ? "bg-gray-800"
+                        : "text-customGold hover:bg-gray-800"
                   }`}
                 >
-                  <FiLayers className="text-customblue text-xl" />
+                  <FiLayers className="text-customGold text-xl" />
                   {isExpanded && (
-                    <span className="text-lg text-gray-700">
+                    <span className="text-lg text-white">
                       Portion Management
                     </span>
                   )}
@@ -175,14 +181,14 @@ const Sidebar = () => {
                   className={`w-full flex justify-between items-center p-1 rounded-md text-xl transition-colors duration-200 space-x-2 ${
                     isActiveLink("/inventory/ingredients") ||
                     isActiveLink("/inventory/ingredients/categories")
-                      ? "bg-gray-300"
-                      : "text-gray-800 hover:bg-gray-100"
+                      ? "bg-gray-800"
+                      : "text-customGold hover:bg-gray-800"
                   }`}
                 >
                   <div className="flex items-center space-x-2">
-                    <FiBookOpen className="text-xl text-customblue" />
+                    <FiBookOpen className="text-xl text-customGold" />
                     {isExpanded && (
-                      <span className="text-lg text-gray-700">
+                      <span className="text-lg text-white">
                         Ingredients Inventory
                       </span>
                     )}
@@ -197,8 +203,8 @@ const Sidebar = () => {
                         href="/inventory/ingredients/categories"
                         className={`block p-1 rounded text-base transition-colors duration-200 ${
                           isActiveLink("/inventory/ingredients/categories")
-                            ? "bg-gray-100 text-black"
-                            : "text-gray-700 hover:bg-gray-100"
+                            ? "bg-gray-800"
+                            : "text-customGold hover:bg-gray-800"
                         }`}
                       >
                         Categories
@@ -209,11 +215,24 @@ const Sidebar = () => {
                         href="/inventory/ingredients"
                         className={`block p-1 rounded text-base transition-colors duration-200 ${
                           isActiveLink("/inventory/ingredients")
-                            ? "bg-gray-100 text-black"
-                            : "text-gray-700 hover:bg-gray-100"
+                            ? "bg-gray-800"
+                            : "text-customGold hover:bg-gray-800"
                         }`}
                       >
                         Ingredients
+                      </a>
+                    </li>
+                    {/* New Options */}
+                    <li>
+                      <a
+                        href="/inventory/ingredients/stockIn"
+                        className={`block p-1 rounded text-base transition-colors duration-200 ${
+                          isActiveLink("/inventory/ingredients/stockin")
+                            ? "bg-gray-800"
+                            : "text-customGold hover:bg-gray-800"
+                        }`}
+                      >
+                        Transaction Records
                       </a>
                     </li>
                   </ul>
@@ -225,13 +244,13 @@ const Sidebar = () => {
                   href="/menutype"
                   className={`flex items-center p-1 rounded-md text-xl transition-colors duration-200 space-x-2 ${
                     isActiveLink("/menuType")
-                      ? "bg-gray-300"
-                      : "text-gray-800 hover:bg-gray-100"
+                      ? "bg-gray-800"
+                      : "text-customGold hover:bg-gray-800"
                   }`}
                 >
-                  <FiGrid className="text-customblue text-xl" />
+                  <FiGrid className="text-customGold text-xl" />
                   {isExpanded && (
-                    <span className="text-lg text-gray-700">
+                    <span className="text-lg text-white">
                       Menu Management
                     </span>
                   )}
@@ -243,13 +262,13 @@ const Sidebar = () => {
                   href="/employee"
                   className={`flex items-center p-1 rounded-md text-xl transition-colors duration-200 space-x-2 ${
                     isActiveLink("/employee")
-                      ? "bg-gray-300"
-                      : "text-gray-800 hover:bg-gray-100"
+                    ? "bg-gray-800"
+                    : "text-customGold hover:bg-gray-800"
                   }`}
                 >
-                  <FiUser className="text-customblue text-xl" />
+                  <FiUser className="text-customGold text-xl" />
                   {isExpanded && (
-                    <span className="text-lg text-gray-700">
+                    <span className="text-lg text-white">
                       Employee Management
                     </span>
                   )}
@@ -261,18 +280,36 @@ const Sidebar = () => {
                   href="/supplier"
                   className={`flex items-center p-1 rounded-md text-xl transition-colors duration-200 space-x-2 ${
                     isActiveLink("/supplier")
-                      ? "bg-gray-300"
-                      : "text-gray-800 hover:bg-gray-100"
+                      ? "bg-gray-800"
+                      : "text-customGold hover:bg-gray-800"
                   }`}
                 >
-                  <FiUsers className="text-customblue text-xl" />
+                  <FiUsers className="text-customGold text-xl" />
                   {isExpanded && (
-                    <span className="text-lg text-gray-700">
+                    <span className="text-lg text-white">
                       Supplier Management
                     </span>
                   )}
                 </a>
               </li>
+              <li>
+                <a
+                  href="/qrgenerate"
+                  className={`flex items-center p-1 rounded-md text-xl transition-colors duration-200 space-x-2 ${
+                    isActiveLink("/qrgenerate")
+                      ? "bg-gray-800"
+                      : "text-customGold hover:bg-gray-800"
+                  }`}
+                >
+                  <MdQrCode2 className="text-customGold text-xl" />
+                  {isExpanded && (
+                    <span className="text-lg text-white">
+                      Generate QR 
+                    </span>
+                  )}
+                </a>
+              </li>
+              
             </>
           )}
         </ul>

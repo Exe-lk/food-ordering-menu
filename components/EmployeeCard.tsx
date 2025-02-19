@@ -1,5 +1,6 @@
 "use client"
 import React from 'react'
+import ActionButton from './ActionButton';
 
 interface Employee {
   name: string;
@@ -31,21 +32,7 @@ const EmployeeCard = ({ employees, onEdit, onRemove }: EmployeeCardProps) => {
           </div>
           <div className="text-black font-semibold text-center">{emp.contact}</div>
           <div className="text-black font-semibold text-center">{emp.role}</div>
-          <div className="flex space-x-2 justify-center">
-            <button
-              onClick={() => onEdit(index)}
-              className="px-4 py-2 text-white bg-customblue hover:bg-blue-900 rounded-md shadow-lg"
-            >
-              Edit
-            </button>
-            <button
-
-              onClick={(e) => onRemove(index)}
-              className="px-4 py-2 text-white bg-red-800 rounded-md shadow-lg"
-            >
-              Remove
-            </button>
-          </div>
+          <ActionButton onEdit={() => onEdit(index)} onRemove={() => onRemove(index)}/>
         </div>
       ))}
     </div>

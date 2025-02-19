@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { FiMenu } from "react-icons/fi";
 import SearchBar from "@/components/SearchBar";
 import Button from "@/components/Button";
 import Sidebar from "@/components/Sidebar";
@@ -13,11 +12,10 @@ import { RootState } from "@/redux/store";
 import { fetchMenus, removeMenu } from "@/redux/features/menuSlice";
 import MenuEdit from "@/components/PopUpModels/EditPopUps/MenuEdit";
 import RecycleBinButton from "@/components/RecycleBin";
-import MenuRecycle from "@/components/RecycleBins/MenuRecycle";
 import RecycleModal from "@/components/RecycleModal";
+import Swal from "sweetalert2";
 
 const Page = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const dispatch = useDispatch<any>();
   const { menus, loading, fetched } = useSelector((state: RootState) => state.menuType);
   const [localMenus, setLocalMenus] = useState(menus);
@@ -62,8 +60,14 @@ const Page = () => {
         dispatch(fetchMenus());
         setIsConfirmOpen(false);
         setSelectedMenuIndex(null);
-      } catch (error) {
+      } catch (error:any) {
         console.error("Error Removing Menu:", error);
+        Swal.fire({
+          title:"Error",
+          text:error,
+          icon:"error",
+          confirmButtonText: "Try Again"
+        })
       }
     }
   };

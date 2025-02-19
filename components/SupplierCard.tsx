@@ -1,5 +1,6 @@
 "use client"
 import React from 'react'
+import { MdDeleteOutline, MdOutlineModeEdit } from 'react-icons/md';
 
 interface Supplier{
     name:string;
@@ -26,15 +27,15 @@ const SupplierCard = ({suppliers, onEdit,onRemove}:SupplierCardProps) => {
                 <div className="flex space-x-2 justify-center">
                 <button
                 onClick={() => onEdit(index)}
-                 className="px-4 py-2 text-white bg-customblue hover:bg-blue-900 rounded-md shadow-lg"
+                    className="flex items-center justify-center text-white w-16 bg-customGold hover:bg-orange-900 rounded-md shadow-lg text-center text-xl"
                 >
-                    Edit
+                <MdOutlineModeEdit />
                 </button>
                 <button
-                onClick={() => onRemove(index)}
-                className="px-4 py-2 text-white bg-red-800 rounded-md shadow-lg"
+                 onClick={() => onRemove(index)}
+                className="flex items-center justify-center px-4 py-2 w-16 text-white bg-red-800 rounded-md cursor-pointer shadow-lg text-center text-xl"
                 >
-                    Remove
+                <MdDeleteOutline />
                 </button>
             </div>
 

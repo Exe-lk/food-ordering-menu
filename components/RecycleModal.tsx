@@ -1,5 +1,6 @@
 "use client"
 import React,{useEffect, useState} from 'react'
+import { MdOutlineRestore, MdDeleteOutline } from "react-icons/md";
 import { useDispatch } from 'react-redux'
 import Swal from 'sweetalert2'
 import { fetchDeletedMenus, deleteMenu, removeMenu, Menu, restoreMenu } from '@/redux/features/menuSlice'
@@ -10,6 +11,7 @@ import { fetchDeletedExternalProducts, deleteExternalProduct, restoreExternalPro
 import { fetchDeletedCategory, deleteCategory, restoreCategory } from '@/redux/features/ingredientCategorySlice'
 import { fetchDeletedEmployees, deleteEmployee, restoreEmployee } from '@/redux/features/employeeSlice'
 import { fetchDeletedIngredients, deleteIngredient, restoreIngredient } from '@/redux/features/ingredientsSlice'
+import { MdClose } from 'react-icons/md'
 
 interface RecycleProps{
     isOpen:boolean;
@@ -121,38 +123,36 @@ const RecycleModal = ({isOpen, onClose, recycleType}:RecycleProps) => {
     
       if (!isOpen) return null;
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50 text-black">
-      <div className="bg-white rounded-lg shadow-lg p-6 w-[500px] max-h-[80vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+      <div className="bg-white rounded-xl shadow-lg p-6 w-[500px] h-[600px] max-h-[650px] overflow-y-auto">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-semibold">Recycle Bin</h2>
-          <button onClick={onClose} className="text-xl">
-            &times;
-          </button>
+          <h2 className="text-xl font-bold text-center w-full text-black">Recycle Bin</h2>
+          <button onClick={onClose} className="text-lg font-bold text-black"><MdClose/></button>
         </div>
         {deletedItems.length === 0 ? (
-          <p>No deleted {currentActions.label}s.</p>
+          <p className="text-center">No deleted {currentActions.label}s.</p>
         ) : (
-          deletedItems.map((item) => (
-            <div key={item.id} className="flex items-center justify-between border-b py-2">
-              <div>
-                <p className="font-bold">{item.name}</p>
+          <div className="space-y-2">
+            {deletedItems.map((item) => (
+              <div key={item.id} className="flex items-center justify-between bg-gray-100 p-2 rounded-lg border border-customorange">
+                <span className="text-sm font-medium text-black">{item.name}</span>
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() => handleRestore(item.id)}
+                    className="bg-black text-white p-2 rounded-md w-10"
+                  >
+                    <MdOutlineRestore/>
+                  </button>
+                  <button
+                    onClick={() => handleDelete(item.id)}
+                    className="bg-red-600 text-white p-2 rounded-md w-10"
+                  >
+                    <MdDeleteOutline/>
+                  </button>
+                </div>
               </div>
-              <div className="flex space-x-2">
-                <button
-                  onClick={() => handleRestore(item.id)}
-                  className="bg-green-500 text-white px-3 py-1 rounded"
-                >
-                  Restore
-                </button>
-                <button
-                  onClick={() => handleDelete(item.id)}
-                  className="bg-red-500 text-white px-3 py-1 rounded"
-                >
-                  Remove
-                </button>
-              </div>
-            </div>
-          ))
+            ))}
+          </div>
         )}
       </div>
     </div>
