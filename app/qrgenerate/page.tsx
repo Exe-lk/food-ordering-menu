@@ -44,8 +44,9 @@ const page = () => {
             {/* BACKGROUND IMAGE SECTION */}
             <div
               className="absolute top-0 left-0 w-full h-[300px] bg-cover bg-center"
-              style={{ backgroundImage: "url('/assets/back.png')" }}
+              style={{ backgroundImage: "url('/assets/background.jpg')" }}
             >
+                 <div className="absolute inset-0 bg-black opacity-60"></div>
               {/* Push text block higher with `justify-start` and `pt-8` */}
               <div className="flex flex-col items-center justify-start w-full h-full text-center text-white drop-shadow-md pt-8">
                 <p className="uppercase font-bold text-base leading-tight">

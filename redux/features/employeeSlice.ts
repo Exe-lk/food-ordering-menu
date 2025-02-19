@@ -14,6 +14,8 @@ interface Employee{
     isDeleted:boolean,
     created_at:string,
     updated_at?:string;
+    created_by?:string;
+    updated_by?:string;
 }
 
 interface EmployeeState{
@@ -108,6 +110,8 @@ export const addEmployee = createAsyncThunk<Employee, {name:string; empId:string
             if(!querySnapshot.empty){
                 return rejectWithValue("Employee Already exists")
             }
+
+            const created_by = localStorage.getItem("Name") || "Unknown";
             const employeeData = {
                 name,
                 empId,
@@ -116,6 +120,7 @@ export const addEmployee = createAsyncThunk<Employee, {name:string; empId:string
                 role,
                 contact,
                 created_at:serverTimestamp(),
+                created_by,
                 isDeleted:false,
             };
             const docRef = await addDoc(collection(db,"employee"), employeeData);
@@ -127,6 +132,7 @@ export const addEmployee = createAsyncThunk<Employee, {name:string; empId:string
                 password,
                 contact,
                 role,
+                created_by,
                 created_at:new Date().toISOString(),
                 isDeleted:false
             };
@@ -145,8 +151,10 @@ string,
     async({id}, {rejectWithValue}) =>{
         try {
             const employeeRef = doc(db,"employee",id);
+            const updated_by = localStorage.getItem("Name") || "Unknown";
             await updateDoc(employeeRef,{
                 isDeleted:true,
+                updated_by,
                 updated_at:serverTimestamp(),
             });
             return id;
@@ -163,6 +171,7 @@ string,
 >(
     "employee/updateEmployee",
     async ({id, updatedName, updatedUsername, updatedPassword, updatedContact, updatedRole, updatedEmpId,},{rejectWithValue})=>{
+        const updated_by = localStorage.getItem("Name") || "Unknown";
         try {
             const empRef = doc(db,"employee",id);
             const updateData:any = {
@@ -172,6 +181,7 @@ string,
                 password:updatedPassword,
                 username:updatedUsername,
                 empId:updatedEmpId,
+                updated_by,
                 updated_at:serverTimestamp()
             };
             await updateDoc(empRef, updateData)
@@ -205,9 +215,10 @@ string,
 >(
     "employee/resoreEmployee",
     async ({id}, {rejectWithValue}) =>{
+        const updated_by = localStorage.getItem("Name") || "Unknown";
         try {
             const employeeRef = doc(db, "employee",id);
-            await updateDoc(employeeRef,{isDeleted:false, updated_at:serverTimestamp()})
+            await updateDoc(employeeRef,{isDeleted:false, updated_at:serverTimestamp(),updated_by})
             return id;
         } catch (error:any) {
             return rejectWithValue(error.message);
