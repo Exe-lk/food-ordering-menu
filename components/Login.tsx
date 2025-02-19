@@ -11,7 +11,7 @@ const Login = () => {
   // Local state for form fields
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [loginLoading, setLoginLoading] = useState(false);
+  
 
   const dispatch = useDispatch<any>();
   const router = useRouter();
@@ -27,7 +27,6 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoginLoading(true);
     
     // Find the employee by matching username and password only
     const foundEmployee = employees.find(
@@ -49,7 +48,6 @@ const Login = () => {
     } else {
       alert("Invalid credentials. Please check your username and password.");
     }
-    setLoginLoading(false);
   };
 
   return (
@@ -97,9 +95,8 @@ const Login = () => {
             <button
               type="submit"
               className="w-full bg-blue-900 text-white font-bold py-2 rounded-md hover:bg-blue-800 transition duration-300"
-              disabled={loginLoading || loading}
             >
-              {loginLoading ? "Loading..." : "Login"}
+              Login
             </button>
             {error && <p className="text-red-500 text-center">{error}</p>}
           </form>

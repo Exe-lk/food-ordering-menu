@@ -14,6 +14,7 @@ import ingredientSliceReducer from './features/ingredientsSlice'
 import stockInSliceReducer from './features/stockInSlice'
 import stockOutSliceReducer from './features/stockOutSlice'
 import transactionSliceReducer from './features/transactionSlice'
+import qrSliceReducer from './features/qrSlice'
 
 
 const store = configureStore({
@@ -33,6 +34,8 @@ const store = configureStore({
     stockIn:stockInSliceReducer,
     stockOut:stockOutSliceReducer,
     transactions:transactionSliceReducer,
+    qr:qrSliceReducer,
+    
 
   },
 });

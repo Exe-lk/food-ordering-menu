@@ -36,11 +36,13 @@ const IngredientCard = ({
       <div className="col-span-2 flex items-center justify-center space-x-2">
         <button
           onClick={onStockIn}
+          title="Stock In"
           className="px-4 py-2 text-white bg-customgreen hover:bg-green-600 rounded-md w-16 text-xl"
         >
           <GoArrowUpRight />
         </button>
         <button
+        title="Stock Out"
           onClick={onStockOut}
           className="px-4 py-2 text-white bg-customorange hover:bg-orange-400 rounded-md w-16 text-xl"
         >
