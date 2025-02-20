@@ -25,7 +25,7 @@ const MenuPage = () => {
   const [isOverlayOpen, setOverlayOpen] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchMenusByType("Bar"));
+    dispatch(fetchMenusByType("Food"));
   }, [dispatch]);
 
   useEffect(() => {

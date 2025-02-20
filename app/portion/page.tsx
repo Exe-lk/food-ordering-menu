@@ -68,7 +68,7 @@ const Page = () => {
       <Sidebar/>
       <div className="p-4 min-h-screen bg-beige w-full ml-14">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold text-customblue">Portion Management</h1>
+        <h1 className="text-3xl font-bold text-customGold">Portion Management</h1>
         <SearchBar placeholder="Search Portions" onSearch={setSearchQuery} />
       </div>
       <div className="flex space-x-4 mt-4 items-start justify-start w-full mb-3">

@@ -65,7 +65,7 @@ const page = () => {
         <Sidebar/>
         <div className='p-4 min-h-screen bg-beige ml-14 w-full'>
             <div className='flex items-center justify-between mb-6'>
-                <h1 className='text-3xl font-bold text-customblue'>Supplier Management</h1>
+                <h1 className='text-3xl font-bold text-customGold'>Supplier Management</h1>
                 <SearchBar placeholder='Search Suppliers' onSearch={setSearchQuery} />
             </div>
             <div className="flex space-x-4 mt-4 items-start justify-start w-full mb-3">

@@ -20,7 +20,9 @@ export default {
         customred:"#D00000",
         customgreen:"#38B000",
         customorange:"#F48C06",
-        customGold:"#C77A4B"
+        customGold:"#C77A4B",
+        customBeige:"#F9D8C4",
+        overlayBack:"#252C27",
       },
     },
   },
