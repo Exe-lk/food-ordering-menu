@@ -18,15 +18,19 @@ import {
 import { MdQrCode2 } from "react-icons/md";
 import { usePathname, useRouter } from "next/navigation";
 import Swal from "sweetalert2";
+import { Tooltip } from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
 
 const Sidebar = () => {
   const router = useRouter();
   const pathname = usePathname();
+
   const [isFoodMenuOpen, setIsFoodMenuOpen] = useState(false);
   const [isIngredientsMenuOpen, setIsIngredientsMenuOpen] = useState(false);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [isExpanded, setIsExpanded] = useState(false);
 
+  // Determine if link is active
   const isActiveLink = (href: string) => {
     return pathname === href || pathname.startsWith(href);
   };
@@ -38,6 +42,7 @@ const Sidebar = () => {
     setUserRole(role);
   }, []);
 
+  // Logout handler with SweetAlert2
   const handleLogout = async () => {
     const result = await Swal.fire({
       title: "Confirm Logout",
@@ -57,6 +62,7 @@ const Sidebar = () => {
     }
   };
 
+  // Show limited menu items for these roles only
   const limitedRoles = ["Kitchen", "Waiter", "Cashier"];
   const showLimitedMenu = userRole && limitedRoles.includes(userRole);
 
@@ -66,11 +72,12 @@ const Sidebar = () => {
         isExpanded ? "w-[18rem]" : "w-14"
       } fixed top-0 left-0 flex flex-col`}
     >
-      {/* Collapse/Expand Button */}
+      {/* Collapse/Expand Button + Logo */}
       <div className="flex items-center justify-between p-4">
-        {isExpanded &&(
-          <div>
+        {isExpanded && (
+          <div className="flex flex-col">
             <img src="/assets/vertical.png" alt="Logo" className="h-10 w-24" />
+            <p className="mt-2 text-white text-lg font-semibold">{localStorage.getItem("Name")}</p>
           </div>
         )}
         <button
@@ -82,11 +89,13 @@ const Sidebar = () => {
         </button>
       </div>
 
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto hide-scrollbar">
         <ul className="p-4 space-y-4">
           <li>
             <a
               href="/order"
+              data-tooltip-id="sidebar-tooltip"
+              data-tooltip-content="Manage Orders Here"
               className={`flex items-center p-1 rounded-md text-xl transition-colors duration-200 space-x-2 ${
                 isActiveLink("/order")
                   ? "bg-gray-800"
@@ -95,18 +104,20 @@ const Sidebar = () => {
             >
               <FiClipboard className="text-xl text-customGold" />
               {isExpanded && (
-                <span className="text-lg text-white">
-                  Order Management
-                </span>
+                <span className="text-lg text-white">Order Management</span>
               )}
             </a>
           </li>
 
+          {/* If not a limited role, show additional menu items */}
           {!showLimitedMenu && (
             <>
+              {/* Food Inventory Dropdown */}
               <li>
                 <button
                   onClick={() => setIsFoodMenuOpen(!isFoodMenuOpen)}
+                  data-tooltip-id="sidebar-tooltip"
+                  data-tooltip-content="Manage External and Internal Food Items"
                   className={`w-full flex justify-between items-center p-1 rounded-md text-xl transition-colors duration-200 space-x-2 ${
                     isFoodActive
                       ? "bg-gray-800"
@@ -116,9 +127,7 @@ const Sidebar = () => {
                   <div className="flex items-center space-x-2">
                     <FiBox className="text-xl text-customGold" />
                     {isExpanded && (
-                      <span className="text-lg text-white">
-                        Food Inventory
-                      </span>
+                      <span className="text-lg text-white">Food Inventory</span>
                     )}
                   </div>
                   {isExpanded &&
@@ -129,6 +138,8 @@ const Sidebar = () => {
                     <li>
                       <a
                         href="/inventory/food/internal"
+                        data-tooltip-id="sidebar-tooltip"
+                        data-tooltip-content="Manage Internal Food Items"
                         className={`block p-1 rounded text-base transition-colors duration-200 ${
                           isActiveLink("/inventory/food/internal")
                             ? "bg-gray-800"
@@ -141,6 +152,8 @@ const Sidebar = () => {
                     <li>
                       <a
                         href="/inventory/food/external"
+                        data-tooltip-id="sidebar-tooltip"
+                        data-tooltip-content="Manage External Food Items"
                         className={`block p-1 rounded text-base transition-colors duration-200 ${
                           isActiveLink("/inventory/food/external")
                             ? "bg-gray-800"
@@ -154,13 +167,16 @@ const Sidebar = () => {
                 )}
               </li>
 
+              {/* Portion Management */}
               <li>
                 <a
                   href="/portion"
+                  data-tooltip-id="sidebar-tooltip"
+                  data-tooltip-content="Manage Portions Here"
                   className={`flex items-center p-1 rounded-md text-xl transition-colors duration-200 space-x-2 ${
                     isActiveLink("/portion")
-                        ? "bg-gray-800"
-                        : "text-customGold hover:bg-gray-800"
+                      ? "bg-gray-800"
+                      : "text-customGold hover:bg-gray-800"
                   }`}
                 >
                   <FiLayers className="text-customGold text-xl" />
@@ -172,12 +188,10 @@ const Sidebar = () => {
                 </a>
               </li>
 
-              {/* Ingredients Management Dropdown */}
+              {/* Ingredients Inventory Dropdown */}
               <li>
                 <button
-                  onClick={() =>
-                    setIsIngredientsMenuOpen(!isIngredientsMenuOpen)
-                  }
+                  onClick={() => setIsIngredientsMenuOpen(!isIngredientsMenuOpen)}
                   className={`w-full flex justify-between items-center p-1 rounded-md text-xl transition-colors duration-200 space-x-2 ${
                     isActiveLink("/inventory/ingredients") ||
                     isActiveLink("/inventory/ingredients/categories")
@@ -194,7 +208,11 @@ const Sidebar = () => {
                     )}
                   </div>
                   {isExpanded &&
-                    (isIngredientsMenuOpen ? <FiChevronUp /> : <FiChevronDown />)}
+                    (isIngredientsMenuOpen ? (
+                      <FiChevronUp />
+                    ) : (
+                      <FiChevronDown />
+                    ))}
                 </button>
                 {isExpanded && isIngredientsMenuOpen && (
                   <ul className="pl-8 mt-1 space-y-1">
@@ -222,7 +240,6 @@ const Sidebar = () => {
                         Ingredients
                       </a>
                     </li>
-                    {/* New Options */}
                     <li>
                       <a
                         href="/inventory/ingredients/stockIn"
@@ -239,6 +256,7 @@ const Sidebar = () => {
                 )}
               </li>
 
+              {/* Menu Management */}
               <li>
                 <a
                   href="/menutype"
@@ -250,20 +268,19 @@ const Sidebar = () => {
                 >
                   <FiGrid className="text-customGold text-xl" />
                   {isExpanded && (
-                    <span className="text-lg text-white">
-                      Menu Management
-                    </span>
+                    <span className="text-lg text-white">Menu Management</span>
                   )}
                 </a>
               </li>
 
+              {/* Employee Management */}
               <li>
                 <a
                   href="/employee"
                   className={`flex items-center p-1 rounded-md text-xl transition-colors duration-200 space-x-2 ${
                     isActiveLink("/employee")
-                    ? "bg-gray-800"
-                    : "text-customGold hover:bg-gray-800"
+                      ? "bg-gray-800"
+                      : "text-customGold hover:bg-gray-800"
                   }`}
                 >
                   <FiUser className="text-customGold text-xl" />
@@ -275,6 +292,7 @@ const Sidebar = () => {
                 </a>
               </li>
 
+              {/* Supplier Management */}
               <li>
                 <a
                   href="/supplier"
@@ -292,6 +310,8 @@ const Sidebar = () => {
                   )}
                 </a>
               </li>
+
+              {/* Generate QR */}
               <li>
                 <a
                   href="/qrgenerate"
@@ -303,27 +323,27 @@ const Sidebar = () => {
                 >
                   <MdQrCode2 className="text-customGold text-xl" />
                   {isExpanded && (
-                    <span className="text-lg text-white">
-                      Generate QR 
-                    </span>
+                    <span className="text-lg text-white">Generate QR</span>
                   )}
                 </a>
               </li>
-              
             </>
           )}
         </ul>
       </div>
 
+      {/* Logout Button */}
       <div className="p-4">
         <button
           onClick={handleLogout}
+          title="Click to Log out"
           className="flex items-center space-x-2 w-full bg-red-500 text-white font-bold py-2 px-2 rounded-md hover:bg-red-600"
         >
           <FiLogOut className="text-2xl" />
           {isExpanded && <span>Log Out</span>}
         </button>
       </div>
+      <Tooltip id="sidebar-tooltip" place="bottom"/>
     </div>
   );
 };
