@@ -25,6 +25,7 @@ const Page = () => {
   const [selectedMenuIndex, setSelectedMenuIndex] = useState<number | null>(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isRecycleBinOpen, setIsRecycleBinOpen] = useState(false);
+  const [selectedType, setSelectedType] = useState("All")
 
   // Fetch menus if not already fetched
   useEffect(() => {
@@ -39,9 +40,13 @@ const Page = () => {
     }
   }, [menus]);
 
-  const filteredMenus = localMenus.filter((menu) =>
-    menu.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredMenus = localMenus.filter((menu) => {
+    const matchName = menu.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchType =
+      selectedType === "All" ||
+      (menu.menu_type && menu.menu_type.toLowerCase() === selectedType.toLowerCase());
+    return matchName && matchType;
+  });
 
   const handleEdit = (index: number) => {
     setSelectedMenuIndex(index);
@@ -80,11 +85,39 @@ const Page = () => {
         <h1 className="text-3xl font-bold text-customGold">Menu Management</h1>
         <SearchBar placeholder="Search Menu" onSearch={setSearchQuery} />
       </div>
-      <div className="flex space-x-4 mt-4 items-start justify-start w-full mb-3">
-        <Button label="Create Menu" variant="primary" onClick={() => setIsPopupOpen(true)} />
-      </div>
+      
+      <div className="flex items-center justify-between mt-4 mb-3">
+          <Button label="Create Menu" variant="primary" onClick={() => setIsPopupOpen(true)} />
+          <div className="flex space-x-4">
+            <button
+              onClick={() => setSelectedType("All")}
+              className={`px-4 py-2 border rounded ${
+                selectedType === "All" ? "bg-customGold text-white" : "bg-white text-black"
+              }`}
+            >
+              All
+            </button>
+            <button
+              onClick={() => setSelectedType("Food")}
+              className={`px-4 py-2 border rounded ${
+                selectedType === "Food" ? "bg-customGold text-white" : "bg-white text-black"
+              }`}
+            >
+              Food
+            </button>
+            <button
+              onClick={() => setSelectedType("Bar")}
+              className={`px-4 py-2 border rounded ${
+                selectedType === "Bar" ? "bg-customGold text-white" : "bg-white text-black"
+              }`}
+            >
+              Bar
+            </button>
+          </div>
+        </div>
+      
 
-      <Heading titles={["Menu Name"]} />
+      <Heading titles={["Menu Name", "Type"]} />
 
       {loading ? (
         <div className="flex justify-center items-center h-64">

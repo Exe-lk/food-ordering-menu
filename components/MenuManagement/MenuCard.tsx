@@ -4,6 +4,7 @@ import { MdDeleteOutline, MdOutlineModeEdit } from 'react-icons/md';
 
 interface Menu{
   name:string;
+  menu_type?: string;
 }
 interface MenuCardProps{
   menus: Menu[];
@@ -19,6 +20,7 @@ const MenuCard = ({menus, onEdit, onRemove}:MenuCardProps) => {
           className='flex justify-between border rounded-lg shadow-md bg-white p-4 hover:bg-gray-300 transition-all duration-300 cursor-pointer'
         >
           <div className='text-black font-semibold w-40 text-center'>{menu.name}</div>
+          <div className='text-black font-semibold w-40 text-center'>{menu.menu_type}</div>
           <div className="flex space-x-2 justify-center w-96"> 
             <button
               onClick={() => onEdit(index)}

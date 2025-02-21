@@ -1,6 +1,6 @@
 "use client"
 import React, { useEffect, useState } from 'react'
-import { FiX } from 'react-icons/fi'
+import { FiX, FiEye, FiEyeOff } from 'react-icons/fi'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/redux/store'
 import { updateEmployee, fetchEmployees} from '@/redux/features/employeeSlice'
@@ -28,6 +28,7 @@ const EmployeeEdit = ({isOpen, onClose, employee}:EmployeeEditProps) => {
     const [empId, setEmpID] = useState(employee.empId)
     const [contact, setContact] = useState(employee.contact)
     const [username, setUsername] = useState(employee.username)
+    const [showPassword, setShowPassword] = useState(false);
 
     useEffect(() =>{
         if(employee){
@@ -126,17 +127,24 @@ const EmployeeEdit = ({isOpen, onClose, employee}:EmployeeEditProps) => {
                </div>
    
                {/* Password */}
-               <div>
-                 <label className="block text-gray-700 font-medium">Password</label>
-                 <input
-                   type="password"
-                   name="password"
-                   value={password}
-                   onChange={(e) => setPassword(e.target.value)}
-                   className="w-full p-2 border border-gray-300 rounded mt-1"
-                   required
-                 />
-               </div>
+               <div className="relative">
+                <label className="block text-gray-700 font-medium">Password</label>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full p-2 pr-10 border border-gray-300 rounded mt-1"
+                  required
+                />
+                <span
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-3/4 transform -translate-y-1/2 cursor-pointer text-gray-500"
+                >
+                  {showPassword ? <FiEyeOff /> : <FiEye />}
+                </span>
+              </div>
+
    
                {/* Role Dropdown */}
                <div>
