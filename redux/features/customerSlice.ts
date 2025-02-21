@@ -34,33 +34,33 @@ export const checkPhoneExists = createAsyncThunk<
 });
 export const updateCustomerDetails = createAsyncThunk<
   { success: boolean },
-  { phone: string; name: string; tableNumber: string },
+  { phone: string; name?: string },
   { rejectValue: string; state: RootState }
 >(
   "customer/updateCustomerDetails",
-  async ({ phone, name, tableNumber }, { getState, rejectWithValue }) => {
+  async ({ phone, name }, { rejectWithValue }) => {
     try {
-      const state = getState();
-
-      // Only update Firebase with name (and phone) if the customer is new.
-      if (!state.customer.exists) {
-        await setDoc(
-          doc(collection(db, "customers"), phone),
-          { name, phone },
-          { merge: true }
-        );
+      const updateData: any = {};
+      if (name && name.trim() !== "") {
+        updateData.name = name;
       }
+      await setDoc(
+        doc(collection(db, "customers"), phone),
+        updateData,
+        { merge: true }
+      );
+      
       if (typeof window !== "undefined") {
         localStorage.setItem("phoneNumber", phone);
-        localStorage.setItem("tableNumber", tableNumber);
       }
-
+      
       return { success: true };
     } catch (error) {
       return rejectWithValue((error as Error).message);
     }
   }
 );
+
 
 const customerSlice = createSlice({
   name: "customer",

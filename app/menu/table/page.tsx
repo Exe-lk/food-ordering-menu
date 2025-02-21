@@ -40,7 +40,8 @@ const page = () => {
         });
         return;
       }
-      await dispatch(updateCustomerDetails({ phone, name: "", tableNumber })).unwrap();
+      localStorage.setItem("tableNumber", tableNumber);
+      await dispatch(updateCustomerDetails({ phone, name: "", })).unwrap();
       router.push('/menu/home');
     } catch (error: any) {
       Swal.fire({

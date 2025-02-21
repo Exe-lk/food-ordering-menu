@@ -82,6 +82,7 @@ export const fetchProducts = createAsyncThunk<
         ? docSnap.data().updated_at.toDate().toISOString()
         : undefined,
       isDeleted: docSnap.data().isDeleted,
+      created_by: docSnap.data().created_by,
     }));
     return internalFoods;
   } catch (error: any) {
@@ -99,6 +100,7 @@ export const fetchDeletedProducts = createAsyncThunk<
     try {
       const q = query(
         collection(db, "internalFood"),
+        
         where("isDeleted", "==", true)
       );
       const querySnapshot = await getDocs(q);
@@ -130,6 +132,14 @@ export const addProduct = createAsyncThunk<
   "internalFood/addProduct",
   async ({ newProduct, productSizes }, { rejectWithValue }) => {
     try {
+      const productQuery = query(
+        collection(db, "internalFood"),
+        where("name", "==", newProduct.name),
+      );
+      const productSnapshot = await getDocs(productQuery);
+      if (!productSnapshot.empty) {
+        return rejectWithValue("Product with this name already exists.");
+      }
       let imageUrl = "";
       if (newProduct.image) {
         const imageRef = ref(storage, `internalFood/${newProduct.image.name}`);
@@ -245,6 +255,20 @@ export const updateProduct = createAsyncThunk<
   "internalFood/updateProduct",
   async ({ id, updatedProduct, productSizes }, { rejectWithValue }) => {
     try {
+      const productQuery = query(
+        collection(db, "internalFood"),
+        where("name", "==", updatedProduct.name),
+      );
+      const productSnapshot = await getDocs(productQuery);
+      let conflictFound = false;
+      productSnapshot.forEach((docSnap) => {
+        if (docSnap.id !== id) {
+          conflictFound = true;
+        }
+      });
+      if (conflictFound) {
+        return rejectWithValue("Product with this name already exists.");
+      }
       let imageUrl = updatedProduct.currentImageUrl || "";
       if (updatedProduct.image) {
         const imageRef = ref(storage, `internalFood/${updatedProduct.image.name}`);
@@ -316,7 +340,11 @@ export const restoreProduct = createAsyncThunk<
 const internalFoodSlice = createSlice({
   name: "internalFood",
   initialState,
-  reducers: {},
+  reducers: {
+    clearError: (state) => {
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
     // addProduct cases
     builder
@@ -432,5 +460,5 @@ const internalFoodSlice = createSlice({
     );
   },
 });
-
+export const { clearError } = internalFoodSlice.actions;
 export default internalFoodSlice.reducer;

@@ -114,7 +114,7 @@ const IngredientCreate = ({ isOpen, onClose }: ProductModalProps) => {
           <div className="flex justify-center">
             <button
               type="submit"
-              className="bg-customblue text-white px-6 py-2 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-400"
+              className="bg-customGold text-white px-6 py-2 rounded-lg hover:bg-orange-500 focus:ring-2 focus:ring-blue-400"
             >
               {loading ? "Creating...":"Create"}
             </button>

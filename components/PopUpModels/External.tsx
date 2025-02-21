@@ -8,6 +8,7 @@ import { AppDispatch, RootState } from "@/redux/store";
 import { fetchMenus } from "@/redux/features/menuSlice";
 import { addProduct } from "@/redux/features/externalProductSlice";
 import { fetchSuppliers } from "@/redux/features/supplierSlice";
+import Swal from "sweetalert2";
 
 interface ProductModalProps {
   isOpen: boolean;
@@ -85,6 +86,44 @@ const External = ({ onClose, isOpen }: ProductModalProps) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (
+      !newProduct.name.trim() ||
+      !newProduct.brand.trim() ||
+      !newProduct.category.trim() ||
+      !newProduct.manufactureDate.trim() ||
+      !newProduct.expiryDate.trim() ||
+      !newProduct.dateIn.trim() ||
+      !newProduct.description.trim() ||
+      !newProduct.unit.trim() ||
+      !newProduct.costPrice.trim() ||
+      !newProduct.quantity.trim()
+    ) {
+      Swal.fire({
+        title: "Error",
+        text: "Please fill out all required fields.",
+        icon: "error",
+      });
+      return;
+    }
+    if (!newProduct.image_url) {
+      Swal.fire({
+        title: "Error",
+        text: "Product image is required.",
+        icon: "error",
+      });
+      return;
+    }
+    const validSuppliers = supplier.filter((s) => s.name.trim() !== "");
+    if (validSuppliers.length === 0) {
+      Swal.fire({
+        title: "Error",
+        text: "Please select at least one supplier.",
+        icon: "error",
+      });
+      return;
+    }
+
+
     const resultAction = await dispatch(addProduct({ newProduct, suppliers: supplier }))
     if (resultAction.meta.requestStatus === "fulfilled") {
       setNewProduct({
@@ -111,7 +150,7 @@ const External = ({ onClose, isOpen }: ProductModalProps) => {
     <div className="fixed inset-0 bg-black bg-opacity-85 flex justify-center items-center z-50 text-black">
       <div className="bg-white rounded-lg shadow-lg p-10 w-[650px] max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-semibold text-center w-full">
+          <h2 className="text-2xl font-semibold text-center w-full text-customGold">
             Create External Food Item
           </h2>
           <button
@@ -126,11 +165,11 @@ const External = ({ onClose, isOpen }: ProductModalProps) => {
             <label className="block text-gray-700 font-medium">Image</label>
             <div
               {...getRootProps()}
-              className="border-2 border-gray-500 bg-gray-300 p-4 rounded-lg flex flex-col items-center justify-center cursor-pointer"
+              className="border-2 border-customorange bg-white p-4 rounded-lg flex flex-col items-center justify-center cursor-pointer"
             >
               <input {...getInputProps()} />
               {isDragActive ? (
-                <p className="text-customblue">
+                <p className="text-customGold">
                   Drag & Drop the Image Here....
                 </p>
               ) : newProduct.image_url && preview ? (
@@ -141,7 +180,7 @@ const External = ({ onClose, isOpen }: ProductModalProps) => {
               ) : (
                 <>
                   <FiUpload className="text-gray-500 text-3xl" />
-                  <p className="mt-2 text-gray-700">
+                  <p className="mt-2 text-customGold">
                     Drag & Drop or Click to Upload
                   </p>
                 </>
@@ -246,7 +285,7 @@ const External = ({ onClose, isOpen }: ProductModalProps) => {
           <div className="justify-center items-center mt-5">
             <button
               type="button"
-              className="w-[30%] mt-3 bg-customblue text-white py-2 rounded-md hover:bg-blue-800 cursor-pointer"
+              className="w-[30%] mt-3 bg-customGold text-white py-2 rounded-md hover:bg-orange-500 cursor-pointer"
               onClick={handleAddSupplier}
             >
               + Add Supplier
@@ -338,7 +377,7 @@ const External = ({ onClose, isOpen }: ProductModalProps) => {
           </div>
           <div className="mt-5 flex justify-center items-center">
             <button
-              className="bg-customblue w-[30%] text-white px-5 py-2 rounded-md hover:bg-blue-800"
+              className="bg-customGold w-[30%] text-white px-5 py-2 rounded-md hover:bg-orange-500"
               type="submit"
             >
               {loading ? "Creating..." : "Create"}

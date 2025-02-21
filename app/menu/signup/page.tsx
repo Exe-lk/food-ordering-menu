@@ -57,9 +57,8 @@ const page = () => {
         });
         return;
       }
-
-      // If no active order occupies the selected table, update customer details.
-      await dispatch(updateCustomerDetails({ phone, name, tableNumber })).unwrap();
+      localStorage.setItem("tableNumber", tableNumber);
+      await dispatch(updateCustomerDetails({ phone, name})).unwrap();
       router.push("/menu/home");
     } catch (error: any) {
       Swal.fire({

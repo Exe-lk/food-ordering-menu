@@ -29,7 +29,7 @@ const CreateEmployee = ({ isOpen, onClose }: EmployeeProps) => {
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // Prevent the default form submission (page reload)
+    e.preventDefault(); 
     
     if (
       !formData.name ||
@@ -66,7 +66,7 @@ const CreateEmployee = ({ isOpen, onClose }: EmployeeProps) => {
       <div className="bg-white p-6 rounded-lg shadow-lg w-[450px] relative">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold text-gray-900">Create Employee</h2>
+          <h2 className="text-xl font-semibold text-customGold">Create Employee</h2>
           <button onClick={onClose} className="text-gray-500 text-2xl hover:text-gray-700">
             <FiX />
           </button>
@@ -160,7 +160,7 @@ const CreateEmployee = ({ isOpen, onClose }: EmployeeProps) => {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+              className="w-full bg-customGold text-white py-2 rounded hover:bg-orange-500 transition"
             >
               Create
             </button>

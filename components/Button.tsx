@@ -20,6 +20,7 @@ const Button = ({label, link, onClick, variant}:ButtonProps) => {
     }
   return (
     <button
+    title='Click to Create Item'
     className={`px-6 py-2 rounded-lg font-semibold ${
       variant === "primary"
         ? "bg-customGold text-white"

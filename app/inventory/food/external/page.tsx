@@ -1,11 +1,8 @@
 "use client"
 import React, { useEffect, useState } from "react";
-import { FiMenu } from "react-icons/fi";
-import { external } from "@/data/external";
 import SearchBar from "@/components/SearchBar";
 import Sidebar from "@/components/Sidebar";
 import Button from "@/components/Button";
-import Heading from "@/components/Headings/Heading";
 import ExternalCard from "@/components/Inventory/ExternalCard";
 import ExternalHeading from "@/components/Headings/ExternalHeading";
 import External from "@/components/PopUpModels/External";
@@ -17,6 +14,8 @@ import RecycleBinButton from "@/components/RecycleBin";
 import ExternalEdit from "@/components/PopUpModels/EditPopUps/ExternalEdit";
 import Confirm from "@/components/PopUpModels/Confirm";
 import RecycleModal from "@/components/RecycleModal";
+import ProgressBar from "@/components/ProgressBar";
+import ExternalMasterView from "@/components/PopUpModels/ExternalMasterView";
 const page = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -25,6 +24,7 @@ const page = () => {
   const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [isRecycleBinOpen, setIsRecycleBinOpen] = useState(false);
+  const [isMasterViewOpen, setIsMasterViewOpen] = useState(false);
   const dispacth = useDispatch<AppDispatch>();
   const {externalFoods, loading, error, fetched}= useSelector(
     (state:RootState) => state.externalFood
@@ -49,6 +49,10 @@ const handleRemove = (id:string) =>{
   setSelectedProductId(id);
   setIsConfirmOpen(true);
 }
+const handleView = (product: ExternalFood) => {
+    setSelectedProduct(product);
+    setIsMasterViewOpen(true);
+  };
 
 const confirmRemove = async () => {
   if(selectedProductId){
@@ -64,7 +68,7 @@ const confirmRemove = async () => {
       <Sidebar/>
       <div className="p-4 h-screen bg-beige ml-14 w-full">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold text-customblue">External Food Item Management</h1>
+        <h1 className="text-3xl font-bold text-customGold">External Food Item Management</h1>
         <SearchBar placeholder="Search Products" onSearch={setSearchQuery} />
       </div>
       <div className="flex space-x-4 mt-4 items-start justify-start w-full mb-3">
@@ -73,7 +77,7 @@ const confirmRemove = async () => {
       <ExternalHeading/>
       <div className="mt-4">
         {loading ? (
-          <p>Loading...</p>
+          <ProgressBar/>
         ): error ? (
           <p className="text-red-500">Error:{error}</p>
         ):(
@@ -95,6 +99,7 @@ const confirmRemove = async () => {
             description={product.description}
             onEdit={() => handleEdit(product.id)}
             onRemove={() => handleRemove(product.id)}
+            onView={() => handleView(product)}
           />
         ))
         )}
@@ -118,6 +123,11 @@ const confirmRemove = async () => {
         isOpen={isRecycleBinOpen}
         onClose={() => setIsRecycleBinOpen(false)}
         recycleType="external"
+      />
+      <ExternalMasterView
+       isOpen={isMasterViewOpen}
+       onClose={() => setIsMasterViewOpen(false)}
+       product={selectedProduct}
       />
     </div>
     </div>

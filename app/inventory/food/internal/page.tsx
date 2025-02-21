@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { FiMenu } from "react-icons/fi";
+import InternalMasterView from "@/components/PopUpModels/InternalMasterView";
 import SearchBar from "@/components/SearchBar";
 import Sidebar from "@/components/Sidebar";
 import Button from "@/components/Button";
@@ -14,6 +14,7 @@ import { fetchProducts, InternalFood, removeProduct } from "@/redux/features/int
 import Edit from "@/components/PopUpModels/EditPopUps/Edit";
 import RecycleBinButton from "@/components/RecycleBin";
 import RecycleModal from "@/components/RecycleModal";
+import ProgressBar from "@/components/ProgressBar";
 
 const Page = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -24,6 +25,7 @@ const Page = () => {
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [isRecycleBinOpen, setIsRecycleBinOpen] = useState(false);
   const [filterType, setFilterType] = useState("All");
+  const [isMasterViewOpen, setIsMasterViewOpen] = useState(false);
 
   const {menus:allmenus} = useSelector((state:RootState) => state.menuType);
   const dispatch = useDispatch<AppDispatch>();
@@ -58,6 +60,10 @@ const Page = () => {
       setSelectedProductId(null);
     }
   };
+  const handleView = (product: InternalFood) => {
+    setSelectedProduct(product);
+    setIsMasterViewOpen(true);
+  };
 
   const filteredProducts = internalFoods.filter((product) =>{
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -76,7 +82,7 @@ const Page = () => {
       <Sidebar/>
       <div className="p-4 min-h-screen bg-beige ml-14 w-full">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold text-customblue">Internal Food Item Management</h1>
+        <h1 className="text-3xl font-bold text-customGold">Internal Food Item Management</h1>
         <SearchBar placeholder="Search Products" onSearch={setSearchQuery} />
       </div>
       <div className="flex space-x-4 mt-4 items-start justify-start w-full mb-3">
@@ -85,7 +91,7 @@ const Page = () => {
       <div className="flex space-x-4 mb-3 items-end justify-end">
       <button
           className={`px-4 py-2 rounded ${
-            filterType === "All" ? "bg-blue-500 text-white" : "bg-gray-200 text-black"
+            filterType === "All" ? "bg-customGold text-white" : "bg-transparent border border-customGold text-black"
           }`}
           onClick={() => setFilterType("All")}
         >
@@ -93,7 +99,7 @@ const Page = () => {
         </button>
         <button
           className={`px-4 py-2 rounded ${
-            filterType === "Bar" ? "bg-blue-500 text-white" : "bg-gray-200 text-black"
+            filterType === "Bar" ? "bg-customGold text-white" : "bg-transparent border border-customGold text-black"
           }`}
           onClick={() => setFilterType("Bar")}
         >
@@ -101,7 +107,7 @@ const Page = () => {
         </button>
         <button
           className={`px-4 py-2 rounded ${
-            filterType === "Food" ? "bg-blue-500 text-white" : "bg-gray-200 text-black"
+            filterType === "Food" ? "bg-customGold text-white" : "bg-transparent border border-customGold text-black"
           }`}
           onClick={() => setFilterType("Food")}
         >
@@ -111,7 +117,7 @@ const Page = () => {
       <TableHeading headings={["Name", "Portion & Price", "Description", "Actions"]} />
       <div className="mt-4">
         {loading ?(
-          <p>Loading...</p>
+          <ProgressBar/>
         ): error ? (
           <p className="text-red-500">{error}</p>
         ): filteredProducts.length > 0? (
@@ -123,6 +129,7 @@ const Page = () => {
               portions={product.sizes}
               onEdit={()=> handleEdit(product.id)}
               onRemove={() => handleRemove(product.id)}
+              onView={() => handleView(product)}
             />
           ))
         ):(
@@ -150,6 +157,11 @@ const Page = () => {
         isOpen={isRecycleBinOpen}
         onClose={() => setIsRecycleBinOpen(false)}
         recycleType="internal"
+      />
+      <InternalMasterView
+        isOpen={isMasterViewOpen}
+        onClose={() => setIsMasterViewOpen(false)}
+        product={selectedProduct}
       />
     </div>
     </div>

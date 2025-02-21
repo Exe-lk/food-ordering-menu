@@ -18,11 +18,22 @@ interface ExternalCardProps{
     description: string;
     onEdit:() => void;
     onRemove:() => void;
+    onView:() => void;
 }
 
-const ExternalCard = ({category, brand, name, quantity, dateIn, costPrice, supplier, onEdit, onRemove}:ExternalCardProps) => {
+const ExternalCard = ({category, brand, name, quantity, dateIn, costPrice, supplier, onEdit, onRemove, onView}:ExternalCardProps) => {
+  const handleCardClick = () => {
+      onView();
+    };
+    const stopPropagation = (e: React.MouseEvent) => {
+      e.stopPropagation();
+    };
   return (
-    <div className='grid grid-cols-9 items-center border rounded-lg shadow-md p-4 mb-4 bg-white hover:bg-gray-300 transition-all duration-300 cursor-pointer'>
+    <div 
+      onClick={handleCardClick}
+      className='grid grid-cols-9 items-center border rounded-lg shadow-md p-4 mb-4 bg-white hover:bg-gray-300 transition-all duration-300 cursor-pointer'
+      title="Click to view more details"
+      >
         <div className='text-gray-900 font-bold items-center justify-center text-center'>
             {category}
         </div>
@@ -48,7 +59,9 @@ const ExternalCard = ({category, brand, name, quantity, dateIn, costPrice, suppl
               </div>
             ))}
         </div>
+        <div onClick={stopPropagation}>
         <ActionButton onEdit={onEdit} onRemove={onRemove} />
+      </div>
     </div>
   )
 }

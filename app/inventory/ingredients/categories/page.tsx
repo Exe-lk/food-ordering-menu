@@ -13,9 +13,10 @@ import RecycleModal from "@/components/RecycleModal";
 import Heading from "@/components/Headings/Heading";
 import CategoryEdit from "@/components/PopUpModels/EditPopUps/CategoryEdit";
 import Confirm from "@/components/PopUpModels/Confirm";
+import ProgressBar from "@/components/ProgressBar";
 const page = () => {
   const dispatch = useDispatch<any>();
-  const {categories, loading, fetched, error} = useSelector((state:RootState) => state.categories)
+  const {categories, loading, fetched} = useSelector((state:RootState) => state.categories)
   const [localCategories, setLocalCategories] = useState(categories);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -64,7 +65,7 @@ const page = () => {
       <Sidebar/>
       <div className="p-4 min-h-screen bg-beige ml-14 w-full">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-customblue">Category Management</h1>
+          <h1 className="text-3xl font-bold text-customGold">Category Management</h1>
           <SearchBar placeholder="Search Categories" onSearch={setSearchQuery}/>
       </div>
       <div className="flex space-x-4 mt-4 items-start justify-start w-full mb-3">
@@ -73,7 +74,7 @@ const page = () => {
       <Heading titles={["Category Name"]}/>
 
       {loading ?(
-        <p className="text-black">Loading..</p>
+        <ProgressBar/>
       ):filtredCategories.length > 0 ?(
         <CategoryCard categories={filtredCategories} onEdit={handleEdit} onRemove={handleRemove}/>
       ):(

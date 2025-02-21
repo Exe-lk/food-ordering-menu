@@ -14,6 +14,7 @@ import PortionEdit from "@/components/PopUpModels/EditPopUps/PortionEdit";
 import RecycleBinButton from "@/components/RecycleBin";
 import PortionRecycleBin from "@/components/RecycleBins/PortionRecycleBin";
 import RecycleModal from "@/components/RecycleModal";
+import ProgressBar from "@/components/ProgressBar";
 
 const Page = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -77,7 +78,7 @@ const Page = () => {
       <Heading titles={["Portion Name", "Served Number"]} />
 
       {loading ? (
-        <p>Loading...</p>
+        <ProgressBar/>
       ) : localPortions.length > 0 ? (
         <PortionCard portions={localPortions} onEdit={handleEdit} onRemove={handleRemove} />
       ) : error ? (

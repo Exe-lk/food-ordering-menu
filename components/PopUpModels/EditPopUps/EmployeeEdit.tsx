@@ -77,7 +77,7 @@ const EmployeeEdit = ({isOpen, onClose, employee}:EmployeeEditProps) => {
          <div className="bg-white p-6 rounded-lg shadow-lg w-[450px] relative">
            {/* Header */}
            <div className="flex items-center justify-between mb-4">
-             <h2 className="text-xl font-semibold text-gray-900">Update Employee</h2>
+             <h2 className="text-xl font-semibold text-customGold">Update Employee</h2>
              <button onClick={onClose} className="text-gray-500 text-2xl hover:text-gray-700">
                <FiX />
              </button>
@@ -171,7 +171,7 @@ const EmployeeEdit = ({isOpen, onClose, employee}:EmployeeEditProps) => {
                {/* Submit Button */}
                <button
                  type="submit"
-                 className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+                 className="w-full bg-customGold text-white py-2 rounded hover:bg-orange-500 transition"
                >
                  Update
                </button>

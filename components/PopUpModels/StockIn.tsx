@@ -58,9 +58,9 @@ const StockIn = ({ isOpen, onClose, ingredientId, ingredientName, category }: St
           <FiX/>
         </button>
         {/* Heading */}
-        <h2 className="text-2xl font-bold mb-4 text-customblue">Stock In</h2>
+        <h2 className="text-2xl font-bold mb-4 text-customGold">Stock In</h2>
         <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-2 gap-4 mb-4 text-customblue">
+          <div className="grid grid-cols-2 gap-4 mb-4 text-customGold">
             {/* Ingredient Name */}
             <div className="col-span-2">
               <label className="block font-semibold mb-1">Ingredient Name</label>

@@ -314,6 +314,9 @@ const menuSlice = createSlice({
     resetFetched: (state) => {
       state.fetched = false;
     },
+    clearError: (state) => {
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     // fetchMenus
@@ -398,5 +401,5 @@ const menuSlice = createSlice({
   },
 });
 
-export const { setSelectedMenu, resetFetched } = menuSlice.actions;
+export const { setSelectedMenu, resetFetched, clearError } = menuSlice.actions;
 export default menuSlice.reducer;

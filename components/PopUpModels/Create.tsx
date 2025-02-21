@@ -6,7 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/redux/store";
 import { fetchPortions } from "@/redux/features/portionSlice";
 import { fetchMenus } from "@/redux/features/menuSlice";
-import { addProduct } from "@/redux/features/internalProductSlice";
+import { addProduct, clearError} from "@/redux/features/internalProductSlice";
+import Swal from "sweetalert2";
 
 interface ProductModalProps {
   isOpen: boolean;
@@ -15,7 +16,7 @@ interface ProductModalProps {
 
 const Create = ({ onClose, isOpen }: ProductModalProps) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { loading, error } = useSelector((state: RootState) => state.products);
+  const { loading } = useSelector((state: RootState) => state.products);
   const { menus, loading: menusLoading } = useSelector(
     (state: RootState) => state.menuType
   );
@@ -69,9 +70,35 @@ const Create = ({ onClose, isOpen }: ProductModalProps) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (
+      !newProduct.name.trim() ||
+      !newProduct.category.trim() ||
+      !newProduct.description.trim()
+    ) {
+      Swal.fire({
+        title: "Error",
+        text: "Please fill out all required fields.",
+        icon: "error",
+      });
+      return;
+    }
+    for (const size of productSizes) {
+      if (!size.size.trim() || !size.price.trim()) {
+        Swal.fire({
+          title: "Error",
+          text: "Please fill out all portion and price fields.",
+          icon: "error",
+        });
+        return;
+      }
+    }
     const resultAction = await dispatch(addProduct({ newProduct, productSizes }));
     if (resultAction.meta.requestStatus === "fulfilled") {
-      // Reset the form values after a successful creation
+      Swal.fire({
+        title: "Success",
+        text: "Product created successfully!",
+        icon: "success",
+      });
       setNewProduct({
         name: "",
         category: "",
@@ -80,6 +107,15 @@ const Create = ({ onClose, isOpen }: ProductModalProps) => {
       });
       setProductSizes([{ size: "", price: "" }]);
       onClose();
+    }else{
+      Swal.fire({
+        title: "Error",
+        text:
+          (resultAction.payload as string) ||
+          "Failed to create product. Please try again.",
+        icon: "error",
+      });
+      dispatch(clearError());
     }
   };
 
@@ -100,7 +136,7 @@ const Create = ({ onClose, isOpen }: ProductModalProps) => {
       <div className="bg-white rounded-lg shadow-lg p-10 w-[650px] max-h-[700px] overflow-y-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-semibold text-center w-full">
+          <h2 className="text-2xl font-semibold text-center w-full text-customGold">
             Create Product
           </h2>
           <button
@@ -115,11 +151,11 @@ const Create = ({ onClose, isOpen }: ProductModalProps) => {
             <label className="block text-gray-700 font-medium">Image</label>
             <div
               {...getRootProps()}
-              className="border-2 border-dashed border-gray-300 p-4 rounded-lg flex flex-col items-center justify-center cursor-pointer"
+              className="border-2 border-dashed border-customorange p-4 rounded-lg flex flex-col items-center justify-center cursor-pointer"
             >
               <input {...getInputProps()} />
               {isDragActive ? (
-                <p className="text-customblue">
+                <p className="text-customGold">
                   Drag & Drop the Image Here....
                 </p>
               ) : newProduct.image && preview ? (
@@ -226,7 +262,7 @@ const Create = ({ onClose, isOpen }: ProductModalProps) => {
           <div className="justify-center items-center mt-5">
             <button
               type="button"
-              className="w-[30%] mt-3 bg-customblue text-white py-2 rounded-md hover:bg-blue-800"
+              className="w-[30%] mt-3 bg-customGold text-white py-2 rounded-md hover:bg-orange-500"
               onClick={handleAddSize}
             >
               + Add Portion
@@ -249,7 +285,7 @@ const Create = ({ onClose, isOpen }: ProductModalProps) => {
           <div className="mt-5 flex justify-center items-center">
             <button
               type="submit"
-              className="bg-customblue w-[30%] text-white px-5 py-2 rounded-md hover:bg-blue-800"
+              className="bg-customGold w-[30%] text-white px-5 py-2 rounded-md hover:bg-orange-500"
             >
               {loading ? "Creating..." : "Create"}
             </button>

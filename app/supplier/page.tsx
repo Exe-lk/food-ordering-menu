@@ -13,6 +13,7 @@ import SupplierCard from '@/components/SupplierCard';
 import SupplierCreate from '@/components/PopUpModels/SupplierCreate';
 import EditSupplier from '@/components/PopUpModels/EditPopUps/EditSupplier';
 import RecycleModal from '@/components/RecycleModal';
+import ProgressBar from '@/components/ProgressBar';
 
 const page = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -73,7 +74,7 @@ const page = () => {
             </div>
             <SupplierHeading/>
             {loading ?(
-                <p className='text-black'>Loading...</p>
+                <ProgressBar/>
             ): localSuppliers.length > 0 ?(
                 <SupplierCard suppliers={localSuppliers} onEdit={handleEdit} onRemove={handleRemove}/>
             ): error?(

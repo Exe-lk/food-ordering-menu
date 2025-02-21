@@ -14,6 +14,8 @@ import StockIn from "@/components/PopUpModels/StockIn";
 import StockOut from "@/components/PopUpModels/StockOut";
 import RecycleModal from "@/components/RecycleModal";
 import RecycleBinButton from "@/components/RecycleBin";
+import ProgressBar from "@/components/ProgressBar";
+import IngredientEdit from "@/components/PopUpModels/EditPopUps/IngredientEdit";
 
 
 const page = () => {
@@ -41,13 +43,15 @@ const page = () => {
     useEffect(() =>{
       dispatch(fetchIngredients())
     },[dispatch])
-    const handleEdit = (productId: string) =>{
+
+    const handleEdit = (productId: string) => {
       const ingredient = ingredients.find((p) => p.id === productId);
-      if(ingredient){
+      if (ingredient) {
         setSelectedProduct(ingredient);
         setIsEditPopupOpen(true);
       }
-    }
+    };
+  
     const handleStockOut = (id:string)=>{
       const ingredient = ingredients.find((p) => p.id === id);
       if(ingredient){
@@ -85,6 +89,7 @@ const page = () => {
         setSelectedProductId(null)
       }
     }
+    
   return (
     <div className="flex">
       <Sidebar/>
@@ -99,7 +104,7 @@ const page = () => {
         <IngredientsHeading/>
         <div className="mt-4">
         {loading ? (
-            <p className="text-black">Loading...</p>
+           <ProgressBar/>
           ) : error ? (
             <p className="text-red-500">{error}</p>
           ) : filteredIngredients.length > 0 ? (
@@ -144,6 +149,13 @@ const page = () => {
                 onClose={() => setIsStockOutOpen(false)}
                 ingredientName={selectedItem.ingredientName}
                 category={selectedItem.category}
+              />
+            )}
+            {selectedProduct && (
+              <IngredientEdit
+                isOpen={isEditPopupOpen}
+                onClose={() => setIsEditPopupOpen(false)}
+                ingredient={selectedProduct}
               />
             )}
 

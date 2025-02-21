@@ -19,7 +19,7 @@ const page = () => {
           {/* Image Section */}
           <div className="relative w-[300px] h-[300px] md:w-[500px] md:h-[500px] rounded-full overflow-hidden z-10 mt-24 order-last md:order-first">
             <img
-              src="/assets/plate.png"
+              src="/assets/plate.jpg"
               alt="Delicious Food"
               className="object-cover w-full h-full"
             />
@@ -48,10 +48,8 @@ const page = () => {
             </div>
           </div>
         </div>
-
-        {/* Bottom Curve */}
-        <div className="absolute bottom-0 left-0 w-full h-24 bg-black rounded-t-[50%]"></div>
       </section>
+      <div className="absolute bottom-0 left-0 w-full h-24 bg-black rounded-t-[50%]"></div>
     </div>
   )
 }

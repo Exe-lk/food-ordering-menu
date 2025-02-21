@@ -69,10 +69,14 @@ const CartPage = () => {
     <div>
       <NavBar/>
       <div className="bg-white min-h-screen text-black p-4 flex flex-col">
-        <div className="flex items-center justify-between mb-4">
-          <button onClick={() => router.back()} className="text-white">
-            <FaArrowLeft size={20} />
+          <button
+            type="button"
+            onClick={() => router.back()}
+            className="text-customGold cursor-pointer"
+          >
+            <FaArrowLeft size={24} />
           </button>
+        <div className="flex items-center justify-between mb-4">
           <h1 className="text-xl font-bold text-center flex-grow -ml-8">
             Order Summary
           </h1>
@@ -85,7 +89,7 @@ const CartPage = () => {
           {cartItems.map((item, index) => (
             <div
               key={index}
-              className="bg-white border-2 border-black shadow-2xl p-4 rounded-lg mb-4 flex justify-between items-center shadow-md"
+              className="bg-white border-2 border-black shadow-2xl p-4 rounded-lg mb-4 flex justify-between items-center"
             >
               <img
                 src={item.image}

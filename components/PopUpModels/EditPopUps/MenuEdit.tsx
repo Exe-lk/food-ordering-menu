@@ -78,7 +78,7 @@ const MenuEdit = ({ isOpen, onClose, menu }: MenuEditProps) => {
         >
           <FiX />
         </button>
-        <h2 className="text-xl font-semibold text-center mb-4 text-customblue">
+        <h2 className="text-xl font-semibold text-center mb-4 text-customGold">
           Edit Menu
         </h2>
         <div className="mb-3">
@@ -124,7 +124,7 @@ const MenuEdit = ({ isOpen, onClose, menu }: MenuEditProps) => {
         <button
           onClick={handleUpdate}
           disabled={loading}
-          className="w-full bg-customblue text-white py-2 rounded-md hover:bg-blue-900 cursor-pointer"
+          className="w-full bg-customGold text-white py-2 rounded-md hover:bg-orange-500 cursor-pointer"
         >
           {loading ? "Updating..." : "Update"}
         </button>

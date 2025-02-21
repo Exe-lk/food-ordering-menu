@@ -51,7 +51,7 @@ const SupplierCreate = ({isOpen, onClose}:SupplierProps) => {
     <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-85'>
         <div className='bg-white p-6 rounded-lg shadow-lg w-[450px] relative'>
             <div className='flex items-center justify-between mb-4'>
-                <h2 className='text-xl font-semibold text-gray-900'>Create Supplier</h2>
+                <h2 className='text-xl font-semibold text-customGold'>Create Supplier</h2>
                 <button onClick={onClose} className='text-gray-500 text-2xl hover:text-gray-700'>
                     <FiX/>
                 </button>
@@ -89,7 +89,7 @@ const SupplierCreate = ({isOpen, onClose}:SupplierProps) => {
                     </div>
                     <button
                      type='submit'
-                     className="w-full bg-customblue text-white py-2 rounded-md hover:bg-blue-900 cursor-pointer"
+                     className="w-full bg-customGold text-white py-2 rounded-md hover:bg-orange-500 cursor-pointer"
                     >
                         {loading ? "Creating..." : "Create"}
                     </button>
