@@ -40,11 +40,7 @@ const initialState: PortionState = {
 
 export const fetchPortions = createAsyncThunk<Portion[], void, { rejectValue: string }>(
   "portion/fetchPortions",
-  async (_, { getState, rejectWithValue }) => {
-    const state = getState() as { portionType: PortionState }; 
-
-    if (state.portionType.fetched) return state.portionType.portions;
-
+  async (_, { rejectWithValue }) => {
     try {
       const q = query(collection(db, "portionType"), where("isDeleted", "==", false));
       const querySnapshot = await getDocs(q);
@@ -62,6 +58,7 @@ export const fetchPortions = createAsyncThunk<Portion[], void, { rejectValue: st
     }
   }
 );
+
 
 export const addPortion = createAsyncThunk<
   Portion,

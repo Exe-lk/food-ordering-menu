@@ -4,7 +4,7 @@ import { MdOutlineRestore, MdDeleteOutline } from "react-icons/md";
 import { useDispatch } from 'react-redux'
 import Swal from 'sweetalert2'
 import { fetchDeletedMenus, deleteMenu, removeMenu, Menu, restoreMenu } from '@/redux/features/menuSlice'
-import { fetchDeletedPortions, deletePortion,restorePortion, Portion } from '@/redux/features/portionSlice'
+import { fetchDeletedPortions, deletePortion,restorePortion, Portion, fetchPortions } from '@/redux/features/portionSlice'
 import { fetchDeletedProducts,deleteProduct,restoreProduct, DeletedProduct } from '@/redux/features/internalProductSlice'
 import { fetchDeletedSuppliers, deleteSupplier, restoreSupplier,Supplier } from '@/redux/features/supplierSlice'
 import { fetchDeletedExternalProducts, deleteExternalProduct, restoreExternalProduct, ExternalFood } from '@/redux/features/externalProductSlice'
@@ -92,6 +92,9 @@ const RecycleModal = ({isOpen, onClose, recycleType}:RecycleProps) => {
     const handleRestore = (id:string) =>{
         dispatch(currentActions.restore({id})).then(() => {
             setDeletedItems((prev) =>prev.filter((item)=>item.id !== id))
+            if (recycleType === "portion") {
+              dispatch(fetchPortions());
+            }
         });
     };
 

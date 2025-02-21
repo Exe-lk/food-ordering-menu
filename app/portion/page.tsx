@@ -29,15 +29,11 @@ const Page = () => {
   const [isRecycleBinOpen, setIsRecycleBinOpen] = useState(false);
 
   useEffect(() => {
-    if (!fetched) {
-      dispatch(fetchPortions());
-    }
-  }, [fetched, dispatch]);
+    dispatch(fetchPortions());
+  }, [dispatch]);
 
   useEffect(() => {
-    if (portions.length > 0) {
-      setLocalPortions(portions);
-    }
+    setLocalPortions(portions);
   }, [portions]);
 
   const handleEdit = (index: number) => {
