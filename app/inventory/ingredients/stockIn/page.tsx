@@ -9,6 +9,7 @@ import StockInHeading from "@/components/Headings/StockInHeading";
 import { fetchTransactions } from "@/redux/features/transactionSlice";
 import TransactionCard from "@/components/TransactionCard";
 import { months } from "@/constants/months";
+import ProgressBar from "@/components/ProgressBar";
 
 const Page = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -150,7 +151,7 @@ const Page = () => {
         <StockInHeading />
         <div className="mt-4">
           {loading ? (
-            <p className="text-black">Loading...</p>
+           <ProgressBar/>
           ) : error ? (
             <p className="text-red-500">{error}</p>
           ) : filteredTransactions.length > 0 ? (

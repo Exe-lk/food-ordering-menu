@@ -51,32 +51,35 @@ const Login = () => {
   };
 
   return (
-    <div className="flex h-screen items-center justify-center bg-gray-100">
-      <div className="relative flex w-full max-w-4xl bg-white shadow-2xl rounded-3xl overflow-hidden">
-        {/* Background Image Section */}
-        <div
-          className="hidden md:block md:w-1/2 bg-cover bg-center relative"
-          style={{
-            backgroundImage: 'url("/assets/login.png")',
-            backgroundSize: "cover",
-            backgroundRepeat: "no-repeat",
-          }}
-        ></div>
+    <div className="flex items-center justify-center min-h-screen bg-white">
+      {/* Outer container with fixed width/height to replicate pixel-perfect design */}
+      <div className="relative w-[900px] h-[550px] bg-white rounded-[20px] shadow-lg overflow-hidden flex">
+        {/* Left section with the background food image */}
+        <div className="w-1/2 h-full relative">
+          <img
+            src="/assets/login.png"
+            alt="Food Background"
+            className="w-full h-full object-cover"
+          />
+          {/* Circular cutout in the top-left corner */}
+          <div className="absolute top-4 left-4 w-8 h-8 bg-white rounded-full shadow"></div>
+        </div>
 
-        <div className="w-full md:w-1/2 p-8 flex flex-col justify-center">
-          <h2 className="text-3xl font-bold text-blue-900 mb-4 text-center">
+        {/* Right section: the login form */}
+        <div className="w-1/2 h-full flex flex-col justify-center px-10 py-8 bg-[#fefefe]">
+          <h2 className="text-3xl font-bold text-gray-800 mb-2 text-center">
             Welcome Back!
           </h2>
           <p className="text-gray-600 mb-6 text-center text-sm">
-            Please enter your username and password to proceed
+            Please enter valid credentials to proceed
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <input
                 type="text"
-                placeholder="Username"
-                className="w-full px-4 py-2 border border-gray-300 rounded-md text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                placeholder="Your Name"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md text-gray-700 focus:ring-2 focus:ring-orange-500 focus:outline-none"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
@@ -86,7 +89,7 @@ const Login = () => {
               <input
                 type="password"
                 placeholder="Password"
-                className="w-full px-4 py-2 border border-gray-300 rounded-md text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md text-gray-700 focus:ring-2 focus:ring-orange-500 focus:outline-none"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -94,7 +97,7 @@ const Login = () => {
             </div>
             <button
               type="submit"
-              className="w-full bg-blue-900 text-white font-bold py-2 rounded-md hover:bg-blue-800 transition duration-300"
+              className="w-full bg-[#c47d5e] text-white font-bold py-2 rounded-md hover:bg-[#b36d53] transition duration-300"
             >
               Login
             </button>

@@ -39,7 +39,7 @@ const Page = () => {
       <div className="p-4 min-h-screen bg-beige ml-14 w-full" >
       {/* Header Section */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold text-customblue text-center">
+        <h1 className="text-3xl font-bold text-customGold text-center">
           Order Management
         </h1>
        <SearchBar placeholder="Search Orders" onSearch={setSearchQuery} />
@@ -52,8 +52,8 @@ const Page = () => {
             onClick={() => setActiveFilter(filter)}
             className={`px-4 py-2 rounded-md border ${
               activeFilter === filter
-                ? "bg-customblue text-white font-bold"
-                : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                ? "bg-customGold text-white font-bold"
+                : "bg-white text-gray-700 border-customGold hover:bg-gray-100"
             }`}
           >
             {filter}

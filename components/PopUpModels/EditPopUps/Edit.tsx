@@ -5,10 +5,11 @@ import { useDropzone } from "react-dropzone";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/redux/store";
 import { fetchPortions } from "@/redux/features/portionSlice";
-import { fetchProducts } from "@/redux/features/internalProductSlice";
 import { fetchMenus } from "@/redux/features/menuSlice";
-import { updateProduct } from "@/redux/features/internalProductSlice";
+import { updateProduct,clearError } from "@/redux/features/internalProductSlice";
 import { InternalFood, FoodSize } from "@/redux/features/internalProductSlice";
+import Swal from "sweetalert2";
+
 
 interface EditProps {
     isOpen: boolean;
@@ -53,6 +54,37 @@ const Edit = ({ isOpen, onClose, product }: EditProps) => {
   };
   const handleSubmit = async(e:React.FormEvent<HTMLFormElement>)=>{
     e.preventDefault();
+
+    if(
+      !updatedProduct.name.trim() ||
+      !updatedProduct.category.trim() ||
+      !updatedProduct.description.trim()
+    ) {
+      Swal.fire({
+        title: "Error",
+        text: "Please fill out all required fields (name, category, description).",
+        icon: "error",
+      });
+      return;
+    }
+    if (!updatedProduct.currentImageUrl) {
+      Swal.fire({
+        title: "Error",
+        text: "Product image is required.",
+        icon: "error",
+      });
+      return;
+    }
+    for (const size of productSizes) {
+      if (!size.size.trim() || !size.price.trim()) {
+        Swal.fire({
+          title: "Error",
+          text: "Please fill out all portion and price fields.",
+          icon: "error",
+        });
+        return;
+      }
+    }
     const resultAction = await dispatch(
         updateProduct({
           id: product.id,
@@ -62,6 +94,15 @@ const Edit = ({ isOpen, onClose, product }: EditProps) => {
       );
       if (resultAction.meta.requestStatus === "fulfilled") {
         onClose();
+    }else{
+      Swal.fire({
+        title: "Error",
+        text:
+          (resultAction.payload as string) ||
+          "Failed to update product. Please try again.",
+        icon: "error",
+      });
+      dispatch(clearError());
     }
   }
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -85,7 +126,7 @@ const Edit = ({ isOpen, onClose, product }: EditProps) => {
       <div className="bg-white rounded-lg shadow-lg p-10 w-[650px] max-h-[700px] overflow-y-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-semibold text-center w-full">Edit Product</h2>
+          <h2 className="text-2xl font-semibold text-center w-full text-customGold">Edit Product</h2>
           <button onClick={onClose} className="text-gray-500 text-2xl font-bold hover:text-gray-700">
             <FiX />
           </button>
@@ -96,11 +137,11 @@ const Edit = ({ isOpen, onClose, product }: EditProps) => {
             <label className="block text-gray-700 font-medium">Image</label>
             <div
               {...getRootProps()}
-              className="border-2 border-dashed border-gray-300 p-4 rounded-lg flex flex-col items-center justify-center cursor-pointer"
+              className="border-2 border-dashed border-customorange p-4 rounded-lg flex flex-col items-center justify-center cursor-pointer"
             >
               <input {...getInputProps()} />
               {isDragActive ? (
-                    <p className="text-customblue">Drag & Drop the Image Here....</p>
+                    <p className="text-customGold">Drag & Drop the Image Here....</p>
                 ) : updatedProduct.currentImageUrl ? (
                 <div className="flex flex-col items-center">
                     <img 
@@ -108,7 +149,7 @@ const Edit = ({ isOpen, onClose, product }: EditProps) => {
                     alt="Preview" 
                     className="w-40 h-40 object-cover rounded-lg mb-2" 
                     />
-                    <p className="mt-2 text-gray-700">Drag & Drop to replace or click to upload new image</p>
+                    <p className="mt-2 text-customGold">Drag & Drop to replace or click to upload new image</p>
                 </div>
                 ) : (
                 <>
@@ -196,7 +237,7 @@ const Edit = ({ isOpen, onClose, product }: EditProps) => {
           <div className="justify-center items-center mt-5">
             <button
               type="button"
-              className="w-[30%] mt-3 bg-customblue text-white py-2 rounded-md hover:bg-blue-800"
+              className="w-[30%] mt-3 bg-customGold text-white py-2 rounded-md hover:bg-orange-500"
               onClick={handleAddSize}
             >
               + Add Portion
@@ -217,7 +258,7 @@ const Edit = ({ isOpen, onClose, product }: EditProps) => {
           <div className="mt-5 flex justify-center items-center">
             <button
               type="submit"
-              className="bg-customblue w-[30%] text-white px-5 py-2 rounded-md hover:bg-blue-800"
+              className="bg-customGold w-[30%] text-white px-5 py-2 rounded-md hover:bg-orange-500"
             >
               {loading ? "Updating..." : "Update"}
             </button>

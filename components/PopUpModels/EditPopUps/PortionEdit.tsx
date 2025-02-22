@@ -58,7 +58,7 @@ const PortionEdit = ({ isOpen, onClose, portion }: PortionEditProps) => {
         >
           <FiX />
         </button>
-        <h2 className="text-xl font-semibold text-center mb-4 text-customblue">Edit Portion</h2>
+        <h2 className="text-xl font-semibold text-center mb-4 text-customGold">Edit Portion</h2>
 
         <div className="mb-3">
           <label className="block text-gray-700 font-medium">Name</label>
@@ -85,7 +85,7 @@ const PortionEdit = ({ isOpen, onClose, portion }: PortionEditProps) => {
         <button
           onClick={handleUpdate}
           disabled={loading}
-          className="w-full bg-customblue text-white py-2 rounded-md hover:bg-blue-900 cursor-pointer"
+          className="w-full bg-customGold text-white py-2 rounded-md hover:bg-orange-500 cursor-pointer"
         >
           {loading ? "Updating..." : "Update"}
         </button>

@@ -4,7 +4,8 @@ import { FiX } from 'react-icons/fi'
 import { useDispatch } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { useSelector } from 'react-redux';
-import { fetchCategories, addCategory } from '@/redux/features/ingredientCategorySlice';
+import { fetchCategories, addCategory, clearError  } from '@/redux/features/ingredientCategorySlice';
+import Swal from "sweetalert2";
 
 interface CategoryProps{
     isOpen:boolean;
@@ -24,7 +25,12 @@ const CategoryCreate = ({isOpen, onClose}:CategoryProps) => {
             dispatch(fetchCategories());
             onClose();
         } catch (error) {
-            console.error("Error Creating Category:", error);
+            Swal.fire({
+                title: "Error",
+                text: (error as string) || "Failed to create category.",
+                icon: "error",
+            });
+            dispatch(clearError())
         }
     }
   return (
@@ -33,7 +39,7 @@ const CategoryCreate = ({isOpen, onClose}:CategoryProps) => {
             <button onClick={(onClose)} className='absolute top-3 right-3 text-gray-700 text-2xl'>
                 <FiX/>
             </button>
-            <h2 className='text-xl font-semibold text-center mb-4 text-customblue'>Create Category</h2>
+            <h2 className='text-xl font-semibold text-center mb-4 text-customGold'>Create Category</h2>
             <div className='mb-3'>
                 <label htmlFor="categoryname" className='block text-gray-700 font-medium'>Name</label>
                 <input 
@@ -47,7 +53,7 @@ const CategoryCreate = ({isOpen, onClose}:CategoryProps) => {
             <button
                 onClick={handleCreate}
                 disabled={loading}
-                className='w-full bg-customblue text-white py-2 rounded-md hover:bg-blue-900 cursor-pointer'
+                className='w-full bg-customGold text-white py-2 rounded-md hover:bg-orange-500 cursor-pointer'
             >
                 {loading ? "Creating...":"Create"}
             </button>

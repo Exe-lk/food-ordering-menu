@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { FiX } from "react-icons/fi";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
-import { addEmployee, fetchEmployees } from "@/redux/features/employeeSlice";
+import { addEmployee, clearError, fetchEmployees } from "@/redux/features/employeeSlice";
 import Swal from "sweetalert2";
 
 interface EmployeeProps {
@@ -29,8 +29,8 @@ const CreateEmployee = ({ isOpen, onClose }: EmployeeProps) => {
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // Prevent the default form submission (page reload)
-    
+    e.preventDefault();
+  
     if (
       !formData.name ||
       !formData.empId ||
@@ -47,16 +47,33 @@ const CreateEmployee = ({ isOpen, onClose }: EmployeeProps) => {
       });
       return;
     }
-    
+  
     try {
       await dispatch(addEmployee(formData)).unwrap();
       dispatch(fetchEmployees());
       onClose();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to add employee:", error);
-      alert(error || "Failed to create employee.");
+      if (error === "Employee Already exists") {
+        Swal.fire({
+          title: "Employee Already Exists",
+          text: "An employee with this ID already exists. Please try a different ID.",
+          icon: "error",
+          confirmButtonText: "Try Again",
+        });
+      } else {
+        Swal.fire({
+          title: "Error",
+          text: error || "Failed to create employee.",
+          icon: "error",
+          confirmButtonText: "Try Again",
+        });
+      }
+      dispatch(clearError());
     }
   };
+
+  
   
 
   if (!isOpen) return null;
@@ -66,7 +83,7 @@ const CreateEmployee = ({ isOpen, onClose }: EmployeeProps) => {
       <div className="bg-white p-6 rounded-lg shadow-lg w-[450px] relative">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold text-gray-900">Create Employee</h2>
+          <h2 className="text-xl font-semibold text-customGold">Create Employee</h2>
           <button onClick={onClose} className="text-gray-500 text-2xl hover:text-gray-700">
             <FiX />
           </button>
@@ -160,7 +177,7 @@ const CreateEmployee = ({ isOpen, onClose }: EmployeeProps) => {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+              className="w-full bg-customGold text-white py-2 rounded hover:bg-orange-500 transition"
             >
               Create
             </button>

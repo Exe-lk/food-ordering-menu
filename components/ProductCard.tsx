@@ -12,14 +12,14 @@ interface ProductCardProps {
 const ProductCard = ({name, portions, image}:ProductCardProps) => {
     const [showPopup, setShowPopUp] = useState(false);
   return (
-    <div className="relative rounded-lg shadow-lg overflow-hidden mt-5">
+    <div className="relative rounded-3xl shadow-lg overflow-hidden mt-5">
             {/* Background Image */}
             <img src={image} alt={name} className="w-full h-56 object-cover" />
 
             {/* Gradient Overlay */}
             <div className="absolute inset-0">
                 {/* Text Content */}
-                <div className="absolute bottom-0 p-4 text-white w-full bg-black bg-opacity-85">
+                <div className="absolute bottom-0 p-4 text-customGold w-full bg-overlayBack">
                     <h3 className="font-bold text-lg mb-2">{name}</h3>
                     <div>
                         {portions.map((portion, index) => (
@@ -34,7 +34,7 @@ const ProductCard = ({name, portions, image}:ProductCardProps) => {
             {/* Add Button */}
             <button 
             onClick={() => setShowPopUp(true)}
-            className="absolute bottom-4 right-4 bg-red-500 text-white px-4 py-2 rounded shadow-lg">
+            className="absolute bottom-4 right-4 bg-customGold text-white px-4 py-2 rounded shadow-lg">
                 Add +
             </button>
             {/* Portion Selection Pop UP */}

@@ -4,7 +4,8 @@ import { FiX } from 'react-icons/fi'
 import { useDispatch } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { useSelector } from 'react-redux';
-import { addMenu, fetchMenus } from '@/redux/features/menuSlice';
+import { addMenu, clearError, fetchMenus } from '@/redux/features/menuSlice';
+import Swal from 'sweetalert2';
 
 interface MenuProps{
     isOpen:boolean;
@@ -28,7 +29,12 @@ const MenuCreate = ({isOpen, onClose}:MenuProps) => {
             dispatch(fetchMenus());
             onClose();
         } catch (error) {
-            console.error("Error creating menu:", error);
+            Swal.fire({
+                title: "Error",
+                text: (error as string) || "Failed to create category.",
+                icon: "error",
+                });
+            dispatch(clearError())
         }
     };
 
@@ -44,7 +50,7 @@ const MenuCreate = ({isOpen, onClose}:MenuProps) => {
             <button onClick={onClose} className='absolute top-3 right-3 text-gray-700 text-2xl'>
                 <FiX/>
             </button>
-            <h2 className='text-xl font-semibold text-center mb-4 text-customblue'>Create Menu</h2>
+            <h2 className='text-xl font-semibold text-center mb-4 text-customGold'>Create Menu</h2>
             <div className='mb-3'>
                 <label className='block text-gray-700 font-medium'>Menu Name</label>
                 <input 
@@ -82,7 +88,7 @@ const MenuCreate = ({isOpen, onClose}:MenuProps) => {
             <button 
             onClick={handleCreate}
             disabled={loading}
-            className='w-full bg-customblue text-white py-2 rounded-md hover:bg-blue-900 cursor-pointer'>
+            className='w-full bg-customGold text-white py-2 rounded-md hover:bg-orange-500 cursor-pointer'>
                 {loading ? "Creating..." :"Create"}
             </button>
         </div>

@@ -7,6 +7,7 @@ import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { fetchOrders, Order } from '@/redux/features/orderSlice';
+import NavBar from '@/components/MenuSide/NavBar';
 
 const page = () => {
   const router = useRouter();
@@ -56,9 +57,8 @@ const page = () => {
         });
         return;
       }
-
-      // If no active order occupies the selected table, update customer details.
-      await dispatch(updateCustomerDetails({ phone, name, tableNumber })).unwrap();
+      localStorage.setItem("tableNumber", tableNumber);
+      await dispatch(updateCustomerDetails({ phone, name})).unwrap();
       router.push("/menu/home");
     } catch (error: any) {
       Swal.fire({
@@ -71,39 +71,49 @@ const page = () => {
 
 
   return (
-    <div className='container mx-auto'>
-      <div className='flex items-center justify-center min-h-screen bg-cover bg-center bg-no-repeat' style={{ backgroundImage: 'url(/images/background/authback.jpg)' }}>
-        <div className='bg-black p-6 rounded-lg w-80'>
-          <h1 className='text-white text-xl font-semibold text-left mb-6'>Name</h1>
-          <input 
-            type="text" 
-            placeholder='Your Name'
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className='w-full px-4 py-3 rounded-md text-sm bg-gray-300 text-black outline-none focus:ring-2 focus:ring-red-600 mb-6'
-          />
-          <h1 className='text-white text-xl font-semibold text-left mb-6'>Table Number</h1>
-          <select 
-            value={tableNumber}
-            onChange={(e) => setTableNumber(e.target.value)}
-            className='w-full px-4 py-3 rounded-md text-sm bg-gray-300 text-black outline-none focus:ring-2 focus:ring-red-600 mb-6'
-          >
-            <option value="">Select Table Number</option>
-            {[...Array(10).keys()].map((val) => {
-              const tableVal = val + 1;
-              return (
-                <option key={tableVal} value={tableVal}>
-                  {tableVal}
-                </option>
-              );
-            })}
-          </select>
-          <button
-            onClick={handleClick}
-            className='w-full bg-blue-600 text-white font-medium py-3 rounded-md text-center'
-          >
-            Next
-          </button>
+    <div>
+      <NavBar/>
+      <div className='relative bg-white min-h-screen'>
+        <div className='container mx-auto flex flex-col xl:flex-row items-center justify-evenly px-6 md:px-12 py-12 x-10 bg-white'>
+        <div className="relative w-full h-96 md:w-[500px] md:h-[500px] rounded-full overflow-hidden z-10 mt-24 order-last xl:order-first">
+              <img
+                src="/assets/plate.jpg"
+                alt="Delicious Food"
+                className="object-cover w-full h-full"
+              />
+          </div>
+          <div className='bg-beige p-6 rounded-lg w-full xl:w-[30%] z-20 mt-20 md:mt-0'>
+            <h1 className='text-customorange text-xl font-semibold text-left mb-6'>Name</h1>
+            <input 
+              type="text" 
+              placeholder='Your Name'
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className='w-full px-4 py-3 rounded-md text-sm bg-white text-black border border-customorange mb-6'
+            />
+            <h1 className='text-customorange text-xl font-semibold text-left mb-6'>Table Number</h1>
+            <select 
+              value={tableNumber}
+              onChange={(e) => setTableNumber(e.target.value)}
+              className='w-full px-4 py-3 rounded-md text-sm bg-white text-black border border-customorange mb-6'
+            >
+              <option value="">Select Table Number</option>
+              {[...Array(10).keys()].map((val) => {
+                const tableVal = val + 1;
+                return (
+                  <option key={tableVal} value={tableVal}>
+                    {tableVal}
+                  </option>
+                );
+              })}
+            </select>
+            <button
+              onClick={handleClick}
+              className='w-full bg-customorange text-white font-medium py-3 rounded-md text-center'
+            >
+              Next
+            </button>
+          </div>
         </div>
       </div>
     </div>

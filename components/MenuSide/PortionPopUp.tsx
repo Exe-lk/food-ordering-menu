@@ -48,10 +48,10 @@ const PortionPopUp = ({ name, portions, image, onClose }: PortionPopUpProps) => 
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
-      <div className="bg-black p-6 rounded-lg shadow-lg w-96">
-        <h2 className="text-xl font-bold mb-4 text-white">{name}</h2>
+      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+        <h2 className="text-xl font-bold mb-4 text-customorange">{name}</h2>
         <div className="mb-4">
-          <label className="block font-bold mb-2 text-white">Select Portions:</label>
+          <label className="block font-bold mb-2 text-customorange">Select Portions:</label>
           {portions.map((portion, index) => (
             <div key={index} className="mb-4">
               <input
@@ -70,18 +70,18 @@ const PortionPopUp = ({ name, portions, image, onClose }: PortionPopUpProps) => 
                   }
                 }}
               />
-              <label htmlFor={portion.size} className="ml-2 text-white">
+              <label htmlFor={portion.size} className="ml-2 text-customorange">
                 {portion.size} - {portion.price} LKR
               </label>
               {selectedPortions.some((p) => p.size === portion.size) && (
                 <div className="mt-2 flex items-center">
                   <button
                     onClick={() => handleQuantityChange(portion.size, -1)}
-                    className="w-8 h-8 bg-gray-700 text-white rounded-md flex items-center justify-center"
+                    className="w-8 h-8 bg-gray-700 text-customorange rounded-md flex items-center justify-center"
                   >
                     -
                   </button>
-                  <span className="mx-4 text-lg text-white">
+                  <span className="mx-4 text-lg text-customorange">
                     {
                       selectedPortions.find((p) => p.size === portion.size)
                         ?.quantity || 1
@@ -89,7 +89,7 @@ const PortionPopUp = ({ name, portions, image, onClose }: PortionPopUpProps) => 
                   </span>
                   <button
                     onClick={() => handleQuantityChange(portion.size, 1)}
-                    className="w-8 h-8 bg-gray-700 text-white rounded-md flex items-center justify-center"
+                    className="w-8 h-8 bg-gray-700 text-customorange rounded-md flex items-center justify-center"
                   >
                     +
                   </button>
@@ -101,13 +101,13 @@ const PortionPopUp = ({ name, portions, image, onClose }: PortionPopUpProps) => 
         <div className="flex justify-end gap-2">
           <button
             onClick={onClose}
-            className="bg-gray-800 text-white p-2 rounded-md w-16"
+            className="bg-customBeige text-customGold border border-customGold p-2 rounded-md w-16"
           >
             Cancel
           </button>
           <button
             onClick={handleAddToCart}
-            className="bg-red-500 text-white px-4 py-2 rounded-md w-16"
+            className="bg-customGold text-white px-4 py-2 rounded-md w-16"
           >
             Add
           </button>

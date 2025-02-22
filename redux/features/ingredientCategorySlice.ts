@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { db } from "@/config/firebase";
 import { collection, doc, getDoc, getDocs, addDoc, updateDoc, serverTimestamp, query,where, deleteDoc,writeBatch } from "firebase/firestore";
-import ingredientCategories from "@/data/ingredientCategories";
+
 
 export interface IngredientCategory {
     id:string;
@@ -185,7 +185,11 @@ string,
 const categorySlice = createSlice({
     name:"ingredientCategory",
     initialState,
-    reducers:{},
+    reducers:{
+      clearError: (state) => {
+        state.error = null;
+      },
+    },
     extraReducers:(builder) =>{
         builder
         .addCase(fetchCategories.pending, (state) => {
@@ -222,5 +226,5 @@ const categorySlice = createSlice({
         })
     }
 });
-
+export const {clearError} = categorySlice.actions;
 export default categorySlice.reducer;

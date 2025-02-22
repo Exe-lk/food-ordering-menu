@@ -155,6 +155,9 @@ const OrderCard = ({ order }: OrderCardProps) => {
           </div>
         )}
       </div>
+      <div className="flex flex-col items-center justify-center">
+        <span className="text-gray-700 font-semibold"> {new Date(order.created_at).toLocaleString()}</span>
+      </div>
     </div>
   );
 };

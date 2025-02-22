@@ -57,9 +57,9 @@ const StockOut = ({
         >
           <FiX />
         </button>
-        <h2 className="text-2xl font-bold mb-4 text-customblue">Stock Out</h2>
+        <h2 className="text-2xl font-bold mb-4 text-customGold">Stock Out</h2>
         <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-2 gap-4 mb-4 text-customblue">
+          <div className="grid grid-cols-2 gap-4 mb-4 text-customGold">
             <div className="col-span-2">
               <label className="block font-semibold mb-1">
                 Ingredient Name

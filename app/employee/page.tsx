@@ -13,6 +13,7 @@ import CreateEmployee from '@/components/PopUpModels/CreateEmployee';
 import Confirm from '@/components/PopUpModels/Confirm';
 import EmployeeEdit from '@/components/PopUpModels/EditPopUps/EmployeeEdit';
 import RecycleModal from '@/components/RecycleModal';
+import ProgressBar from '@/components/ProgressBar';
 const page = () => {
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const dispatch = useDispatch<any>();
@@ -60,7 +61,7 @@ const page = () => {
       <Sidebar/>
       <div className='p-4 min-h-screen bg-beige ml-14 w-full'>
           <div className='flex items-center justify-between mb-6'>
-              <h1 className='text-3xl font-bold text-customblue'>Employee Management</h1>
+              <h1 className='text-3xl font-bold text-customGold'>Employee Management</h1>
               <SearchBar placeholder='Search Employees' onSearch={setSearchQuery}/>
           </div>
           <div className="flex space-x-4 mt-4 items-start justify-start w-full mb-3">
@@ -68,7 +69,7 @@ const page = () => {
           </div>
           <EmployeeHeading/>
           {loading ?(
-            <p>Loading..</p>
+            <ProgressBar/>
           ): localEmployees.length > 0 ?(
             <EmployeeCard employees={localEmployees} onEdit={handleEdit} onRemove={handleRemove}/>
           ):error ?(

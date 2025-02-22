@@ -192,6 +192,8 @@ const Sidebar = () => {
               <li>
                 <button
                   onClick={() => setIsIngredientsMenuOpen(!isIngredientsMenuOpen)}
+                  data-tooltip-id="sidebar-tooltip"
+                  data-tooltip-content="Manage Ingredients Here"
                   className={`w-full flex justify-between items-center p-1 rounded-md text-xl transition-colors duration-200 space-x-2 ${
                     isActiveLink("/inventory/ingredients") ||
                     isActiveLink("/inventory/ingredients/categories")
@@ -260,6 +262,8 @@ const Sidebar = () => {
               <li>
                 <a
                   href="/menutype"
+                  data-tooltip-id="sidebar-tooltip"
+                  data-tooltip-content="Manage Menus Here"
                   className={`flex items-center p-1 rounded-md text-xl transition-colors duration-200 space-x-2 ${
                     isActiveLink("/menuType")
                       ? "bg-gray-800"
@@ -277,6 +281,8 @@ const Sidebar = () => {
               <li>
                 <a
                   href="/employee"
+                  data-tooltip-id="sidebar-tooltip"
+                  data-tooltip-content="Manage Employees Here"
                   className={`flex items-center p-1 rounded-md text-xl transition-colors duration-200 space-x-2 ${
                     isActiveLink("/employee")
                       ? "bg-gray-800"
@@ -296,6 +302,8 @@ const Sidebar = () => {
               <li>
                 <a
                   href="/supplier"
+                  data-tooltip-id="sidebar-tooltip"
+                  data-tooltip-content="Manage Suppliers"
                   className={`flex items-center p-1 rounded-md text-xl transition-colors duration-200 space-x-2 ${
                     isActiveLink("/supplier")
                       ? "bg-gray-800"
@@ -315,6 +323,8 @@ const Sidebar = () => {
               <li>
                 <a
                   href="/qrgenerate"
+                  data-tooltip-id="sidebar-tooltip"
+                  data-tooltip-content="Generate QR Code"
                   className={`flex items-center p-1 rounded-md text-xl transition-colors duration-200 space-x-2 ${
                     isActiveLink("/qrgenerate")
                       ? "bg-gray-800"

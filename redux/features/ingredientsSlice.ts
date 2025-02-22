@@ -101,6 +101,57 @@ export const fetchDeletedIngredients = createAsyncThunk<
   }
 );
 
+export const updateIngredient = createAsyncThunk<
+  Ingredient,
+  { 
+    id: string; 
+    updatedIngredient: {
+      name: string;
+      category: string;
+      description: string;
+      unit: string;
+    };
+  },
+  { rejectValue: string; state: RootState }
+>(
+  "ingredients/updateIngredient",
+  async ({ id, updatedIngredient }, { rejectWithValue }) => {
+    try {
+      const ingredientRef = doc(db, "ingredients", id);
+      const updated_by = localStorage.getItem("Name") || "Unknown";
+      await updateDoc(ingredientRef, {
+        ...updatedIngredient,
+        updated_at: serverTimestamp(),
+        updated_by,
+      });
+      // Fetch the updated document so we can return the latest data
+      const docSnap = await getDoc(ingredientRef);
+      return {
+        id,
+        name: docSnap.data()?.name,
+        category: docSnap.data()?.category,
+        description: docSnap.data()?.description,
+        unit: docSnap.data()?.unit,
+        brand: docSnap.data()?.brand || "",
+        quantity: docSnap.data()?.quantity || "",
+        supplier: docSnap.data()?.supplier || "",
+        costPrice: docSnap.data()?.costPrice || "",
+        dateIn: docSnap.data()?.dateIn || "",
+        created_at:
+          docSnap.data()?.created_at?.toDate().toISOString() ||
+          new Date().toISOString(),
+        isDeleted: docSnap.data()?.isDeleted,
+        created_by: docSnap.data()?.created_by,
+        updated_at: docSnap.data()?.updated_at
+          ? docSnap.data()?.updated_at.toDate().toISOString()
+          : new Date().toISOString(),
+      } as Ingredient;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export const stockIn = createAsyncThunk<
   Ingredient, 
   {
@@ -361,7 +412,11 @@ export const stockOut = createAsyncThunk<
 const ingredientsSlice = createSlice({
     name:"ingredients",
     initialState,
-    reducers:{},
+    reducers:{
+      clearError: (state) => {
+        state.error = null;
+      },
+    },
     extraReducers:(builder) =>{
         builder
         .addCase(addIngredients.pending,(state) =>{
@@ -377,6 +432,18 @@ const ingredientsSlice = createSlice({
         .addCase(addIngredients.rejected,(state, action) =>{
             state.loading = false;
             state.error = action.payload ?? "An Error Occured";
+        })
+        .addCase(updateIngredient.pending,(state)=>{
+          state.loading = true;
+          state.error = null;
+        })
+        .addCase(updateIngredient.fulfilled,(state, action:PayloadAction<Ingredient>)=>{
+          state.loading = false;
+          state.ingredients.push(action.payload);
+        })
+        .addCase(updateIngredient.rejected,(state, action) =>{
+          state.loading = false;
+          state.error = action.payload ?? "An Error Occured"
         });
         builder
         .addCase(fetchIngredients.pending,(state) =>{
@@ -435,5 +502,6 @@ const ingredientsSlice = createSlice({
         
     }
 })
+export const { clearError } = ingredientsSlice.actions;
 export default ingredientsSlice.reducer;
 

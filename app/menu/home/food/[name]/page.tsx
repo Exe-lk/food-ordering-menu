@@ -10,6 +10,7 @@ import { fetchMenusByType, setSelectedMenu } from "@/redux/features/menuSlice";
 import MenuRow from "@/components/MenuSide/MenuRow";
 import MenuOverlay from "@/components/MenuSide/MenuOverlay";
 import NavBar from "@/components/MenuSide/NavBar";
+import CartSection from "@/components/MenuSide/CartSection";
 
 const MenuPage = () => {
   const [mounted, setMounted] = useState(false);
@@ -25,7 +26,7 @@ const MenuPage = () => {
   const [isOverlayOpen, setOverlayOpen] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchMenusByType("Bar"));
+    dispatch(fetchMenusByType("Food"));
   }, [dispatch]);
 
   useEffect(() => {
@@ -46,7 +47,7 @@ const MenuPage = () => {
   return (
     <div>
       <NavBar />
-      <div className="p-2 bg-white min-h-screen">
+      <div className="p-2 bg-white min-h-screen pb-20">
         <header className="flex justify-between items-center mb-4 border-b-2 border-white">
           <h1 className="text-3xl font-bold text-customorange">{selectedMenu} Menu</h1>
           <button className="bg-transparent text-customorange p-2 rounded">
@@ -80,6 +81,7 @@ const MenuPage = () => {
             ))}
           </div>
         )}
+        <CartSection/>
       </div>
     </div>
   );

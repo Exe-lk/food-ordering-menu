@@ -13,11 +13,23 @@ interface CardProps {
   portions: Portion[];
   onEdit: () => void;
   onRemove: () => void;
+  onView:() => void;
 }
 
-const InternalCard = ({ name, description, portions, onEdit, onRemove }: CardProps) => {
+const InternalCard = ({ name, description, portions, onEdit, onRemove, onView }: CardProps) => {
+  const handleCardClick = () => {
+    onView();
+  };
+  const stopPropagation = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
+
   return (
-    <div className="grid grid-cols-4 items-center border rounded-lg shadow-md p-4 mb-4 bg-white hover:bg-gray-300 transition-all duration-300 cursor-pointer">
+    <div 
+      className="grid grid-cols-4 items-center border rounded-lg shadow-md p-4 mb-4 bg-white hover:bg-gray-300 transition-all duration-300 cursor-pointer"
+      onClick={handleCardClick}
+      title="Click to view more details"
+    >
       {/* Name Column */}
       <div className="text-gray-900 font-bold px-2 items-center justify-center text-center">{name}</div>
 
@@ -34,7 +46,9 @@ const InternalCard = ({ name, description, portions, onEdit, onRemove }: CardPro
       <div className="text-gray-700 text-sm px-2 border-r border-gray-600">{description}</div>
 
       {/* Actions Column */}
-      <ActionButton onEdit={onEdit} onRemove={onRemove} />
+      <div onClick={stopPropagation}>
+        <ActionButton onEdit={onEdit} onRemove={onRemove} />
+      </div>
     </div>
   );
 };

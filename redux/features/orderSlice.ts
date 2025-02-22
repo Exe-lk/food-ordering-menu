@@ -1,6 +1,6 @@
 // orderSlice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { ref, get, push, set, update } from "firebase/database";
+import { ref, get, push, set, update, serverTimestamp } from "firebase/database";
 import { database } from "@/config/firebase";
 import { RootState } from "@/redux/store";
 import { CartItem } from "./cartSlice";
@@ -80,7 +80,7 @@ export const placeOrder = createAsyncThunk<
     phoneNumber,
     tableNumber,
     status: "Pending",
-    created_at: Date.now(),
+    created_at: serverTimestamp(),
   };
 
   try {
@@ -94,7 +94,7 @@ export const placeOrder = createAsyncThunk<
       phoneNumber,
       tableNumber,
       status: "pending",
-      created_at: new Date(orderData.created_at).toISOString(),
+      created_at: new Date().toISOString(),
     };
     return order;
   } catch (error: any) {

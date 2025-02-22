@@ -1,6 +1,6 @@
 "use client"
 import React, { useEffect, useState } from 'react'
-import { FiX } from 'react-icons/fi'
+import { FiX, FiEye, FiEyeOff } from 'react-icons/fi'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/redux/store'
 import { updateEmployee, fetchEmployees} from '@/redux/features/employeeSlice'
@@ -28,6 +28,7 @@ const EmployeeEdit = ({isOpen, onClose, employee}:EmployeeEditProps) => {
     const [empId, setEmpID] = useState(employee.empId)
     const [contact, setContact] = useState(employee.contact)
     const [username, setUsername] = useState(employee.username)
+    const [showPassword, setShowPassword] = useState(false);
 
     useEffect(() =>{
         if(employee){
@@ -77,7 +78,7 @@ const EmployeeEdit = ({isOpen, onClose, employee}:EmployeeEditProps) => {
          <div className="bg-white p-6 rounded-lg shadow-lg w-[450px] relative">
            {/* Header */}
            <div className="flex items-center justify-between mb-4">
-             <h2 className="text-xl font-semibold text-gray-900">Update Employee</h2>
+             <h2 className="text-xl font-semibold text-customGold">Update Employee</h2>
              <button onClick={onClose} className="text-gray-500 text-2xl hover:text-gray-700">
                <FiX />
              </button>
@@ -126,17 +127,24 @@ const EmployeeEdit = ({isOpen, onClose, employee}:EmployeeEditProps) => {
                </div>
    
                {/* Password */}
-               <div>
-                 <label className="block text-gray-700 font-medium">Password</label>
-                 <input
-                   type="password"
-                   name="password"
-                   value={password}
-                   onChange={(e) => setPassword(e.target.value)}
-                   className="w-full p-2 border border-gray-300 rounded mt-1"
-                   required
-                 />
-               </div>
+               <div className="relative">
+                <label className="block text-gray-700 font-medium">Password</label>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full p-2 pr-10 border border-gray-300 rounded mt-1"
+                  required
+                />
+                <span
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-3/4 transform -translate-y-1/2 cursor-pointer text-gray-500"
+                >
+                  {showPassword ? <FiEyeOff /> : <FiEye />}
+                </span>
+              </div>
+
    
                {/* Role Dropdown */}
                <div>
@@ -171,7 +179,7 @@ const EmployeeEdit = ({isOpen, onClose, employee}:EmployeeEditProps) => {
                {/* Submit Button */}
                <button
                  type="submit"
-                 className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+                 className="w-full bg-customGold text-white py-2 rounded hover:bg-orange-500 transition"
                >
                  Update
                </button>

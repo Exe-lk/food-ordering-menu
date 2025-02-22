@@ -7,7 +7,7 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() =>{
-    router.push('/menu/login');
+    router.push('/home');
   },[router])
 
   return null

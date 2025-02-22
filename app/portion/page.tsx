@@ -14,6 +14,7 @@ import PortionEdit from "@/components/PopUpModels/EditPopUps/PortionEdit";
 import RecycleBinButton from "@/components/RecycleBin";
 import PortionRecycleBin from "@/components/RecycleBins/PortionRecycleBin";
 import RecycleModal from "@/components/RecycleModal";
+import ProgressBar from "@/components/ProgressBar";
 
 const Page = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -28,15 +29,11 @@ const Page = () => {
   const [isRecycleBinOpen, setIsRecycleBinOpen] = useState(false);
 
   useEffect(() => {
-    if (!fetched) {
-      dispatch(fetchPortions());
-    }
-  }, [fetched, dispatch]);
+    dispatch(fetchPortions());
+  }, [dispatch]);
 
   useEffect(() => {
-    if (portions.length > 0) {
-      setLocalPortions(portions);
-    }
+    setLocalPortions(portions);
   }, [portions]);
 
   const handleEdit = (index: number) => {
@@ -68,7 +65,7 @@ const Page = () => {
       <Sidebar/>
       <div className="p-4 min-h-screen bg-beige w-full ml-14">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold text-customblue">Portion Management</h1>
+        <h1 className="text-3xl font-bold text-customGold">Portion Management</h1>
         <SearchBar placeholder="Search Portions" onSearch={setSearchQuery} />
       </div>
       <div className="flex space-x-4 mt-4 items-start justify-start w-full mb-3">
@@ -77,7 +74,7 @@ const Page = () => {
       <Heading titles={["Portion Name", "Served Number"]} />
 
       {loading ? (
-        <p>Loading...</p>
+        <ProgressBar/>
       ) : localPortions.length > 0 ? (
         <PortionCard portions={localPortions} onEdit={handleEdit} onRemove={handleRemove} />
       ) : error ? (

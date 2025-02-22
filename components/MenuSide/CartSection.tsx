@@ -1,29 +1,57 @@
 // src/components/CartSection.tsx
 "use client";
-import { RootState } from "@/redux/store";
 import React from "react";
 import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 import { FaShoppingCart } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 
 const CartSection = () => {
-  // Get the total items in the cart from Redux.
   const totalItems = useSelector((state: RootState) => state.cart.totalItems);
   const router = useRouter();
 
-  // Do not render anything if there are no items in the cart.
+  // Hide if cart is empty
   if (totalItems === 0) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-red-800 text-white px-4 py-2 flex justify-between items-center shadow-lg">
-      <span>
+    <div
+      className="
+        fixed
+        bottom-0
+        left-0
+        right-0
+        z-50
+        flex
+        items-center
+        justify-between
+        px-4
+        py-3
+        bg-overlayBack      
+        text-white
+        rounded-t-2xl     
+        shadow-md
+      "
+      style={{ height: "70px" }} // Adjust to match the exact height in your design
+    >
+      <span className="font-semibold">
         {totalItems} Item{totalItems > 1 ? "s" : ""} in Cart
       </span>
+
       <button
-        className="text-white px-4 rounded"
+        className="
+          flex
+          items-center
+          justify-center
+          bg-customorange
+          rounded-full
+          p-3
+          hover:bg-[#a9643c]   /* Slight hover effect */
+          transition
+          duration-300
+        "
         onClick={() => router.push("/menu/cart")}
       >
-        <FaShoppingCart size={24} />
+        <FaShoppingCart size={20} />
       </button>
     </div>
   );
