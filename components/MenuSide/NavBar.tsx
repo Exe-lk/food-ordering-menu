@@ -9,7 +9,6 @@ import { useSelector } from 'react-redux';
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false)
-  const cartCount = useSelector((state: RootState) => state.cart.totalItems);
 
   const router = useRouter();
 
@@ -60,11 +59,6 @@ const NavBar = () => {
             onClick={() => router.push("/menu/cart")}
           >
             <FaShoppingCart />
-            {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold px-1 rounded-full">
-                {cartCount}
-              </span>
-            )}
           </div>
           <div
             className="md:hidden text-2xl cursor-pointer text-[#C9893C] hover:text-orange-400 transition-colors"

@@ -6,6 +6,7 @@ import { checkPhoneExists } from '@/redux/features/customerSlice'
 import { RootState } from '@/redux/store'
 import Swal from 'sweetalert2'
 import NavBar from '@/components/MenuSide/NavBar'
+import Cookies from 'js-cookie'
 
 const page = () => {
   const router = useRouter();
@@ -40,6 +41,7 @@ const page = () => {
 
     const result = await dispatch(checkPhoneExists(phone)).unwrap();
     localStorage.setItem("phone", phone);
+    Cookies.set("phone",phone,{expires:1});
 
     if (result.exists) {
       router.push("/menu/table");

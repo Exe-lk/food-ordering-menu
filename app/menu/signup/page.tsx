@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { fetchOrders, Order } from '@/redux/features/orderSlice';
 import NavBar from '@/components/MenuSide/NavBar';
+import Cookies from "js-cookie"
 
 const page = () => {
   const router = useRouter();
@@ -58,6 +59,7 @@ const page = () => {
         return;
       }
       localStorage.setItem("tableNumber", tableNumber);
+      Cookies.set("tableNumber",tableNumber,{expires:1});
       await dispatch(updateCustomerDetails({ phone, name})).unwrap();
       router.push("/menu/home");
     } catch (error: any) {

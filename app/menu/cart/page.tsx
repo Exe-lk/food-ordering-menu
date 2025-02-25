@@ -3,7 +3,7 @@
 
 import { removeFromCart, updateQuantity, clearCart } from "@/redux/features/cartSlice";
 import { RootState } from "@/redux/store";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaArrowLeft, FaTrashAlt } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
@@ -14,11 +14,13 @@ import NavBar from "@/components/MenuSide/NavBar";
 const CartPage = () => {
   const dispatch = useDispatch<any>();
   const router = useRouter();
-  
-  // New state to track whether the order is being placed.
-  const [isPlacing, setIsPlacing] = useState(false);
 
+  const [mounted, setMounted] = useState(false);
+  const [isPlacing, setIsPlacing] = useState(false);
   const cartItems = useSelector((state: RootState) => state.cart.items);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   const subTotal = cartItems.reduce(
     (total, item) => total + item.price * item.quantity,
     0
@@ -50,9 +52,9 @@ const CartPage = () => {
         timer: 2000,
         timerProgressBar: true,
         showConfirmButton: false,
-      }).then(() =>{
-        router.push("/menu/orders")
-      })
+      }).then(() => {
+        router.push("/menu/orders");
+      });
       dispatch(clearCart());
     } catch (error) {
       Swal.fire({
@@ -64,18 +66,22 @@ const CartPage = () => {
       setIsPlacing(false);
     }
   };
+  if (!mounted) {
+    return null;
+  }
 
+  // --- Render UI after mounting ---
   return (
     <div>
-      <NavBar/>
+      <NavBar />
       <div className="bg-white min-h-screen text-black p-4 flex flex-col">
-          <button
-            type="button"
-            onClick={() => router.back()}
-            className="text-customGold cursor-pointer"
-          >
-            <FaArrowLeft size={24} />
-          </button>
+        <button
+          type="button"
+          onClick={() => router.back()}
+          className="text-customGold cursor-pointer"
+        >
+          <FaArrowLeft size={24} />
+        </button>
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-xl font-bold text-center flex-grow -ml-8">
             Order Summary
@@ -134,7 +140,7 @@ const CartPage = () => {
           ))}
         </div>
 
-        <div className="bg-white p-4 border-2 border-black rounded-lg text-sm shadow-lg mt-4 w-full mx-auto">
+        <div className="bg-white p-4 border-2 border-black rounded-lg text-sm shadow-lg mt-4 w-full mx-auto mb-24">
           <div className="flex justify-between">
             <span>Total</span>
             <span>{subTotal} LKR</span>
@@ -150,14 +156,14 @@ const CartPage = () => {
         </div>
 
         <div className="fixed bottom-0 left-0 w-full bg-black rounded-t-[40px] p-4 flex items-center justify-center">
-        <button
-          onClick={handlePlaceOrder}
-          disabled={isPlacing}
-          className="bg-[#C47A4D] text-white w-[90%] py-3 text-center text-lg font-bold rounded-full disabled:opacity-50 max-w-sm"
-        >
-          {isPlacing ? "Placing..." : "Place Order"}
-        </button>
-      </div>
+          <button
+            onClick={handlePlaceOrder}
+            disabled={isPlacing}
+            className="bg-[#C47A4D] text-white w-[90%] py-3 text-center text-lg font-bold rounded-full disabled:opacity-50 max-w-sm"
+          >
+            {isPlacing ? "Placing..." : "Place Order"}
+          </button>
+        </div>
       </div>
     </div>
   );
