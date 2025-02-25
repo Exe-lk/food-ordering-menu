@@ -14,6 +14,7 @@ import MenuEdit from "@/components/PopUpModels/EditPopUps/MenuEdit";
 import RecycleBinButton from "@/components/RecycleBin";
 import RecycleModal from "@/components/RecycleModal";
 import Swal from "sweetalert2";
+import ProgressBar from "@/components/ProgressBar";
 
 const Page = () => {
   const dispatch = useDispatch<any>();
@@ -27,6 +28,8 @@ const Page = () => {
   const [isRecycleBinOpen, setIsRecycleBinOpen] = useState(false);
   const [selectedType, setSelectedType] = useState("All")
 
+  const [isPageLoading, setIsPageLoading] = useState(true);
+
   // Fetch menus if not already fetched
   useEffect(() => {
     if (!fetched) {
@@ -34,9 +37,11 @@ const Page = () => {
     }
   }, [fetched, dispatch]);
 
+  // When menus are loaded, update local state and disable the loader
   useEffect(() => {
     if (menus.length > 0) {
       setLocalMenus(menus);
+      setIsPageLoading(false);
     }
   }, [menus]);
 
@@ -76,6 +81,14 @@ const Page = () => {
       }
     }
   };
+
+  if (isPageLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+       <ProgressBar/>
+      </div>
+    );
+  }
 
   return (
     <div className="flex">

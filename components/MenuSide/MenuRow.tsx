@@ -1,27 +1,41 @@
-import React from 'react'
+import React from 'react';
+import { Menu } from '@/redux/features/menuSlice'; 
 
 interface MenuRowProps {
-  menus: string[]
-  onMenuSelect: (menu: string) => void
-  activeMenu: string
+  menus: Menu[];
+  onMenuSelect: (menu: Menu) => void;
+  activeMenu: Menu | null;
+  selectedMenuType: string;
 }
 
-const MenuRow = ({ menus, onMenuSelect, activeMenu }: MenuRowProps) => {
+const MenuRow: React.FC<MenuRowProps> = ({
+  menus,
+  onMenuSelect,
+  activeMenu,
+  selectedMenuType,
+}) => {
+  const filteredMenus = menus.filter(
+    (menu) =>
+      menu.menu_type?.toLowerCase() === selectedMenuType.toLowerCase()
+  );
+
   return (
     <div className="flex space-x-4 overflow-x-scroll p-4">
-      {menus.map((menu, index) => (
+      {filteredMenus.map((menu) => (
         <button
-          key={index}
+          key={menu.id}
           onClick={() => onMenuSelect(menu)}
-          className={`px-4 py-2 rounded-lg font-medium  w-96 whitespace-nowrap ${
-            menu === activeMenu ? 'bg-customorange text-white' : 'bg-customBeige border border-customorange text-customGold'
+          className={`px-4 py-2 rounded-lg font-medium w-96 whitespace-nowrap ${
+            activeMenu && menu.id === activeMenu.id
+              ? 'bg-customorange text-white'
+              : 'bg-customBeige border border-customorange text-customGold'
           }`}
         >
-          {menu}
+          {menu.name}
         </button>
       ))}
     </div>
-  )
-}
+  );
+};
 
-export default MenuRow
+export default MenuRow;

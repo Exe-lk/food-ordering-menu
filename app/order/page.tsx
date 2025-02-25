@@ -25,13 +25,17 @@ const Page = () => {
   },[dispatch])
 
 
-  const filteredOrders =
-    activeFilter === "All"
-      ? orders
-      : orders.filter((order) => order.status === activeFilter);
+  const filteredOrders = orders.filter((order) => {
+    const statusMatches = activeFilter === "All" || order.status === activeFilter;
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) return statusMatches;
+    const tableMatches = order.tableNumber.toString().toLowerCase().includes(query);
 
-      const handleStatusChange = (id: number, newStatus: string) => {
-      };
+    const itemsMatch = order.items.some((item) =>
+      item.name.toLowerCase().includes(query)
+    );
+    return statusMatches && (tableMatches || itemsMatch);
+  });
 
   return (
     <div className="flex">
@@ -46,7 +50,7 @@ const Page = () => {
       </div>
       {/* Filter Buttons */}
       <div className="flex space-x-2 mb-6">
-        {["All", "Served", "Ready", "Cooking", "Pending"].map((filter) => (
+        {["All", "Served", "Ready", "Cooking", "Pending","Billed","Completed"].map((filter) => (
           <button
             key={filter}
             onClick={() => setActiveFilter(filter)}

@@ -24,6 +24,7 @@ const page = () => {
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [isRecycleBinOpen, setIsRecycleBinOpen] = useState(false);
+    const [isPageLoading, setIsPageLoading] = useState(true);
 
     useEffect(() =>{
       if(!fetched){
@@ -33,6 +34,7 @@ const page = () => {
     useEffect(() =>{
       if(employees.length > 0){
         setLocalEmployees(employees)
+        setIsPageLoading(false);
       }
     },[employees])
     const handleEdit = (index: number) => {
@@ -55,6 +57,13 @@ const page = () => {
           console.error("Error Removing Employee:", error);
         }
       }
+    }
+    if (isPageLoading) {
+      return (
+        <div className="flex justify-center items-center h-screen">
+         <ProgressBar/>
+        </div>
+      );
     }
   return (
     <div className='flex'>

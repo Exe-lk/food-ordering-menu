@@ -6,7 +6,7 @@ import { FiMenu } from "react-icons/fi";
 import ProductCard from "@/components/ProductCard";
 import { RootState, AppDispatch } from "@/redux/store";
 import { fetchCategory } from "@/redux/features/internalProductSlice";
-import { fetchMenusByType, setSelectedMenu } from "@/redux/features/menuSlice";
+import { fetchMenusByType, Menu, setSelectedMenu } from "@/redux/features/menuSlice";
 import MenuRow from "@/components/MenuSide/MenuRow";
 import MenuOverlay from "@/components/MenuSide/MenuOverlay";
 import NavBar from "@/components/MenuSide/NavBar";
@@ -28,16 +28,25 @@ const MenuPage = () => {
     dispatch(fetchMenusByType("Bar"));
   }, [dispatch]);
 
-  useEffect(() => {
-    if (selectedMenu) {
-      dispatch(fetchCategory({ category: selectedMenu }));
+  // Fetch products for the selected menu
+    useEffect(() => {
+      if (selectedMenu) {
+        dispatch(fetchCategory({ category: selectedMenu }));
+      }
+    }, [selectedMenu, dispatch]);
+  
+    // Now the handler accepts a Menu object instead of a string.
+    const handleMenuSelect = (menu: Menu) => {
+      dispatch(setSelectedMenu(menu.name));
+    };
+  
+    // Convert the selected menu name to a full Menu object.
+    const activeMenu = menus.find((menu) => menu.name === selectedMenu) || null;
+  
+    // Until the component is mounted, return null to avoid hydration mismatch.
+    if (!mounted) {
+      return null;
     }
-  }, [selectedMenu, dispatch]);
-
-  const handleMenuSelect = (menu: string) => {
-    dispatch(setSelectedMenu(menu));
-  };
-
   // Until the component is mounted, return null to avoid hydration mismatch.
   if (!mounted) {
     return null;
@@ -54,9 +63,10 @@ const MenuPage = () => {
           </button>
         </header>
         <MenuRow
-          activeMenu={selectedMenu}
-          menus={menus.map((menu) => menu.name)}
+          activeMenu={activeMenu}
+          menus={menus}
           onMenuSelect={handleMenuSelect}
+          selectedMenuType="Bar"
         />
         <MenuOverlay isOpen={isOverlayOpen} onClose={() => setOverlayOpen(false)} />
         {loading ? (
