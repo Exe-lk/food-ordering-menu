@@ -17,7 +17,7 @@ const page = () => {
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between px-6 md:px-12 py-12 z-10">
           
           {/* Image Section */}
-          <div className="relative w-[300px] h-[300px] md:w-[500px] md:h-[500px] rounded-full overflow-hidden z-10 mt-24 order-last md:order-first">
+          <div className="relative w-[350px] h-[350px] md:w-[500px] md:h-[500px] rounded-full overflow-hidden z-10 mt-24 order-last md:order-first">
             <img
               src="/assets/plate.jpg"
               alt="Delicious Food"

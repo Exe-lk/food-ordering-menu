@@ -14,6 +14,7 @@ import {
   FiLogOut,
   FiLayers,
   FiUsers,
+  FiDownload,
 } from "react-icons/fi";
 import { MdQrCode2 } from "react-icons/md";
 import { usePathname, useRouter } from "next/navigation";
@@ -334,6 +335,23 @@ const Sidebar = () => {
                   <MdQrCode2 className="text-customGold text-xl" />
                   {isExpanded && (
                     <span className="text-lg text-white">Generate QR</span>
+                  )}
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="/import-pos"
+                  data-tooltip-id="sidebar-tooltip"
+                  data-tooltip-content="Click to Import Data"
+                  className={`flex items-center p-1 rounded-md text-xl transition-colors duration-200 space-x-2 ${
+                    isActiveLink("/import-from-pos")
+                      ? "bg-gray-800"
+                      : "text-customGold hover:bg-gray-800"
+                  }`}
+                >
+                  <FiDownload className="text-customGold text-xl"/>
+                  {isExpanded && (
+                    <span className="text-lg text-white">Import Data</span>
                   )}
                 </a>
               </li>

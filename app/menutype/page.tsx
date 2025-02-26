@@ -127,7 +127,7 @@ const Page = () => {
               Bar
             </button>
           </div>
-        </div>
+      </div>
       
 
       <Heading titles={["Menu Name", "Type"]} />
