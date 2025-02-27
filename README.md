@@ -10,6 +10,7 @@ DB Diagrams: https://lucid.app/lucidchart/c7cc7d4e-c2b1-4d3b-a34c-60b13f820de4/e
 3rd Party Libraries: SweetAlert2
                      react-icons
                      react-redux
+                     js cookies
 
 Figma UI URL : https://www.figma.com/design/AiQOEQf8rrIx3KxjIZ116j/FoodOrdering_UI?node-id=0-1&t=pE2SpEmY7I8m1vm0-1
 

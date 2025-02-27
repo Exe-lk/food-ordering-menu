@@ -14,7 +14,7 @@ import {
 } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { db, storage } from "@/config/firebase";
-// Import the updateMenu thunk from the menu slice
+import axios from "axios";
 import { updateMenu } from "@/redux/features/menuSlice";
 
 export interface FoodSize {
@@ -236,6 +236,51 @@ export const removeProduct = createAsyncThunk<
     }
   }
 );
+
+export const importInternalProduct = createAsyncThunk<
+InternalFood,
+InternalFood,
+{rejectValue:string}
+>(
+  "internalFood/importInternalProduct",
+  async (product,{rejectWithValue}) =>{
+    try {
+      const created_by = localStorage.getItem("Name") || "Unknown";
+      const response = await axios.get(product.imageUrl,{
+        responseType:"blob",
+      });
+      const blob = response.data;
+
+      const fileName = `${product.name.replace(/\s+/g, "_")}-${Date.now()}.jpg`;
+      const imageRef = ref(storage, `internalFood/${fileName}`)
+
+      await uploadBytes(imageRef,blob);
+      const newImageUrl = await getDownloadURL(imageRef);
+      const productData = {
+        name: product.name,
+        category: product.category,
+        description: product.description,
+        imageUrl: newImageUrl,
+        sizes: product.sizes,
+        created_at: serverTimestamp(),
+        created_by,
+        isDeleted: false,
+      };
+      const docRef = await addDoc(collection(db,"internalFood"),productData);
+      const newProduct:InternalFood ={
+        ...product,
+        id:docRef.id,
+        imageUrl:newImageUrl,
+        created_at:new Date().toISOString(),
+        isDeleted:false,
+        created_by
+      };
+      return newProduct;
+    } catch (error:any) {
+      return rejectWithValue(error.message)
+    }
+  }
+)
 
 export const updateProduct = createAsyncThunk<
   InternalFood,

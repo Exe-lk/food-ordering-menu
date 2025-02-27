@@ -1,5 +1,6 @@
 // src/redux/slices/cartSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import Cookies from 'js-cookie'
 
 export interface CartItem {
   id?: string;
@@ -10,15 +11,34 @@ export interface CartItem {
   image: string;
 }
 
+const getInitialCartState = (): CartState => {
+  // Check if we are in the browser
+  if (typeof window !== "undefined") {
+    const cartCookie = Cookies.get("cart");
+    if (cartCookie) {
+      try {
+        const parsed = JSON.parse(cartCookie);
+        return {
+          items: parsed.items || [],
+          totalItems: parsed.totalItems || 0,
+        };
+      } catch (error) {
+        console.error("Failed to parse cart cookie", error);
+      }
+    }
+  }
+  // Default state if no cookie or on server-side
+  return {
+    items: [],
+    totalItems: 0,
+  };
+};
 interface CartState {
   items: CartItem[];
   totalItems: number;
 }
 
-const initialState: CartState = {
-  items: [],
-  totalItems: 0,
-};
+const initialState: CartState = getInitialCartState()
 
 const cartSlice = createSlice({
   name: "cart",

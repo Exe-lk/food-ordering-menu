@@ -11,6 +11,7 @@ const Login = () => {
   // Local state for form fields
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   
 
   const dispatch = useDispatch<any>();
@@ -27,8 +28,8 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
-    // Find the employee by matching username and password only
+    setIsLoading(true);
+  
     const foundEmployee = employees.find(
       (emp) => emp.username === username && emp.password === password
     );
@@ -47,6 +48,8 @@ const Login = () => {
       router.push("/order");
     } else {
       alert("Invalid credentials. Please check your username and password.");
+      setIsLoading(false);
+
     }
   };
 
@@ -97,9 +100,10 @@ const Login = () => {
             </div>
             <button
               type="submit"
+              disabled={isLoading}
               className="w-full bg-[#c47d5e] text-white font-bold py-2 rounded-md hover:bg-[#b36d53] transition duration-300"
             >
-              Login
+              {isLoading ? "Loading...":"Login"}
             </button>
             {error && <p className="text-red-500 text-center">{error}</p>}
           </form>

@@ -15,6 +15,7 @@ import stockInSliceReducer from './features/stockInSlice'
 import stockOutSliceReducer from './features/stockOutSlice'
 import transactionSliceReducer from './features/transactionSlice'
 import qrSliceReducer from './features/qrSlice'
+import Cookies from 'js-cookie'
 
 
 const store = configureStore({
@@ -39,6 +40,13 @@ const store = configureStore({
 
   },
 });
+
+if(typeof window !== "undefined"){
+  store.subscribe(() =>{
+    const cartState = store.getState().cart;
+    Cookies.set("cart",JSON.stringify(cartState),{expires:7})
+  })
+}
 
 export default store;
 

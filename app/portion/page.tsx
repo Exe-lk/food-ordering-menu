@@ -17,7 +17,6 @@ import RecycleModal from "@/components/RecycleModal";
 import ProgressBar from "@/components/ProgressBar";
 
 const Page = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const dispatch = useDispatch<any>();
   const { portions, loading, fetched, error } = useSelector((state: RootState) => state.portionType);
   const [localPortions, setLocalPortions] = useState(portions);
@@ -27,13 +26,19 @@ const Page = () => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isRecycleBinOpen, setIsRecycleBinOpen] = useState(false);
+  const [isPageLoading, setIsPageLoading] = useState(true);
 
   useEffect(() => {
     dispatch(fetchPortions());
   }, [dispatch]);
 
   useEffect(() => {
-    setLocalPortions(portions);
+    if(portions.length > 0){
+      setLocalPortions(portions);
+      setIsPageLoading(false);
+    }
+   
+
   }, [portions]);
 
   const handleEdit = (index: number) => {
@@ -59,6 +64,15 @@ const Page = () => {
       }
     }
   };
+
+  if (isPageLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+       <ProgressBar/>
+      </div>
+    );
+  }
+
 
   return (
     <div className="flex">

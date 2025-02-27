@@ -20,7 +20,7 @@ const CartSection = () => {
         bottom-0
         left-0
         right-0
-        z-50
+        z-40
         flex
         items-center
         justify-between

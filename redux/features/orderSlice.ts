@@ -1,6 +1,6 @@
 // orderSlice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { ref, get, push, set, update, serverTimestamp } from "firebase/database";
+import { ref, get, push, set, update, serverTimestamp, remove } from "firebase/database";
 import { database } from "@/config/firebase";
 import { RootState } from "@/redux/store";
 import { CartItem } from "./cartSlice";
@@ -123,6 +123,20 @@ export const updateOrderStatus = createAsyncThunk<
   }
 );
 
+export const cancelOrder = createAsyncThunk<string, string, { rejectValue: string }>(
+  "order/cancelOrder",
+  async (id, { rejectWithValue }) => {
+    try {
+      const orderRef = ref(database, `orders/${id}`);
+      await remove(orderRef);
+      return id;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+
 const orderSlice = createSlice({
   name: "order",
   initialState,
@@ -169,6 +183,12 @@ const orderSlice = createSlice({
       })
       .addCase(updateOrderStatus.rejected, (state, action) => {
         state.error = action.payload || "Failed to update order status";
+      })
+      .addCase(cancelOrder.fulfilled, (state, action: PayloadAction<string>) => {
+        state.orders = state.orders.filter((order) => order.id !== action.payload);
+      })
+      .addCase(cancelOrder.rejected, (state, action) => {
+        state.error = action.payload || "Failed to cancel order";
       });
   },
 });

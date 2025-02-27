@@ -2,19 +2,33 @@
 import { RootState } from '@/redux/store';
 import Link from 'next/link'
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FaShoppingCart, FaBars, FaTimes } from 'react-icons/fa'
 import { FiBarChart2 } from "react-icons/fi";
 import { useSelector } from 'react-redux';
+import Cookies from 'js-cookie';
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false)
-  const cartCount = useSelector((state: RootState) => state.cart.totalItems);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); 
 
   const router = useRouter();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen)
+  }
+  useEffect(() => {
+    const phone = Cookies.get("phone");
+    const tableNumber = Cookies.get("tableNumber");
+    if (phone && tableNumber) {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
+  const handleLogout = () =>{
+    Cookies.remove("phone");
+    Cookies.remove("tableNumber");
+    router.push("/menu/login")
   }
   return (
     <div className="bg-[#1b1d1b] border-t border-[#C9893C] rounded-b-3xl">
@@ -54,17 +68,20 @@ const NavBar = () => {
           </Link>
         </nav>
         <div className="flex items-center space-x-4">
+          {isLoggedIn &&(
+            <div
+            className='text-xl cursor-pointer text-white  hover:bg-orange-700 transition-colors bg-customGold py-2 px-2 rounded-lg'
+            onClick={handleLogout}
+          >
+            Logout
+          </div>
+          )}
           {/* Added "relative" to this div */}
           <div 
             className="relative text-2xl cursor-pointer text-[#C9893C] hover:text-orange-400 transition-colors"
             onClick={() => router.push("/menu/cart")}
           >
             <FaShoppingCart />
-            {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold px-1 rounded-full">
-                {cartCount}
-              </span>
-            )}
           </div>
           <div
             className="md:hidden text-2xl cursor-pointer text-[#C9893C] hover:text-orange-400 transition-colors"
