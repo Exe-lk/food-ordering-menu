@@ -9,6 +9,7 @@ import { AppDispatch } from "@/redux/store";
 import Sidebar from "@/components/Sidebar";
 import { FiHelpCircle } from "react-icons/fi";
 import KeyMappingForm from "@/components/PopUpModels/KeyMappingForm";
+import ImportHelp from "@/components/PopUpModels/ImportHelp";
 
 export interface InternalProduct {
   id: string;
@@ -20,6 +21,7 @@ export interface InternalProduct {
   created_at: string;
   isDeleted: boolean;
   created_by?: string;
+  overrideImage?: File;
 }
 
 export interface ExternalFood {
@@ -39,6 +41,7 @@ export interface ExternalFood {
   created_at: string;
   isDeleted: boolean;
   created_by?: string;
+  overrideImage?: File;
 }
 
 export type Product = InternalProduct | ExternalFood;
@@ -55,6 +58,7 @@ const Page = () => {
   const [expectedKeys, setExpectedKeys] = useState<string[]>([]);
   const [incomingKeys, setIncomingKeys] = useState<string[]>([]);
   const [rawData, setRawData] = useState<any[]>([]);
+  const [isHelpOpen, setIsHelOpen] = useState(false);
 
   const handleFetch = async () => {
     if (!apiUrl) {
@@ -172,7 +176,13 @@ const Page = () => {
       <div className="p-4 min-h-screen bg-beige ml-14 w-full">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-bold text-customGold">Import Existing Data</h1>
-          <button className="bg-customGold text-white w-16 px-4 py-2 text-xl rounded-lg items-center justify-center text-center"><FiHelpCircle/></button>
+          <button 
+          title="Click view impot guide"
+          onClick={()=>setIsHelOpen(true)}
+          className="bg-customGold  text-white w-24 flex flex-row gap-2 px-4 py-2 text-lg rounded-lg items-center justify-center text-center cursor-help"
+          >
+           Help <FiHelpCircle size={24}/>
+          </button>
         </div>
         <div className="p-8">
           <div className="flex items-center mb-4">
@@ -265,6 +275,10 @@ const Page = () => {
           onClose={() => setShowMappingForm(false)}
         />
       )}
+      <ImportHelp
+      isOpen={isHelpOpen}
+      onClose={()=> setIsHelOpen(false)}
+      />
     </div>
   );
 };
