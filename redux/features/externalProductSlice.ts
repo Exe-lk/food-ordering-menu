@@ -12,7 +12,8 @@ import {
 } from "firebase/firestore";
 import { db, storage } from "@/config/firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { updateMenu } from "./menuSlice";
+import { createMenuFromProduct, updateMenu } from "./menuSlice";
+import axios from "axios";
 
 export interface ExternalFood {
   id: string;
@@ -229,6 +230,66 @@ export const removeProduct = createAsyncThunk<
   }
 );
 
+export const importExternalProduct = createAsyncThunk<
+ExternalFood,
+ExternalFood,
+{rejectValue:string}
+>(
+  "externalFood/importExternalProduct",
+  async(product,thunkAPI) =>{
+    try {
+      const created_by = localStorage.getItem("Name") || "Unknown";
+      const response = await axios.get(product.image_url,{
+        responseType:"blob"
+      });
+      const blob = response.data;
+      const fileName = `${product.name.replace(/\s+/g, "_")}-${Date.now()}.jpg`;
+      const imageRef = ref(storage,`externalFood/${fileName}`);
+      await uploadBytes(imageRef,blob);
+      const newImageUrl = await getDownloadURL(imageRef);
+      const menuQuery = query(
+        collection(db,"menuType"),
+        where("name","==",product.category),
+        where("isDeleted",'==',false)
+      );
+      const menuSnapShot = await getDocs(menuQuery);
+      if(menuSnapShot.empty){
+        await thunkAPI
+          .dispatch(createMenuFromProduct({ menuName: product.category, imageUrl: newImageUrl }))
+          .unwrap();
+      }
+      const productData = {
+        name:product.name,
+        brand:product.brand,
+        category:product.category,
+        manufactureDate:product.manufactureDate,
+        expiryDate:product.expiryDate,
+        dataeIn:product.dateIn,
+        supplier:product.supplier,
+        description:product.description,
+        unit:product.unit,
+        costPrice:product.costPrice,
+        quantity:product.quantity,
+        image_url:newImageUrl,
+        created_at:serverTimestamp(),
+        created_by,
+        isDeleted: false,
+      };
+      const docRef = await addDoc(collection(db, "externalFood"), productData);
+      return {
+        ...product,
+        id: docRef.id,
+        image_url: newImageUrl,
+        created_at: new Date().toISOString(),
+        isDeleted: false,
+        created_by,
+      };
+    } catch (error:any) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+)
+
 export const updateProduct = createAsyncThunk<
   ExternalFood,
   {
@@ -415,6 +476,9 @@ const externalFoodSlice = createSlice({
         );
       }
     );
+    builder.addCase(importExternalProduct.fulfilled, (state, action: PayloadAction<ExternalFood>) => {
+      state.externalFoods.push(action.payload);
+    });
   },
 });
 

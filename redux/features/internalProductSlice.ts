@@ -15,7 +15,7 @@ import {
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { db, storage } from "@/config/firebase";
 import axios from "axios";
-import { updateMenu } from "@/redux/features/menuSlice";
+import { createMenuFromProduct, updateMenu } from "@/redux/features/menuSlice";
 
 export interface FoodSize {
   size: string;
@@ -243,7 +243,7 @@ InternalFood,
 {rejectValue:string}
 >(
   "internalFood/importInternalProduct",
-  async (product,{rejectWithValue}) =>{
+  async (product,thunkAPI) =>{
     try {
       const created_by = localStorage.getItem("Name") || "Unknown";
       const response = await axios.get(product.imageUrl,{
@@ -256,6 +256,17 @@ InternalFood,
 
       await uploadBytes(imageRef,blob);
       const newImageUrl = await getDownloadURL(imageRef);
+      const menuQuery = query(
+        collection(db, "menuType"),
+        where("name", "==", product.category),
+        where("isDeleted", "==", false)
+      );
+      const menuSnapshot = await getDocs(menuQuery);
+      if (menuSnapshot.empty) {
+        await thunkAPI
+          .dispatch(createMenuFromProduct({ menuName: product.category, imageUrl: newImageUrl }))
+          .unwrap();
+      }
       const productData = {
         name: product.name,
         category: product.category,
@@ -277,7 +288,7 @@ InternalFood,
       };
       return newProduct;
     } catch (error:any) {
-      return rejectWithValue(error.message)
+      return thunkAPI.rejectWithValue(error.message)
     }
   }
 )

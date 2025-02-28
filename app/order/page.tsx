@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { FiMenu } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/redux/store";
 import { fetchOrders } from "@/redux/features/orderSlice";
@@ -12,7 +11,6 @@ import { subScribeToOrders } from "@/service/orderService";
 
 const Page = () => {
   const [activeFilter, setActiveFilter] = useState("All");
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const dispatch = useDispatch<AppDispatch>();
   const {orders, loading, error} = useSelector((state:RootState) => state.order)

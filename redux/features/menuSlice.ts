@@ -130,14 +130,11 @@ export const updateMenu = createAsyncThunk<
     try {
       const menuRef = doc(db, "menuType", id);
       const updated_by = localStorage.getItem("Name") || "Unknown";
-      // Get the current (old) menu data
       const menuSnap = await getDoc(menuRef);
       if (!menuSnap.exists()) {
         return rejectWithValue("Menu not found");
       }
       const oldName = menuSnap.data().name;
-
-      // Prepare update data for the menu document, including the updated menu type.
       const updateData: any = {
         name: updatedMenuName,
         update_at: serverTimestamp(),
@@ -153,8 +150,6 @@ export const updateMenu = createAsyncThunk<
       }
 
       await updateDoc(menuRef, updateData);
-
-      // Update internalFood documents where category === oldName if needed.
       const foodsQuery = query(
         collection(db, "internalFood"),
         where("category", "==", oldName)
@@ -300,11 +295,44 @@ export const fetchMenusByType = createAsyncThunk<Menu[], string, { rejectValue: 
   }
 );
 
+export const createMenuFromProduct = createAsyncThunk<
+Menu,
+{menuName:string; imageUrl?:string},
+{rejectValue:string}
+>(
+  "menu/createMenuFromProduct",
+  async ({menuName, imageUrl},{rejectWithValue}) =>{
+    try {
+      const defaultImageUrl = "https://via.placeholder.com/150";
+      const usedImageUrl = imageUrl ? imageUrl : defaultImageUrl;
+      const created_by = localStorage.getItem("Name") || "Unknown";
+      const menuData = {
+        name:menuName,
+        isDeleted:false,
+        created_at:serverTimestamp(),
+        imageUrl:usedImageUrl,
+        menu_type:"Food",
+        created_by
+      };
+      const docRef = await addDoc(collection(db,"menuType"),menuData);
+      return{
+        id:docRef.id,
+        name:menuName,
+        isDeleted:false,
+        created_at:new Date().toISOString(),
+        imageUrl:usedImageUrl,
+        menu_type:"Food",
+      };
+    } catch (error:any) {
+      return rejectWithValue(error.message)
+    }
+  }
+)
+
 const menuSlice = createSlice({
   name: "menu",
   initialState,
   reducers: {
-    // This action stores the currently selected menu name.
     setSelectedMenu: (state, action: PayloadAction<string>) => {
       state.selectedMenu = action.payload;
       if (typeof window !== "undefined") {
