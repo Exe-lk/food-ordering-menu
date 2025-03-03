@@ -26,7 +26,7 @@ Kitchen Employee : username = janeDoe
 Cashier : username = richard
           password = 123456789
 
-Admin : username: johnDoe
-        password: 123456789
+Admin : username = johnDoe
+        password = 123456789
                   
 
