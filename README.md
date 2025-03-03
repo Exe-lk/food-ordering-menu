@@ -17,3 +17,13 @@ Figma UI URL : https://www.figma.com/design/AiQOEQf8rrIx3KxjIZ116j/FoodOrdering_
 Netlify Menu Side Link: https://tiny-custard-121f89.netlify.app/home
 Netlify Admin Side Link: https://tiny-custard-121f89.netlify.app/login
 
+Waiter: username = janeCarter
+        password = 123456789
+        
+Kitchen Employee : username = janeDoe
+                   password = 123456789
+
+Cashier : username = richard
+          password = 123456789
+                  
+
