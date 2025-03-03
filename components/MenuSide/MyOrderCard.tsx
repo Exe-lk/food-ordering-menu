@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import { FaClock, FaUtensils, FaCheck, FaConciergeBell, FaFileInvoiceDollar, FaCheckCircle } from "react-icons/fa";
+import { FaClock, FaUtensils, FaCheck, FaConciergeBell, FaFileInvoiceDollar, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import { Order, cancelOrder } from "@/redux/features/orderSlice";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
@@ -32,7 +32,7 @@ const MyOrderCard = ({ order }: OrderCardProps) => {
     <FaCheckCircle key="completed" />
   ];
 
-  // Determine the current status index using the up-to-date status
+  const isRejected = currentOrder.status === "Rejected";
   const currentStatusIndex = statuses.indexOf(currentOrder.status);
 
   const handleCancel = async () => {
@@ -57,7 +57,6 @@ const MyOrderCard = ({ order }: OrderCardProps) => {
 
   return (
     <div className="w-full max-w-md bg-white text-black border-2 border-black rounded-lg shadow-md p-4 mb-4">
-      {/* Items */}
       {currentOrder.items.map((item, idx) => (
         <div key={idx} className="flex justify-between items-center mb-2 mt-2">
           <div>
@@ -90,35 +89,48 @@ const MyOrderCard = ({ order }: OrderCardProps) => {
       </div>
 
       {/* Status Bar */}
-      <div className="flex items-center mt-4 w-full">
-        {statuses.map((status, index) => {
-          const isActive = index <= currentStatusIndex;
-          return (
-            <div key={status} className="flex flex-col items-center flex-1">
-              <div className="flex items-center w-full">
-                <div
-                  className={`rounded-full h-8 w-8 flex items-center justify-center ${
-                    isActive
-                      ? "bg-green-500 text-white"
-                      : "bg-gray-300 text-gray-600"
-                  }`}
-                >
-                  {statusIcons[index]}
-                </div>
-                {index !== statuses.length - 1 && (
-                  <div
-                    className={`flex-1 h-1 ${
-                      index < currentStatusIndex ? "bg-green-500" : "bg-gray-300"
-                    }`}
-                  />
-                )}
-              </div>
-              {/* Status Label */}
-              <span className="text-xs mt-1 text-center">{status}</span>
+      {isRejected ? (
+        <div className="mt-4 text-center">
+          <span className="text-red-500 font-bold text-xl flex items-center justify-center">
+            <FaTimesCircle className="mr-2" /> Rejected
+          </span>
+          {currentOrder.rejectionReason && (
+            <div className="mt-2 text-red-500 text-sm">
+               We're sorry, but we couldn't process your order due to "{currentOrder.rejectionReason}". Please contact our customer support if you have any questions.
             </div>
-          );
-        })}
-      </div>
+          )}
+        </div>
+      ) : (
+        <div className="flex items-center mt-4 w-full">
+          {statuses.map((status, index) => {
+            const isActive = index <= currentStatusIndex;
+            return (
+              <div key={status} className="flex flex-col items-center flex-1">
+                <div className="flex items-center w-full">
+                  <div
+                    className={`rounded-full h-8 w-8 flex items-center justify-center ${
+                      isActive
+                        ? "bg-green-500 text-white"
+                        : "bg-gray-300 text-gray-600"
+                    }`}
+                  >
+                    {statusIcons[index]}
+                  </div>
+                  {index !== statuses.length - 1 && (
+                    <div
+                      className={`flex-1 h-1 ${
+                        index < currentStatusIndex ? "bg-green-500" : "bg-gray-300"
+                      }`}
+                    />
+                  )}
+                </div>
+                <span className="text-xs mt-1 text-center">{status}</span>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
       <div className="mt-4 flex justify-end">
         {currentOrder.status.toLocaleLowerCase() ==="billed" &&(
           <button

@@ -9,10 +9,12 @@ import {
   FaCheckCircle,
   FaUtensils,
   FaMoneyBillWave,
+  FaTimesCircle
 } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { updateOrderStatus } from "@/redux/features/orderSlice";
+import Swal from "sweetalert2";
 
 interface OrderItem {
   name: string;
@@ -39,6 +41,24 @@ const OrderCard = ({ order }: OrderCardProps) => {
   const [userRole, setUserRole] = useState<string | null>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const [dropdownDirection, setDropdownDirection] = useState<"down" | "up">("down");
+
+  const handleReject = async () => {
+    const { value: rejectionReason } = await Swal.fire({
+      title: "Select Rejection Reason",
+      input: "select",
+      inputOptions: {
+        "Out of Stock": "Out of Stock",
+        "Operational Overload": "Operational Overload",
+        "Reservation or Seating Constraints": "Reservation or Seating Constraints"
+      },
+      inputPlaceholder: "Select a reason",
+      showCancelButton: true,
+    });
+    if (rejectionReason) {
+      dispatch(updateOrderStatus({ id: order.id, status: "Rejected", rejectionReason }));
+      setStatus("Rejected");
+    }
+  };
 
   useEffect(() => {
     const role = localStorage.getItem("role");
@@ -84,6 +104,7 @@ const OrderCard = ({ order }: OrderCardProps) => {
         { value: "Served", icon: GiMeal, color: "text-[#10e060]" },
         { value: "Billed", icon: FaMoneyBillWave, color: "text-indigo-500" },
         { value: "Completed", icon: FaCheckCircle, color: "text-green-500" },
+        { value: "Reject", icon: FaTimesCircle, color: "text-red-500" }
       ];
     }
     if (userRole === "Kitchen") {
@@ -91,15 +112,16 @@ const OrderCard = ({ order }: OrderCardProps) => {
         { value: "Pending", icon: FaClock, color: "text-[#D00000]" },
         { value: "Cooking", icon: FaConciergeBell, color: "text-[#FFBA08]" },
         { value: "Ready", icon: FaUtensils, color: "text-blue-500" },
+        { value: "Reject", icon: FaTimesCircle, color: "text-red-500" }
       ];
     } else if (userRole === "Waiter") {
       return [
         { value: "Ready", icon: FaUtensils, color: "text-blue-500" },
-        { value: "Served", icon: FaCheckCircle, color: "text-green-500" },
+        { value: "Served", icon: GiMeal, color: "text-green-500" },
+        { value: "Billed", icon: FaMoneyBillWave, color: "text-indigo-500" },
       ];
     } else if (userRole === "Cashier") {
       return [
-        { value: "Served", icon: FaCheckCircle, color: "text-green-500" },
         { value: "Billed", icon: FaMoneyBillWave, color: "text-indigo-500" },
         { value: "Completed", icon: FaCheckCircle, color: "text-green-500" },
       ];
@@ -115,9 +137,10 @@ const OrderCard = ({ order }: OrderCardProps) => {
     Pending: { icon: FaClock, color: "text-[#D00000]" },
     Cooking: { icon: FaConciergeBell, color: "text-[#FFBA08]" },
     Ready: { icon: FaUtensils, color: "text-blue-500" },
-    Served: { icon: FaCheckCircle, color: "text-green-500" },
+    Served: { icon: GiMeal, color: "text-green-500" },
     Billed: { icon: FaMoneyBillWave, color: "text-indigo-500" },
     Completed: { icon: FaCheckCircle, color: "text-green-500" },
+    Rejected: { icon: FaTimesCircle, color: "text-red-500" },
   };
 
   const currentStatusMapping = defaultStatusMapping[status];
@@ -172,11 +195,15 @@ const OrderCard = ({ order }: OrderCardProps) => {
                 <Menu.Item key={option.value}>
                   {({ active }) => (
                     <button
-                      onClick={() => handleStatusChange(option.value)}
+                      onClick={() =>
+                        option.value === "Reject"
+                          ? handleReject()
+                          : handleStatusChange(option.value)
+                      }
                       className={`w-full flex items-center px-4 py-2 text-left ${active ? "bg-gray-100" : ""}`}
                     >
                       <option.icon className={`w-5 h-5 mr-2 ${option.color}`} />
-                      <span className={`${option.color}`}>{option.value}</span>
+                      <span className={`${option.color}`}>{option.value === "Reject" ? "Reject" : option.value}</span>
                     </button>
                   )}
                 </Menu.Item>

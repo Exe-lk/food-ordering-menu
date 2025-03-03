@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -17,6 +17,7 @@ const page = () => {
   const order = useSelector((state: RootState) =>
     state.order.orders.find((o) => o.id === orderId)
   );
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
   
   if (!order) {
     return <p>Order not found</p>;
@@ -28,6 +29,23 @@ const page = () => {
   const discount = 0;
   const total = subTotal - discount;
   const amount = total * 100
+  useEffect(() => {
+    const createPaymentIntent = async () => {
+      const res = await fetch("/api/create-payment-intent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId, amount }),
+      });
+      const data = await res.json();
+      setClientSecret(data.clientSecret);
+    };
+    createPaymentIntent();
+  }, [orderId, amount]);
+
+  if (!clientSecret) {
+    return <p>Loading...</p>;
+  }
+
 
 
   return (
@@ -35,7 +53,7 @@ const page = () => {
         <div className="bg-white rounded-lg shadow-md p-6 w-full max-w-md">
             <h2 className="text-2xl font-bold mb-4 text-center">Payment</h2>
             <p className="mb-4 text-center">Total Amount: {total} LKR</p>
-            <Elements stripe={stripePromise}>
+            <Elements stripe={stripePromise} options={{clientSecret}}>
                 <PaymentForm orderId={orderId} amount={amount}/>
             </Elements>
         </div>

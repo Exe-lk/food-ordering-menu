@@ -22,7 +22,7 @@ function PaymentSuccess() {
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gray-100">
       <h1 className="text-2xl font-bold mb-4">Payment Successful</h1>
       <p className="mb-4">
-        Your payment for order <span className="font-semibold">{orderId}</span> was successful!
+        Your payment for order was successful!
       </p>
       <Link
         href="/menu/orders"

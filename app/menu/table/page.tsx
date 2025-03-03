@@ -31,7 +31,7 @@ const page = () => {
     try {
       const orders = await dispatch(fetchOrders()).unwrap();
       const tableOccupied = orders.some((order: Order) =>
-        order.tableNumber === tableNumber && order.status !== "Completed"
+        order.tableNumber === tableNumber && !["Completed", "Rejected"].includes(order.status)
       );
       if (tableOccupied) {
         Swal.fire({
