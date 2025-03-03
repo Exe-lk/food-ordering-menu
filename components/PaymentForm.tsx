@@ -10,6 +10,7 @@ import { useDispatch } from "react-redux";
 import { updateOrderStatus } from "@/redux/features/orderSlice";
 import { useRouter } from "next/navigation";
 import { AppDispatch } from "@/redux/store";
+import Swal from "sweetalert2";
 
 interface PaymentFormProps {
   orderId: string;
@@ -30,18 +31,18 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ orderId, amount }) => {
     setLoading(true);
     setErrorMessage("");
 
+    // Remove return_url to handle payment confirmation inline
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: `${window.location.origin}/payment-success?orderId=${orderId}`,
-        payment_method_data:{
-          billing_details:{
-            address:{
-              country:"LK"
-            }
-          }
-        }
-        
+     
+        payment_method_data: {
+          billing_details: {
+            address: {
+              country: "LK",
+            },
+          },
+        },
       },
       redirect: "if_required",
     });
@@ -51,8 +52,19 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ orderId, amount }) => {
       setLoading(false);
     } else {
       try {
+        
         await dispatch(updateOrderStatus({ id: orderId, status: "Completed" })).unwrap();
-        router.push(`/payment-success?orderId=${orderId}`);
+       
+        await Swal.fire({
+          title: "Payment Successful",
+          text: "Your order has been completed",
+          icon: "success",
+          timer: 2000,
+          timerProgressBar: true,
+          showConfirmButton: false,
+        });
+       
+        router.push("/menu/orders");
       } catch (err) {
         setErrorMessage("Failed to update Order Status");
       }
@@ -62,7 +74,12 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ orderId, amount }) => {
 
   return (
     <form onSubmit={handleSubmit} className="max-w-md mx-auto p-4">
-      <PaymentElement options={{ layout: "accordion", fields:{billingDetails:{address:{country:"never"}}} }} />
+      <PaymentElement
+        options={{
+          layout: "accordion",
+          fields: { billingDetails: { address: { country: "never" } } },
+        }}
+      />
       {errorMessage && <div className="text-red-500 mb-2">{errorMessage}</div>}
       <button
         type="submit"
