@@ -4,13 +4,13 @@ import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { getDatabase} from 'firebase/database'
 const firebaseConfig = {
-  apiKey: "AIzaSyAUDvSLD3oMNBqPJUz3K8Q60FQ_6mbvQzI",
-  authDomain: "food-ordering-f3d39.firebaseapp.com",
-  databaseURL: "https://food-ordering-f3d39-default-rtdb.firebaseio.com",
-  projectId: "food-ordering-f3d39",
-  storageBucket: "food-ordering-f3d39.firebasestorage.app",
-  messagingSenderId: "33591154231",
-  appId: "1:33591154231:web:3b60b7cf32390e27be51b2"
+  apiKey: "AIzaSyCiC7s2ngVklwjQqcDtDDYhbs2rY6eSexQ",
+  authDomain: "restaurantpos-4e3fa.firebaseapp.com",
+  databaseURL: "https://restaurantpos-4e3fa-default-rtdb.firebaseio.com",
+  projectId: "restaurantpos-4e3fa",
+  storageBucket: "restaurantpos-4e3fa.firebasestorage.app",
+  messagingSenderId: "116050614647",
+  appId: "1:116050614647:web:8d465cb8374bfc8277e972"
 };
 
 
