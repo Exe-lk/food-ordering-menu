@@ -4,6 +4,7 @@ import { AppDispatch, RootState } from "@/redux/store";
 import { FaClock, FaUtensils, FaCheck, FaConciergeBell, FaFileInvoiceDollar, FaCheckCircle } from "react-icons/fa";
 import { Order, cancelOrder } from "@/redux/features/orderSlice";
 import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
 
 interface OrderCardProps {
   order: Order;
@@ -11,6 +12,7 @@ interface OrderCardProps {
 
 const MyOrderCard = ({ order }: OrderCardProps) => {
   const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
   const updatedOrder = useSelector((state: RootState) =>
     state.order.orders.find((o) => o.id === order.id)
   );
@@ -45,7 +47,6 @@ const MyOrderCard = ({ order }: OrderCardProps) => {
     });
     if (result.isConfirmed) {
       try {
-        // Dispatch the thunk and wait for it to complete
         await dispatch(cancelOrder(currentOrder.id)).unwrap();
         await Swal.fire("Order cancelled successfully!", "", "success");
       } catch (error) {
@@ -73,8 +74,6 @@ const MyOrderCard = ({ order }: OrderCardProps) => {
           </div>
         </div>
       ))}
-
-      {/* Subtotal, Discount, Total */}
       <div className="mt-3 border-t pt-2 border-gray-300">
         <div className="flex justify-between mb-1">
           <span>Sub Total:</span>
@@ -96,7 +95,6 @@ const MyOrderCard = ({ order }: OrderCardProps) => {
           const isActive = index <= currentStatusIndex;
           return (
             <div key={status} className="flex flex-col items-center flex-1">
-              {/* Icon + Connecting Line */}
               <div className="flex items-center w-full">
                 <div
                   className={`rounded-full h-8 w-8 flex items-center justify-center ${
@@ -107,7 +105,6 @@ const MyOrderCard = ({ order }: OrderCardProps) => {
                 >
                   {statusIcons[index]}
                 </div>
-                {/* Show line if it's not the last status */}
                 {index !== statuses.length - 1 && (
                   <div
                     className={`flex-1 h-1 ${
@@ -122,18 +119,28 @@ const MyOrderCard = ({ order }: OrderCardProps) => {
           );
         })}
       </div>
-
-      {/* Cancel Button (only show if status is "Pending") */}
-      {currentOrder.status.toLowerCase() === "pending" && (
-        <div className="mt-4 flex justify-end">
+      <div className="mt-4 flex justify-end">
+        {currentOrder.status.toLocaleLowerCase() ==="billed" &&(
           <button
-            onClick={handleCancel}
-            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+            onClick={()=> router.push(`/payment/${currentOrder.id}`)}
+            className="bg-customblue hover:bg-blue-900 text-white font-bold py-2 px-4 rounded mr-2"
           >
-            Cancel Order
+            Pay
           </button>
-        </div>
-      )}
+        )}
+
+        {currentOrder.status.toLowerCase() === "pending" && (
+          <div className="mt-4 flex justify-end">
+            <button
+              onClick={handleCancel}
+              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+            >
+              Cancel Order
+            </button>
+          </div>
+        )}
+
+      </div>
     </div>
   );
 };

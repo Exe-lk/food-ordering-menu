@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/redux/store";
 import { fetchOrders } from "@/redux/features/orderSlice";
@@ -14,6 +14,8 @@ const Page = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const dispatch = useDispatch<AppDispatch>();
   const {orders, loading, error} = useSelector((state:RootState) => state.order)
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
   
   useEffect(() =>{
     const unsubscribe = subScribeToOrders(dispatch);
@@ -22,18 +24,47 @@ const Page = () => {
     };
   },[dispatch])
 
+  useEffect(()=>{
+    setCurrentPage(1)
+  },[activeFilter,searchQuery]);
 
-  const filteredOrders = orders.filter((order) => {
-    const statusMatches = activeFilter === "All" || order.status === activeFilter;
-    const query = searchQuery.trim().toLowerCase();
-    if (!query) return statusMatches;
-    const tableMatches = order.tableNumber.toString().toLowerCase().includes(query);
 
-    const itemsMatch = order.items.some((item) =>
-      item.name.toLowerCase().includes(query)
-    );
-    return statusMatches && (tableMatches || itemsMatch);
-  });
+  const filteredOrders = useMemo(() => {
+    return orders.filter((order) => {
+      let statusMatches = true;
+      if (activeFilter === "Completed") {
+        statusMatches = order.status === "Completed";
+      } else if (activeFilter === "All") {
+        statusMatches = order.status !== "Completed";
+      } else {
+        statusMatches = order.status === activeFilter;
+      }
+      const query = searchQuery.trim().toLowerCase();
+      if (!query) return statusMatches;
+      const tableMatches = order.tableNumber
+        .toString()
+        .toLowerCase()
+        .includes(query);
+      const itemsMatch = order.items.some((item) =>
+        item.name.toLowerCase().includes(query)
+      );
+      return statusMatches && (tableMatches || itemsMatch);
+    });
+  }, [orders, activeFilter, searchQuery]);
+  
+  const totalPages = Math.ceil(filteredOrders.length/pageSize);
+  const paginatedOrders = filteredOrders.slice(
+    (currentPage - 1 ) * pageSize,
+    currentPage * pageSize
+  );
+
+  const handleNextPage = () =>{
+    if(currentPage < totalPages) setCurrentPage((prev) => prev + 1);
+  };
+  const handlePrevPage = () =>{
+    if(currentPage > 1) setCurrentPage((prev) => prev - 1)
+  };
+
 
   return (
     <div className="flex">
@@ -64,13 +95,32 @@ const Page = () => {
       </div>    
       <TableHeading headings={["Table", "Items", "Status"]}/>
       <div className="min-h-screen flex flex-col gap-6 mt-5">
-        {filteredOrders.map((order) => (
+        {paginatedOrders.map((order) => (
           <OrderCard 
             key={order.id}
             order={order}
           />
         ))}
       </div>
+      {totalPages > 1 &&(
+        <div className="flex justify-center items-center mt-4 space-x-4">
+          <button
+          onClick={handlePrevPage}
+          disabled={currentPage === 1}
+          className="px-3 py-1 border rounded-md disabled:opacity-50"
+          >
+            Previous
+          </button>
+          <span>Page {currentPage} of {totalPages}</span>
+          <button
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages}
+            className="px-3 py-1 border rounded-md disabled:opacity-50"
+          >
+            Next
+          </button>
+        </div>
+      )}
     </div>
     </div>
   );

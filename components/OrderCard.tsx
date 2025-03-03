@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Menu } from "@headlessui/react";
 import { GiMeal } from "react-icons/gi";
 import { FiChevronDown } from "react-icons/fi";
@@ -37,14 +37,43 @@ const OrderCard = ({ order }: OrderCardProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const [status, setStatus] = useState(order.status);
   const [userRole, setUserRole] = useState<string | null>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const [dropdownDirection, setDropdownDirection] = useState<"down" | "up">("down");
+
   useEffect(() => {
     const role = localStorage.getItem("role");
     setUserRole(role);
   }, []);
+
+  useEffect(() => {
+    const adjustDropdownDirection = () => {
+      if (menuButtonRef.current) {
+        const rect = menuButtonRef.current.getBoundingClientRect();
+        const dropdownHeight = 150;
+        const spaceBelow = window.innerHeight - rect.bottom;
+        const spaceAbove = rect.top;
+        if (spaceBelow < dropdownHeight && spaceAbove > spaceBelow) {
+          setDropdownDirection("up");
+        } else {
+          setDropdownDirection("down");
+        }
+      }
+    };
+
+    adjustDropdownDirection();
+    window.addEventListener("resize", adjustDropdownDirection);
+    window.addEventListener("scroll", adjustDropdownDirection);
+    return () => {
+      window.removeEventListener("resize", adjustDropdownDirection);
+      window.removeEventListener("scroll", adjustDropdownDirection);
+    };
+  }, []);
+
   const handleStatusChange = (newStatus: string) => {
     setStatus(newStatus);
     dispatch(updateOrderStatus({ id: order.id, status: newStatus }));
   };
+
   const allowedOptions = useMemo(() => {
     if (!userRole) return [];
     if (userRole === "Admin") {
@@ -78,6 +107,7 @@ const OrderCard = ({ order }: OrderCardProps) => {
       return [];
     }
   }, [userRole]);
+
   const defaultStatusMapping: Record<
     string,
     { icon: React.ComponentType<{ className?: string }>; color: string }
@@ -94,7 +124,6 @@ const OrderCard = ({ order }: OrderCardProps) => {
 
   return (
     <div className="border rounded-lg shadow-md p-4 bg-white grid grid-cols-3 gap-4 text-center hover:bg-gray-300 transition-all duration-300 cursor-pointer">
-      {/* Table Info */}
       <div className="flex items-center justify-center">
         <div className="w-8 h-8 flex items-center justify-center bg-gray-200 rounded-lg border border-black">
           <span className="text-sm font-semibold text-black">{order.tableNumber}</span>
@@ -105,7 +134,7 @@ const OrderCard = ({ order }: OrderCardProps) => {
           )}
         </div>
       </div>
-      {/* Order Items */}
+   
       <div className="flex flex-col justify-center border-r border-l border-gray-500 lg:px-14 items-start xl:px-36">
         {order.items.map((item, index) => (
           <p key={index} className="text-gray-600 text-md mb-2">
@@ -113,11 +142,12 @@ const OrderCard = ({ order }: OrderCardProps) => {
           </p>
         ))}
       </div>
-      {/* Status Dropdown / Display */}
+   
       <div className="flex flex-col items-center justify-center">
         {allowedOptions.length > 0 ? (
           <Menu as="div" className="relative inline-block">
             <Menu.Button
+              ref={menuButtonRef}
               className="flex items-center justify-between w-40 px-4 py-2 rounded-lg border shadow-sm bg-white cursor-pointer"
               style={{
                 boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
@@ -133,7 +163,11 @@ const OrderCard = ({ order }: OrderCardProps) => {
               <span className="text-black font-medium flex-1 text-center">{status}</span>
               <FiChevronDown className="w-5 h-5 text-gray-600" />
             </Menu.Button>
-            <Menu.Items className="absolute right-0 mt-2 w-40 bg-white border z-10 border-gray-200 rounded-md shadow-lg focus:outline-none">
+            <Menu.Items
+              className={`absolute right-0 ${
+                dropdownDirection === "up" ? "bottom-full mb-2" : "mt-2"
+              } w-40 bg-white border z-50 border-gray-200 rounded-md shadow-lg focus:outline-none`}
+            >
               {allowedOptions.map((option) => (
                 <Menu.Item key={option.value}>
                   {({ active }) => (
@@ -156,7 +190,9 @@ const OrderCard = ({ order }: OrderCardProps) => {
         )}
       </div>
       <div className="flex flex-col items-center justify-center">
-        <span className="text-gray-700 font-semibold"> {new Date(order.created_at).toLocaleString()}</span>
+        <span className="text-gray-700 font-semibold">
+          {new Date(order.created_at).toLocaleString()}
+        </span>
       </div>
     </div>
   );
