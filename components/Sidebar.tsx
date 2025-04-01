@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import {
   FiChevronDown,
   FiChevronUp,
-  FiX,
   FiChevronLeft,
   FiChevronRight,
   FiClipboard,
@@ -30,20 +29,14 @@ const Sidebar = () => {
   const [isIngredientsMenuOpen, setIsIngredientsMenuOpen] = useState(false);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [isExpanded, setIsExpanded] = useState(false);
-
-  // Determine if link is active
   const isActiveLink = (href: string) => {
     return pathname === href || pathname.startsWith(href);
   };
-
   const isFoodActive = isActiveLink("/inventory/food");
-
   useEffect(() => {
     const role = localStorage.getItem("role");
     setUserRole(role);
   }, []);
-
-  // Logout handler with SweetAlert2
   const handleLogout = async () => {
     const result = await Swal.fire({
       title: "Confirm Logout",
@@ -62,18 +55,15 @@ const Sidebar = () => {
       router.push("/login");
     }
   };
-
-  // Show limited menu items for these roles only
   const limitedRoles = ["Kitchen", "Waiter", "Cashier"];
   const showLimitedMenu = userRole && limitedRoles.includes(userRole);
 
   return (
     <div
-      className={`h-full bg-black shadow-lg transition-[width] duration-300 ${
+      className={`h-full bg-black shadow-lg transition-[width] duration-300 rounded-r-lg ${
         isExpanded ? "w-[18rem]" : "w-14"
       } fixed top-0 left-0 flex flex-col`}
     >
-      {/* Collapse/Expand Button + Logo */}
       <div className="flex items-center justify-between p-4">
         {isExpanded && (
           <div className="flex flex-col">
@@ -109,11 +99,8 @@ const Sidebar = () => {
               )}
             </a>
           </li>
-
-          {/* If not a limited role, show additional menu items */}
           {!showLimitedMenu && (
             <>
-              {/* Food Inventory Dropdown */}
               <li>
                 <button
                   onClick={() => setIsFoodMenuOpen(!isFoodMenuOpen)}
@@ -167,8 +154,6 @@ const Sidebar = () => {
                   </ul>
                 )}
               </li>
-
-              {/* Portion Management */}
               <li>
                 <a
                   href="/portion"
@@ -188,8 +173,6 @@ const Sidebar = () => {
                   )}
                 </a>
               </li>
-
-              {/* Ingredients Inventory Dropdown */}
               <li>
                 <button
                   onClick={() => setIsIngredientsMenuOpen(!isIngredientsMenuOpen)}
@@ -258,8 +241,6 @@ const Sidebar = () => {
                   </ul>
                 )}
               </li>
-
-              {/* Menu Management */}
               <li>
                 <a
                   href="/menutype"
@@ -277,8 +258,6 @@ const Sidebar = () => {
                   )}
                 </a>
               </li>
-
-              {/* Employee Management */}
               <li>
                 <a
                   href="/employee"
@@ -298,8 +277,6 @@ const Sidebar = () => {
                   )}
                 </a>
               </li>
-
-              {/* Supplier Management */}
               <li>
                 <a
                   href="/supplier"
@@ -319,8 +296,6 @@ const Sidebar = () => {
                   )}
                 </a>
               </li>
-
-              {/* Generate QR */}
               <li>
                 <a
                   href="/qrgenerate"
@@ -344,7 +319,7 @@ const Sidebar = () => {
                   data-tooltip-id="sidebar-tooltip"
                   data-tooltip-content="Click to Import Data"
                   className={`flex items-center p-1 rounded-md text-xl transition-colors duration-200 space-x-2 ${
-                    isActiveLink("/import-from-pos")
+                    isActiveLink("/import-pos")
                       ? "bg-gray-800"
                       : "text-customGold hover:bg-gray-800"
                   }`}
@@ -359,8 +334,6 @@ const Sidebar = () => {
           )}
         </ul>
       </div>
-
-      {/* Logout Button */}
       <div className="p-4">
         <button
           onClick={handleLogout}

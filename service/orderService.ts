@@ -31,7 +31,8 @@ export const subScribeToOrders = (dispatch:AppDispatch) =>{
                     : new Date().toISOString(),
                     update_at:data.update_at
                     ? new Date(data.update_at).toISOString()
-                    :undefined
+                    :undefined,
+                    rejectionReason: data.rejectionReason
                 });
             }
         }

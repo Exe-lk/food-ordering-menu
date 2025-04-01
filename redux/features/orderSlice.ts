@@ -13,6 +13,7 @@ export interface Order {
   status: string;
   created_at: string;
   update_at?: string;
+  rejectionReason?: string;
 }
 
 interface OrderState {
@@ -104,19 +105,21 @@ export const placeOrder = createAsyncThunk<
 
 // --- UPDATE ORDER STATUS THUNK ---
 export const updateOrderStatus = createAsyncThunk<
-  { id: string; status: string },
-  { id: string; status: string },
+  { id: string; status: string; rejectionReason?: string },
+  { id: string; status: string; rejectionReason?: string },
   { rejectValue: string }
 >(
   "order/updateOrderStatus",
-  async ({ id, status }, { rejectWithValue }) => {
+  async ({ id, status,rejectionReason }, { rejectWithValue }) => {
     try {
       const orderRef = ref(database, `orders/${id}`);
       await update(orderRef, {
         status: status,
         update_at: Date.now(),
+        ...(rejectionReason ? { rejectionReason } : {})
+
       });
-      return { id, status };
+      return { id, status, rejectionReason };
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -174,13 +177,16 @@ const orderSlice = createSlice({
         state.loading = false;
         state.error = action.payload || "An Error Occurred";
       })
-      .addCase(updateOrderStatus.fulfilled, (state, action: PayloadAction<{ id: string; status: string }>) => {
-        const { id, status } = action.payload;
+      .addCase(updateOrderStatus.fulfilled, (state, action: PayloadAction<{ id: string; status: string; rejectionReason?: string }>) => {
+        const { id, status, rejectionReason } = action.payload;
         const orderIndex = state.orders.findIndex((order) => order.id === id);
         if (orderIndex !== -1) {
           state.orders[orderIndex].status = status;
+          if (rejectionReason) {
+            state.orders[orderIndex].rejectionReason = rejectionReason;
+          }
         }
-      })
+      })      
       .addCase(updateOrderStatus.rejected, (state, action) => {
         state.error = action.payload || "Failed to update order status";
       })

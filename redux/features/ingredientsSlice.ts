@@ -375,8 +375,6 @@ export const stockOut = createAsyncThunk<
       // Automatically calculate the total cost price based on the ingredient's costPrice per unit
       const costPerUnit = parseFloat(currentIngredient.costPrice) || 0;
       const totalCostPrice = (costPerUnit * stockOutQty).toFixed(2);
-
-      // Create a transaction record in the "transactions" collection
       const transactionCollectionRef = collection(db, "transactions");
       const transactionRecord = {
         ingredientId: id,

@@ -5,32 +5,26 @@ import { RootState } from "@/redux/store";
 import NavBar from '@/components/MenuSide/NavBar';
 import { useRouter } from "next/navigation";
 import MyOrderCard from "@/components/MenuSide/MyOrderCard";
-import { subScribeToOrders } from "@/service/orderService"; // Adjust the import path as needed
+import { subScribeToOrders } from "@/service/orderService"; 
 
 const Page = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const orders = useSelector((state: RootState) => state.order.orders);
-  
-  // Create a state variable for phoneNumber and mounted flag
   const [phoneNumber, setPhoneNumber] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    // Mark as mounted and get the phone number from localStorage
+  useEffect(() => { 
     setMounted(true);
     setPhoneNumber(localStorage.getItem("phoneNumber"));
   }, []);
-
-  // Subscribe to realtime updates
   useEffect(() => {
     const unsubscribe = subScribeToOrders(dispatch);
     return () => unsubscribe();
   }, [dispatch]);
 
-  // Avoid rendering until the component is mounted to prevent hydration mismatches
+ 
   if (!mounted) {
-    return null; // Alternatively, render a loader or placeholder here
+    return null; 
   }
 
   const userOrders = orders.filter((order) => order.phoneNumber === phoneNumber);

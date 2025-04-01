@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Menu } from "@headlessui/react";
 import { GiMeal } from "react-icons/gi";
 import { FiChevronDown } from "react-icons/fi";
@@ -9,10 +9,12 @@ import {
   FaCheckCircle,
   FaUtensils,
   FaMoneyBillWave,
+  FaTimesCircle
 } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { updateOrderStatus } from "@/redux/features/orderSlice";
+import Swal from "sweetalert2";
 
 interface OrderItem {
   name: string;
@@ -37,14 +39,61 @@ const OrderCard = ({ order }: OrderCardProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const [status, setStatus] = useState(order.status);
   const [userRole, setUserRole] = useState<string | null>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const [dropdownDirection, setDropdownDirection] = useState<"down" | "up">("down");
+
+  const handleReject = async () => {
+    const { value: rejectionReason } = await Swal.fire({
+      title: "Select Rejection Reason",
+      input: "select",
+      inputOptions: {
+        "Out of Stock": "Out of Stock",
+        "Operational Overload": "Operational Overload",
+        "Reservation or Seating Constraints": "Reservation or Seating Constraints"
+      },
+      inputPlaceholder: "Select a reason",
+      showCancelButton: true,
+    });
+    if (rejectionReason) {
+      dispatch(updateOrderStatus({ id: order.id, status: "Rejected", rejectionReason }));
+      setStatus("Rejected");
+    }
+  };
+
   useEffect(() => {
     const role = localStorage.getItem("role");
     setUserRole(role);
   }, []);
+
+  useEffect(() => {
+    const adjustDropdownDirection = () => {
+      if (menuButtonRef.current) {
+        const rect = menuButtonRef.current.getBoundingClientRect();
+        const dropdownHeight = 150;
+        const spaceBelow = window.innerHeight - rect.bottom;
+        const spaceAbove = rect.top;
+        if (spaceBelow < dropdownHeight && spaceAbove > spaceBelow) {
+          setDropdownDirection("up");
+        } else {
+          setDropdownDirection("down");
+        }
+      }
+    };
+
+    adjustDropdownDirection();
+    window.addEventListener("resize", adjustDropdownDirection);
+    window.addEventListener("scroll", adjustDropdownDirection);
+    return () => {
+      window.removeEventListener("resize", adjustDropdownDirection);
+      window.removeEventListener("scroll", adjustDropdownDirection);
+    };
+  }, []);
+
   const handleStatusChange = (newStatus: string) => {
     setStatus(newStatus);
     dispatch(updateOrderStatus({ id: order.id, status: newStatus }));
   };
+
   const allowedOptions = useMemo(() => {
     if (!userRole) return [];
     if (userRole === "Admin") {
@@ -55,6 +104,7 @@ const OrderCard = ({ order }: OrderCardProps) => {
         { value: "Served", icon: GiMeal, color: "text-[#10e060]" },
         { value: "Billed", icon: FaMoneyBillWave, color: "text-indigo-500" },
         { value: "Completed", icon: FaCheckCircle, color: "text-green-500" },
+        { value: "Reject", icon: FaTimesCircle, color: "text-red-500" }
       ];
     }
     if (userRole === "Kitchen") {
@@ -62,15 +112,16 @@ const OrderCard = ({ order }: OrderCardProps) => {
         { value: "Pending", icon: FaClock, color: "text-[#D00000]" },
         { value: "Cooking", icon: FaConciergeBell, color: "text-[#FFBA08]" },
         { value: "Ready", icon: FaUtensils, color: "text-blue-500" },
+        { value: "Reject", icon: FaTimesCircle, color: "text-red-500" }
       ];
     } else if (userRole === "Waiter") {
       return [
         { value: "Ready", icon: FaUtensils, color: "text-blue-500" },
-        { value: "Served", icon: FaCheckCircle, color: "text-green-500" },
+        { value: "Served", icon: GiMeal, color: "text-green-500" },
+        { value: "Billed", icon: FaMoneyBillWave, color: "text-indigo-500" },
       ];
     } else if (userRole === "Cashier") {
       return [
-        { value: "Served", icon: FaCheckCircle, color: "text-green-500" },
         { value: "Billed", icon: FaMoneyBillWave, color: "text-indigo-500" },
         { value: "Completed", icon: FaCheckCircle, color: "text-green-500" },
       ];
@@ -78,6 +129,7 @@ const OrderCard = ({ order }: OrderCardProps) => {
       return [];
     }
   }, [userRole]);
+
   const defaultStatusMapping: Record<
     string,
     { icon: React.ComponentType<{ className?: string }>; color: string }
@@ -85,16 +137,16 @@ const OrderCard = ({ order }: OrderCardProps) => {
     Pending: { icon: FaClock, color: "text-[#D00000]" },
     Cooking: { icon: FaConciergeBell, color: "text-[#FFBA08]" },
     Ready: { icon: FaUtensils, color: "text-blue-500" },
-    Served: { icon: FaCheckCircle, color: "text-green-500" },
+    Served: { icon: GiMeal, color: "text-green-500" },
     Billed: { icon: FaMoneyBillWave, color: "text-indigo-500" },
     Completed: { icon: FaCheckCircle, color: "text-green-500" },
+    Rejected: { icon: FaTimesCircle, color: "text-red-500" },
   };
 
   const currentStatusMapping = defaultStatusMapping[status];
 
   return (
     <div className="border rounded-lg shadow-md p-4 bg-white grid grid-cols-3 gap-4 text-center hover:bg-gray-300 transition-all duration-300 cursor-pointer">
-      {/* Table Info */}
       <div className="flex items-center justify-center">
         <div className="w-8 h-8 flex items-center justify-center bg-gray-200 rounded-lg border border-black">
           <span className="text-sm font-semibold text-black">{order.tableNumber}</span>
@@ -105,7 +157,7 @@ const OrderCard = ({ order }: OrderCardProps) => {
           )}
         </div>
       </div>
-      {/* Order Items */}
+   
       <div className="flex flex-col justify-center border-r border-l border-gray-500 lg:px-14 items-start xl:px-36">
         {order.items.map((item, index) => (
           <p key={index} className="text-gray-600 text-md mb-2">
@@ -113,11 +165,12 @@ const OrderCard = ({ order }: OrderCardProps) => {
           </p>
         ))}
       </div>
-      {/* Status Dropdown / Display */}
+   
       <div className="flex flex-col items-center justify-center">
         {allowedOptions.length > 0 ? (
           <Menu as="div" className="relative inline-block">
             <Menu.Button
+              ref={menuButtonRef}
               className="flex items-center justify-between w-40 px-4 py-2 rounded-lg border shadow-sm bg-white cursor-pointer"
               style={{
                 boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
@@ -133,16 +186,24 @@ const OrderCard = ({ order }: OrderCardProps) => {
               <span className="text-black font-medium flex-1 text-center">{status}</span>
               <FiChevronDown className="w-5 h-5 text-gray-600" />
             </Menu.Button>
-            <Menu.Items className="absolute right-0 mt-2 w-40 bg-white border z-10 border-gray-200 rounded-md shadow-lg focus:outline-none">
+            <Menu.Items
+              className={`absolute right-0 ${
+                dropdownDirection === "up" ? "bottom-full mb-2" : "mt-2"
+              } w-40 bg-white border z-50 border-gray-200 rounded-md shadow-lg focus:outline-none`}
+            >
               {allowedOptions.map((option) => (
                 <Menu.Item key={option.value}>
                   {({ active }) => (
                     <button
-                      onClick={() => handleStatusChange(option.value)}
+                      onClick={() =>
+                        option.value === "Reject"
+                          ? handleReject()
+                          : handleStatusChange(option.value)
+                      }
                       className={`w-full flex items-center px-4 py-2 text-left ${active ? "bg-gray-100" : ""}`}
                     >
                       <option.icon className={`w-5 h-5 mr-2 ${option.color}`} />
-                      <span className={`${option.color}`}>{option.value}</span>
+                      <span className={`${option.color}`}>{option.value === "Reject" ? "Reject" : option.value}</span>
                     </button>
                   )}
                 </Menu.Item>
@@ -156,7 +217,9 @@ const OrderCard = ({ order }: OrderCardProps) => {
         )}
       </div>
       <div className="flex flex-col items-center justify-center">
-        <span className="text-gray-700 font-semibold"> {new Date(order.created_at).toLocaleString()}</span>
+        <span className="text-gray-700 font-semibold">
+          {new Date(order.created_at).toLocaleString()}
+        </span>
       </div>
     </div>
   );
