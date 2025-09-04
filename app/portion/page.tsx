@@ -29,17 +29,31 @@ const Page = () => {
   const [isPageLoading, setIsPageLoading] = useState(true);
 
   useEffect(() => {
-    dispatch(fetchPortions());
-  }, [dispatch]);
+    if (!fetched) {
+      console.log("Dispatching fetchPortions...");
+      dispatch(fetchPortions());
+    }
+  }, [dispatch, fetched]);
 
   useEffect(() => {
-    if(portions.length > 0){
+    console.log("Portion state changed:", { fetched, error, portionsLength: portions.length });
+    if(fetched || error) {
       setLocalPortions(portions);
       setIsPageLoading(false);
     }
-   
+  }, [portions, fetched, error]);
 
-  }, [portions]);
+  // Fallback timeout to prevent infinite loading
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (isPageLoading) {
+        console.warn("Loading timeout reached, stopping loading state");
+        setIsPageLoading(false);
+      }
+    }, 10000); // 10 second timeout
+
+    return () => clearTimeout(timeout);
+  }, [isPageLoading]);
 
   const handleEdit = (index: number) => {
     setSelectedIndex(index)
