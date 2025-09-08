@@ -4,13 +4,14 @@ import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { getDatabase} from 'firebase/database'
 const firebaseConfig = {
- apiKey: "AIzaSyBOoxC7szdPcHvFNNUnB_b1yefaScxjZWw",
-  authDomain: "hotel-reservation-80793.firebaseapp.com",
-  databaseURL: "https://hotel-reservation-80793-default-rtdb.firebaseio.com",
-  projectId: "hotel-reservation-80793",
-  storageBucket: "hotel-reservation-80793.firebasestorage.app",
-  messagingSenderId: "1027286159073",
-  appId: "1:1027286159073:web:7bf600abd259e9182bf1a0"
+  apiKey: "AIzaSyBuAqcp8QCPkdyob6nt6rpFLDnKiq5Nr_A",
+  authDomain: "hotel-management-system-c1c7d.firebaseapp.com",
+  databaseURL: "https://hotel-management-system-c1c7d-default-rtdb.firebaseio.com",
+  projectId: "hotel-management-system-c1c7d",
+  storageBucket: "hotel-management-system-c1c7d.firebasestorage.app",
+  messagingSenderId: "413947672257",
+  appId: "1:413947672257:web:ebcab5bf95ec3ce7390640",
+  measurementId: "G-ZV7RKGWQGG"
 };
 
 
