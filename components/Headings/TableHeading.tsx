@@ -6,7 +6,7 @@ interface TableHeadingProps {
 
 const TableHeading = ({ headings }: TableHeadingProps) => {
   return (
-    <div className="flex justify-evenly items-baseline bg-black  rounded-lg shadow-md px-4 py-3">
+    <div className="flex justify-evenly items-baseline bg-white  rounded-lg shadow-md px-4 py-3">
       {headings.map((heading, index) => (
         <div key={index} className="flex-1 text-center font-semibold text-customGold ">
           {heading}

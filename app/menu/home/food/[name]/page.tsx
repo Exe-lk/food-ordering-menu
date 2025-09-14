@@ -62,11 +62,11 @@ const MenuPage = () => {
       <NavBar />
       <div className="p-2 bg-white min-h-screen pb-20">
         <header className="flex justify-between items-center mb-4 border-b-2 border-white">
-          <h1 className="text-3xl font-bold text-customorange">
+          <h1 className="text-3xl font-bold text-customGold">
             {selectedMenu} Menu
           </h1>
           <button
-            className="bg-transparent text-customorange p-2 rounded"
+            className="bg-transparent text-customGold p-2 rounded"
             onClick={() => setOverlayOpen(true)}
           >
             <FiMenu size={24} />

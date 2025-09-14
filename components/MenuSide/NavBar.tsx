@@ -31,7 +31,7 @@ const NavBar = () => {
     router.push("/menu/login")
   }
   return (
-    <div className="bg-[#1b1d1b] border-t border-[#C9893C] rounded-b-3xl">
+    <div className="bg-customGold border-t border-white rounded-b-3xl">
       <div className="max-w-full mx-auto px-4 py-2 flex items-center justify-between">
         <div className="flex-shrink-0">
           <img
@@ -44,25 +44,25 @@ const NavBar = () => {
         <nav className="hidden md:flex space-x-8">
           <Link
             href="/home"
-            className="text-[#C9893C] hover:text-orange-400 transition-colors"
+            className="text-white hover:text-gray-200 transition-colors"
           >
             Home
           </Link>
           <Link
             href="/about"
-            className="text-[#C9893C] hover:text-orange-400 transition-colors"
+            className="text-white hover:text-gray-200 transition-colors"
           >
             About
           </Link>
           <Link
             href="/menu/orders"
-            className="text-[#C9893C] hover:text-orange-400 transition-colors"
+            className="text-white hover:text-gray-200 transition-colors"
           >
             Orders
           </Link>
           <Link
             href="/contact"
-            className="text-[#C9893C] hover:text-orange-400 transition-colors"
+            className="text-white hover:text-gray-200 transition-colors"
           >
             Contact
           </Link>
@@ -70,7 +70,7 @@ const NavBar = () => {
         <div className="flex items-center space-x-4">
           {isLoggedIn &&(
             <div
-            className='text-xl cursor-pointer text-white  hover:bg-orange-700 transition-colors bg-customGold py-2 px-2 rounded-lg'
+            className='text-xl cursor-pointer text-white  hover:bg-pink-700 transition-colors bg-customGold py-2 px-2 rounded-lg'
             onClick={handleLogout}
           >
             Logout
@@ -78,13 +78,13 @@ const NavBar = () => {
           )}
           {/* Added "relative" to this div */}
           <div 
-            className="relative text-2xl cursor-pointer text-[#C9893C] hover:text-orange-400 transition-colors"
+            className="relative text-2xl cursor-pointer text-white hover:text-gray-200 transition-colors"
             onClick={() => router.push("/menu/cart")}
           >
             <FaShoppingCart />
           </div>
           <div
-            className="md:hidden text-2xl cursor-pointer text-[#C9893C] hover:text-orange-400 transition-colors"
+            className="md:hidden text-2xl cursor-pointer text-white hover:text-gray-200 transition-colors"
             onClick={toggleMenu}
           >
             {isOpen ? <FaTimes /> : <FiBarChart2 />}
@@ -92,12 +92,12 @@ const NavBar = () => {
         </div>
       </div>
       {isOpen && (
-        <nav className="md:hidden bg-[#1b1d1b] border-t border-[#C9893C]">
+        <nav className="md:hidden bg-customGold border-t border-white">
           <ul className="flex flex-col space-y-2 px-4 py-2">
             <li>
               <Link
                 href="/home"
-                className="text-[#C9893C] hover:text-orange-400 transition-colors"
+                className="text-white hover:text-gray-200 transition-colors"
                 onClick={toggleMenu}
               >
                 Home
@@ -106,7 +106,7 @@ const NavBar = () => {
             <li>
               <Link
                 href="/about"
-                className="text-[#C9893C] hover:text-orange-400 transition-colors"
+                className="text-white hover:text-gray-200 transition-colors"
                 onClick={toggleMenu}
               >
                 About
@@ -115,7 +115,7 @@ const NavBar = () => {
             <li>
               <Link
                 href="/menus"
-                className="text-[#C9893C] hover:text-orange-400 transition-colors"
+                className="text-white hover:text-gray-200 transition-colors"
                 onClick={toggleMenu}
               >
                 Menus
@@ -124,7 +124,7 @@ const NavBar = () => {
             <li>
               <Link
                 href="/contact"
-                className="text-[#C9893C] hover:text-orange-400 transition-colors"
+                className="text-white hover:text-gray-200 transition-colors"
                 onClick={toggleMenu}
               >
                 Contact

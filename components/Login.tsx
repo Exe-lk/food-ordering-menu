@@ -82,7 +82,7 @@ const Login = () => {
               <input
                 type="text"
                 placeholder="Your Name"
-                className="w-full px-4 py-2 border border-gray-300 rounded-md text-gray-700 focus:ring-2 focus:ring-orange-500 focus:outline-none"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md text-gray-700 focus:ring-2 focus:ring-customGold focus:outline-none"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
@@ -92,7 +92,7 @@ const Login = () => {
               <input
                 type="password"
                 placeholder="Password"
-                className="w-full px-4 py-2 border border-gray-300 rounded-md text-gray-700 focus:ring-2 focus:ring-orange-500 focus:outline-none"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md text-gray-700 focus:ring-2 focus:ring-customGold focus:outline-none"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -101,7 +101,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-[#c47d5e] text-white font-bold py-2 rounded-md hover:bg-[#b36d53] transition duration-300"
+              className="w-full bg-customGold text-white font-bold py-2 rounded-md hover:bg-pink-600 transition duration-300"
             >
               {isLoading ? "Loading...":"Login"}
             </button>

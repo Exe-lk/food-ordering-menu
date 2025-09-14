@@ -49,7 +49,7 @@ const page = () => {
           </div>
         </div>
       </section>
-      <div className="absolute bottom-0 left-0 w-full h-24 bg-black rounded-t-[50%]"></div>
+      <div className="absolute bottom-0 left-0 w-full h-24 bg-white rounded-t-[50%]"></div>
     </div>
   )
 }

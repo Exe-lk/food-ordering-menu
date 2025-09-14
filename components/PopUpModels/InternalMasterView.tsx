@@ -19,7 +19,7 @@ const InternalMasterView = ({isOpen, onClose, product}:MasterViewPopupProps) => 
    const price =
     product.sizes && product.sizes.length > 0 ? product.sizes[0].price : "N/A";
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-80">
         <div className="relative w-full max-w-md mx-4 p-6 bg-white rounded shadow-lg">
             <button
                 onClick={onClose}

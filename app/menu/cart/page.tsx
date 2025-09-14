@@ -155,7 +155,7 @@ const CartPage = () => {
           </div>
         </div>
 
-        <div className="fixed bottom-0 left-0 w-full bg-black rounded-t-[40px] p-4 flex items-center justify-center">
+        <div className="fixed bottom-0 left-0 w-full bg-white rounded-t-[40px] p-4 flex items-center justify-center">
           <button
             onClick={handlePlaceOrder}
             disabled={isPlacing}

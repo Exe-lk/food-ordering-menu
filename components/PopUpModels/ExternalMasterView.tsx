@@ -15,7 +15,7 @@ const ExternalMasterView = ({isOpen, onClose, product}:MasterViewPopupProps) => 
     ? product.created_at.split("T")[0].replace(/-/g, ".")
     : "N/A";
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-80">
         <div className="relative w-full h-[600px] overflow-y-auto max-w-md mx-4 p-6 bg-white rounded shadow-lg">
             <button
                 onClick={onClose}

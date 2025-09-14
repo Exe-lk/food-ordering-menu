@@ -15,7 +15,7 @@ const SearchBar = ({placeholder, onSearch}:SearchBarProps) => {
         type="text"
         placeholder={placeholder}
         onChange={handleChange}
-        className='border rounded-md px-4 py-2 bg-white text-black shadow-lg border-customorange'
+        className='border rounded-md px-4 py-2 bg-white text-black shadow-lg border-customGold'
      />
   )
 }

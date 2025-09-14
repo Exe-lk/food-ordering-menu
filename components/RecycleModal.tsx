@@ -126,7 +126,7 @@ const RecycleModal = ({isOpen, onClose, recycleType}:RecycleProps) => {
     
       if (!isOpen) return null;
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+    <div className="fixed inset-0 bg-white bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white rounded-xl shadow-lg p-6 w-[500px] h-[600px] max-h-[650px] overflow-y-auto">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold text-center w-full text-black">Recycle Bin</h2>
@@ -142,7 +142,7 @@ const RecycleModal = ({isOpen, onClose, recycleType}:RecycleProps) => {
                 <div className="flex space-x-2">
                   <button
                     onClick={() => handleRestore(item.id)}
-                    className="bg-black text-white p-2 rounded-md w-10"
+                    className="bg-white text-black p-2 rounded-md w-10"
                   >
                     <MdOutlineRestore/>
                   </button>

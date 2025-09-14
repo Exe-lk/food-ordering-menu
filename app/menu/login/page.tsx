@@ -63,24 +63,24 @@ const page = () => {
               />
           </div>
             <div className='bg-beige p-6 rounded-lg w-full xl:w-[30%] z-20 mt-20 md:mt-0'>
-              <h1 className='text-customorange text-xl font-semibold text-center mb-6'>Phone Number</h1>
+              <h1 className='text-customGold text-xl font-semibold text-center mb-6'>Phone Number</h1>
               <input
                 type="text"
                 placeholder='Enter your phone number'
-                className='w-full px-4 py-3 rounded-md text-sm bg-white text-black border border-customorange focus:ring-2 focus:ring-offset-customGold mb-6'
+                className='w-full px-4 py-3 rounded-md text-sm bg-white text-black border border-customGold focus:ring-2 focus:ring-offset-customGold mb-6'
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
               />
               <button
                 onClick={handleClick}
-                className='w-full bg-customorange text-white font-medium py-3 rounded-md text-center'
+                className='w-full bg-customGold text-white font-medium py-3 rounded-md text-center'
                 disabled={loading}
               >
                 {loading ? "Checking..." : "Next"}
               </button>
             </div>
         </div>
-        <div className="absolute bottom-0 left-0 w-full h-24 bg-black rounded-t-[50%]"></div>
+        <div className="absolute bottom-0 left-0 w-full h-24 bg-white rounded-t-[50%]"></div>
       </section>
     </div>
   );

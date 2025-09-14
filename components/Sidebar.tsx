@@ -60,7 +60,7 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`h-full bg-black shadow-lg transition-[width] duration-300 rounded-r-lg ${
+      className={`h-full bg-white shadow-lg transition-[width] duration-300 rounded-r-lg ${
         isExpanded ? "w-[18rem]" : "w-14"
       } fixed top-0 left-0 flex flex-col`}
     >

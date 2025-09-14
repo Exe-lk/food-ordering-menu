@@ -69,11 +69,11 @@ const page = () => {
             />
           </div>
           <div className='bg-white p-6 rounded-lg w-full xl:w-[30%] z-20 mt-20 md:mt-0'>
-            <h1 className='text-customorange text-xl font-semibold text-center mb-6'>Table Number</h1>
+            <h1 className='text-customGold text-xl font-semibold text-center mb-6'>Table Number</h1>
             <select 
               value={tableNumber}
               onChange={(e) => setTableNumber(e.target.value)}
-              className='w-full px-4 py-3 rounded-md text-sm bg-white text-black border border-customorange mb-6'
+              className='w-full px-4 py-3 rounded-md text-sm bg-white text-black border border-customGold mb-6'
             >
               <option value="">Select Table Number</option>
               {[...Array(10).keys()].map((val) => {
@@ -88,13 +88,13 @@ const page = () => {
             <button
               onClick={handleClick}
               disabled={loading}
-              className='w-full bg-customorange text-white font-medium py-3 rounded-md text-center'
+              className='w-full bg-customGold text-white font-medium py-3 rounded-md text-center'
             >
               {loading ? "Loading..." : "Next"}
             </button>
           </div>
         </div>
-        <div className="absolute bottom-0 left-0 w-full h-24 bg-black rounded-t-[50%]"></div>
+        <div className="absolute bottom-0 left-0 w-full h-24 bg-white rounded-t-[50%]"></div>
       </div>
     </div>
   )
