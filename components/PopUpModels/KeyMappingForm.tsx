@@ -35,7 +35,7 @@ const KeyMappingForm = ({isOpen, expectedKeys, incomingKeys,onSubmit,onClose}:Ke
     }
     
   return (
-    <div className='fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50 text-black'>
+    <div className='fixed inset-0 bg-white bg-opacity-75 flex justify-center items-center z-50 text-black'>
         <div className='bg-white rounded-lg shadow-lg p-10 w-[650px] max-h-[700px] overflow-y-auto'>
             <button onClick={onClose} className="absolute top-3 right-3 text-gray-700 text-2xl">
                 <FiX/>

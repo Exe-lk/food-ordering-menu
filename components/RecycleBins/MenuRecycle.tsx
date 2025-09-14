@@ -58,7 +58,7 @@ const MenuRecycle = ({isOpen, onClose}:RecycleBinModalProps) => {
     };
     if(!isOpen) return null 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50 text-black">
+    <div className="fixed inset-0 bg-white bg-opacity-75 flex justify-center items-center z-50 text-black">
       <div className="bg-white rounded-lg shadow-lg p-6 w-[500px] max-h-[80vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-semibold">Recycle Bin</h2>

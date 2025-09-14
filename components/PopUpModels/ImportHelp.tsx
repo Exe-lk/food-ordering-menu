@@ -10,7 +10,7 @@ const ImportHelp = ({ isOpen, onClose }: HelpModalProps) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50">
+    <div className="fixed inset-0 bg-white bg-opacity-75 flex justify-center items-center z-50">
       <div className="relative bg-white w-[450px] rounded-lg shadow-lg p-6">
       
         <button

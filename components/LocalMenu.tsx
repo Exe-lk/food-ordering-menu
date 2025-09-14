@@ -14,7 +14,7 @@ const LocalMenuOverlay: React.FC<LocalMenuOverlayProps> = ({ isOpen, onClose }) 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-end z-50">
+    <div className="fixed inset-0 bg-white bg-opacity-50 flex justify-center items-end z-50">
       <div className="bg-white w-full h-3/4 rounded-t-lg p-6 shadow-lg">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-semibold text-black">Local Menus</h2>

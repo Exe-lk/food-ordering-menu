@@ -27,7 +27,7 @@ const TransactionCard = ({ transaction }: TransactionCardProps) => {
     transactionType === "StockIn"
       ? newQuantity
       : remainingQuantity;
-  const bgColor = transactionType === "StockIn" ? "bg-green-200":"bg-yellow-100"
+  const bgColor = transactionType === "StockIn" ? "bg-green-200":"bg-green-100"
 
   return (
     <div className={`grid grid-cols-8 items-center border rounded-lg shadow-md p-4 mb-4 ${bgColor} transition-all duration-300 cursor-pointer`}>

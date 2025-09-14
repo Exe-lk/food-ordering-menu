@@ -48,7 +48,7 @@ const StockIn = ({ isOpen, onClose, ingredientId, ingredientName, category }: St
 
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-50 z-50">
       <div className="bg-white rounded-lg shadow-lg p-6 w-[500px] max-h-[90vh] overflow-y-auto hide-scrollbar max-w-md relative">
         {/* Close Button */}
         <button

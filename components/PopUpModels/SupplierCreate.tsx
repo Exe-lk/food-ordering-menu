@@ -48,7 +48,7 @@ const SupplierCreate = ({isOpen, onClose}:SupplierProps) => {
 
 
   return (
-    <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-85'>
+    <div className='fixed inset-0 flex items-center justify-center bg-white bg-opacity-85'>
         <div className='bg-white p-6 rounded-lg shadow-lg w-[450px] relative'>
             <div className='flex items-center justify-between mb-4'>
                 <h2 className='text-xl font-semibold text-customGold'>Create Supplier</h2>

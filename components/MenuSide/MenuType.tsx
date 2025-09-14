@@ -9,9 +9,9 @@ const MenuType = () => {
   return (
     <div className="relative min-h-screen bg-white">
       <NavBar />
-      <div className="absolute bottom-0 left-0 w-full h-16 bg-black rounded-t-[50%] z-0" />
+      <div className="absolute bottom-0 left-0 w-full h-16 bg-white rounded-t-[50%] z-0" />
       <div className="relative z-10 flex flex-col items-center px-6 py-8 h-full">
-        <h1 className="text-customorange text-2xl font-bold mb-4">
+        <h1 className="text-customGold text-2xl font-bold mb-4">
           Select Menu
         </h1>
         <hr className="border-gray-300 w-full max-w-3xl mb-6" />
@@ -21,7 +21,7 @@ const MenuType = () => {
             <div
               onClick={() => router.push('/menu/home/food')}
               className="relative rounded-xl overflow-hidden cursor-pointer 
-                         border-2 border-customorange shadow-lg w-full aspect-square 
+                         border-2 border-customGold shadow-lg w-full aspect-square 
                          mx-auto transition-transform duration-300 hover:scale-105"
             >
               <img
@@ -29,11 +29,16 @@ const MenuType = () => {
                 alt="Food Menu"
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-black bg-opacity-75" />
+              <div className="absolute inset-0 bg-black bg-opacity-50" />
               <div className="absolute inset-0 flex items-center justify-center">
-                <h2 className="text-customGold text-2xl md:text-4xl lg:text-5xl font-semibold">
-                  Food Menu
-                </h2>
+                <div className="text-center">
+                  <h2 className="text-white text-2xl md:text-4xl lg:text-5xl font-bold drop-shadow-lg">
+                    Food Menu
+                  </h2>
+                  <p className="text-white text-sm md:text-base mt-2 opacity-90 drop-shadow-md">
+                    Browse our delicious dishes
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -41,7 +46,7 @@ const MenuType = () => {
             <div
               onClick={() => router.push('/menu/home/bar')}
               className="relative rounded-xl overflow-hidden cursor-pointer 
-                         border-2 border-customorange shadow-lg w-full aspect-square 
+                         border-2 border-customGold shadow-lg w-full aspect-square 
                          mx-auto transition-transform duration-300 hover:scale-105"
             >
               <img
@@ -49,11 +54,16 @@ const MenuType = () => {
                 alt="Bar Menu"
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-black bg-opacity-70" />
+              <div className="absolute inset-0 bg-black bg-opacity-50" />
               <div className="absolute inset-0 flex items-center justify-center">
-                <h2 className="text-customBeige text-2xl md:text-4xl lg:text-5xl font-semibold">
-                  Bar Menu
-                </h2>
+                <div className="text-center">
+                  <h2 className="text-white text-2xl md:text-4xl lg:text-5xl font-bold drop-shadow-lg">
+                    Bar Menu
+                  </h2>
+                  <p className="text-white text-sm md:text-base mt-2 opacity-90 drop-shadow-md">
+                    Explore our drinks & cocktails
+                  </p>
+                </div>
               </div>
             </div>
           </div>

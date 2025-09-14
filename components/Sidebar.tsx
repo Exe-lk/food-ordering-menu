@@ -60,7 +60,7 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`h-full bg-black shadow-lg transition-[width] duration-300 rounded-r-lg ${
+      className={`h-full bg-gray-900 shadow-lg transition-[width] duration-300 rounded-r-lg ${
         isExpanded ? "w-[18rem]" : "w-14"
       } fixed top-0 left-0 flex flex-col`}
     >
@@ -89,8 +89,8 @@ const Sidebar = () => {
               data-tooltip-content="Manage Orders Here"
               className={`flex items-center p-1 rounded-md text-xl transition-colors duration-200 space-x-2 ${
                 isActiveLink("/order")
-                  ? "bg-gray-800"
-                  : "text-customGold hover:bg-gray-800"
+                  ? "bg-gray-800 text-white"
+                  : "text-white hover:bg-gray-800"
               }`}
             >
               <FiClipboard className="text-xl text-customGold" />
@@ -108,8 +108,8 @@ const Sidebar = () => {
                   data-tooltip-content="Manage External and Internal Food Items"
                   className={`w-full flex justify-between items-center p-1 rounded-md text-xl transition-colors duration-200 space-x-2 ${
                     isFoodActive
-                      ? "bg-gray-800"
-                      : "text-customGold hover:bg-gray-800"
+                      ? "bg-gray-800 text-white"
+                      : "text-white hover:bg-gray-800"
                   }`}
                 >
                   <div className="flex items-center space-x-2">
@@ -130,8 +130,8 @@ const Sidebar = () => {
                         data-tooltip-content="Manage Internal Food Items"
                         className={`block p-1 rounded text-base transition-colors duration-200 ${
                           isActiveLink("/inventory/food/internal")
-                            ? "bg-gray-800"
-                            : "text-customGold hover:bg-gray-800"
+                            ? "bg-gray-800 text-white"
+                            : "text-white hover:bg-gray-800"
                         }`}
                       >
                         Internal
@@ -144,8 +144,8 @@ const Sidebar = () => {
                         data-tooltip-content="Manage External Food Items"
                         className={`block p-1 rounded text-base transition-colors duration-200 ${
                           isActiveLink("/inventory/food/external")
-                            ? "bg-gray-800"
-                            : "text-customGold hover:bg-gray-800"
+                            ? "bg-gray-800 text-white"
+                            : "text-white hover:bg-gray-800"
                         }`}
                       >
                         External
@@ -161,8 +161,8 @@ const Sidebar = () => {
                   data-tooltip-content="Manage Portions Here"
                   className={`flex items-center p-1 rounded-md text-xl transition-colors duration-200 space-x-2 ${
                     isActiveLink("/portion")
-                      ? "bg-gray-800"
-                      : "text-customGold hover:bg-gray-800"
+                      ? "bg-gray-800 text-white"
+                      : "text-white hover:bg-gray-800"
                   }`}
                 >
                   <FiLayers className="text-customGold text-xl" />
@@ -181,8 +181,8 @@ const Sidebar = () => {
                   className={`w-full flex justify-between items-center p-1 rounded-md text-xl transition-colors duration-200 space-x-2 ${
                     isActiveLink("/inventory/ingredients") ||
                     isActiveLink("/inventory/ingredients/categories")
-                      ? "bg-gray-800"
-                      : "text-customGold hover:bg-gray-800"
+                      ? "bg-gray-800 text-white"
+                      : "text-white hover:bg-gray-800"
                   }`}
                 >
                   <div className="flex items-center space-x-2">
@@ -207,8 +207,8 @@ const Sidebar = () => {
                         href="/inventory/ingredients/categories"
                         className={`block p-1 rounded text-base transition-colors duration-200 ${
                           isActiveLink("/inventory/ingredients/categories")
-                            ? "bg-gray-800"
-                            : "text-customGold hover:bg-gray-800"
+                            ? "bg-gray-800 text-white"
+                            : "text-white hover:bg-gray-800"
                         }`}
                       >
                         Categories
@@ -219,8 +219,8 @@ const Sidebar = () => {
                         href="/inventory/ingredients"
                         className={`block p-1 rounded text-base transition-colors duration-200 ${
                           isActiveLink("/inventory/ingredients")
-                            ? "bg-gray-800"
-                            : "text-customGold hover:bg-gray-800"
+                            ? "bg-gray-800 text-white"
+                            : "text-white hover:bg-gray-800"
                         }`}
                       >
                         Ingredients
@@ -231,8 +231,8 @@ const Sidebar = () => {
                         href="/inventory/ingredients/stockIn"
                         className={`block p-1 rounded text-base transition-colors duration-200 ${
                           isActiveLink("/inventory/ingredients/stockin")
-                            ? "bg-gray-800"
-                            : "text-customGold hover:bg-gray-800"
+                            ? "bg-gray-800 text-white"
+                            : "text-white hover:bg-gray-800"
                         }`}
                       >
                         Transaction Records
@@ -248,8 +248,8 @@ const Sidebar = () => {
                   data-tooltip-content="Manage Menus Here"
                   className={`flex items-center p-1 rounded-md text-xl transition-colors duration-200 space-x-2 ${
                     isActiveLink("/menuType")
-                      ? "bg-gray-800"
-                      : "text-customGold hover:bg-gray-800"
+                      ? "bg-gray-800 text-white"
+                      : "text-white hover:bg-gray-800"
                   }`}
                 >
                   <FiGrid className="text-customGold text-xl" />
@@ -265,8 +265,8 @@ const Sidebar = () => {
                   data-tooltip-content="Manage Employees Here"
                   className={`flex items-center p-1 rounded-md text-xl transition-colors duration-200 space-x-2 ${
                     isActiveLink("/employee")
-                      ? "bg-gray-800"
-                      : "text-customGold hover:bg-gray-800"
+                      ? "bg-gray-800 text-white"
+                      : "text-white hover:bg-gray-800"
                   }`}
                 >
                   <FiUser className="text-customGold text-xl" />
@@ -284,8 +284,8 @@ const Sidebar = () => {
                   data-tooltip-content="Manage Suppliers"
                   className={`flex items-center p-1 rounded-md text-xl transition-colors duration-200 space-x-2 ${
                     isActiveLink("/supplier")
-                      ? "bg-gray-800"
-                      : "text-customGold hover:bg-gray-800"
+                      ? "bg-gray-800 text-white"
+                      : "text-white hover:bg-gray-800"
                   }`}
                 >
                   <FiUsers className="text-customGold text-xl" />
@@ -303,8 +303,8 @@ const Sidebar = () => {
                   data-tooltip-content="Generate QR Code"
                   className={`flex items-center p-1 rounded-md text-xl transition-colors duration-200 space-x-2 ${
                     isActiveLink("/qrgenerate")
-                      ? "bg-gray-800"
-                      : "text-customGold hover:bg-gray-800"
+                      ? "bg-gray-800 text-white"
+                      : "text-white hover:bg-gray-800"
                   }`}
                 >
                   <MdQrCode2 className="text-customGold text-xl" />
@@ -320,8 +320,8 @@ const Sidebar = () => {
                   data-tooltip-content="Click to Import Data"
                   className={`flex items-center p-1 rounded-md text-xl transition-colors duration-200 space-x-2 ${
                     isActiveLink("/import-pos")
-                      ? "bg-gray-800"
-                      : "text-customGold hover:bg-gray-800"
+                      ? "bg-gray-800 text-white"
+                      : "text-white hover:bg-gray-800"
                   }`}
                 >
                   <FiDownload className="text-customGold text-xl"/>

@@ -33,7 +33,7 @@ const Menu = ({type}:MenuProps) => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-black text-white">
+      <div className="flex justify-center items-center min-h-screen bg-white text-black">
         Loading...
       </div>
     );
@@ -42,7 +42,7 @@ const Menu = ({type}:MenuProps) => {
     <div>
       <NavBar/>
       <div className="flex relative flex-col items-center bg-white min-h-screen p-6 w-full">
-        <h1 className="text-customorange text-2xl font-bold mb-4 md:text-4xl lg:text-6xl">
+        <h1 className="text-customGold text-2xl font-bold mb-4 md:text-4xl lg:text-6xl">
           Menus
         </h1>
         <hr className="border-gray-700 w-full mb-6" />
@@ -66,7 +66,7 @@ const Menu = ({type}:MenuProps) => {
             </div>
           ))}
         </div>
-        <div className="absolute bottom-0 left-0 w-full h-16 bg-black rounded-t-[50%] z-0" />
+        <div className="absolute bottom-0 left-0 w-full h-16 bg-white rounded-t-[50%] z-0" />
       </div>
     </div>
   );

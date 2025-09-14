@@ -31,7 +31,7 @@ const PortionCreate = ({isOpen, onClose}:PortionProps) => {
         }
     };
   return (
-    <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-85'>
+    <div className='fixed inset-0 flex items-center justify-center bg-white bg-opacity-85'>
         <div className='bg-white p-6 rounded-lg shadow-lg w-[400px] relative'>
             <button onClick={onClose} className='absolute top-3 right-3 text-gray-700 text-2xl'>
                 <FiX/>

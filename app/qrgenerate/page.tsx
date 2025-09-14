@@ -46,7 +46,7 @@ const page = () => {
               className="absolute top-0 left-0 w-full h-[300px] bg-cover bg-center"
               style={{ backgroundImage: "url('/assets/background.jpg')" }}
             >
-                 <div className="absolute inset-0 bg-black opacity-60"></div>
+                 <div className="absolute inset-0 bg-white opacity-60"></div>
               <div className="flex flex-col items-center justify-start w-full h-full text-center text-white drop-shadow-md pt-8">
                 <p className="uppercase font-bold text-base leading-tight">
                   VIEW OUR
@@ -98,7 +98,7 @@ const page = () => {
         <div className="flex justify-center mt-3">
           <button
             onClick={handleDownload}
-            className="bg-customorange text-white font-bold py-2 px-4 rounded-lg hover:bg-orange-400 cursor-pointer"
+            className="bg-customGold text-white font-bold py-2 px-4 rounded-lg hover:bg-pink-400 cursor-pointer"
           >
             Download
           </button>
