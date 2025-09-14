@@ -27,47 +27,73 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ orderId, amount }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!stripe || !elements) return;
+    console.log("Payment form submitted");
+    
+    if (!stripe || !elements) {
+      console.error("Stripe or elements not loaded");
+      setErrorMessage("Payment system not ready. Please try again.");
+      return;
+    }
+
     setLoading(true);
     setErrorMessage("");
 
-    // Remove return_url to handle payment confirmation inline
-    const { error } = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-     
-        payment_method_data: {
-          billing_details: {
-            address: {
-              country: "LK",
+    try {
+      console.log("Confirming payment...");
+      
+      // First, validate the payment element
+      const { error: submitError } = await elements.submit();
+      if (submitError) {
+        console.error("Form validation error:", submitError);
+        setErrorMessage(submitError.message || "Please check your payment details");
+        setLoading(false);
+        return;
+      }
+
+      // Confirm the payment
+      const { error, paymentIntent } = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+          payment_method_data: {
+            billing_details: {
+              address: {
+                country: "LK",
+              },
             },
           },
         },
-      },
-      redirect: "if_required",
-    });
+        redirect: "if_required",
+      });
 
-    if (error) {
-      setErrorMessage(error.message || "Payment Failed");
-      setLoading(false);
-    } else {
-      try {
-        
-        await dispatch(updateOrderStatus({ id: orderId, status: "Completed" })).unwrap();
-       
-        await Swal.fire({
-          title: "Payment Successful",
-          text: "Your order has been completed",
-          icon: "success",
-          timer: 2000,
-          timerProgressBar: true,
-          showConfirmButton: false,
-        });
-       
-        router.push("/menu/orders");
-      } catch (err) {
-        setErrorMessage("Failed to update Order Status");
+      if (error) {
+        console.error("Payment confirmation error:", error);
+        setErrorMessage(error.message || "Payment Failed");
+        setLoading(false);
+      } else {
+        console.log("Payment successful:", paymentIntent);
+        try {
+          console.log("Updating order status...");
+          await dispatch(updateOrderStatus({ id: orderId, status: "Completed" })).unwrap();
+         
+          await Swal.fire({
+            title: "Payment Successful",
+            text: "Your order has been completed",
+            icon: "success",
+            timer: 2000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+          });
+         
+          router.push("/menu/orders");
+        } catch (err) {
+          console.error("Error updating order status:", err);
+          setErrorMessage("Payment successful but failed to update order status");
+        }
+        setLoading(false);
       }
+    } catch (error) {
+      console.error("Unexpected error during payment:", error);
+      setErrorMessage("An unexpected error occurred. Please try again.");
       setLoading(false);
     }
   };
@@ -83,8 +109,12 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ orderId, amount }) => {
       {errorMessage && <div className="text-red-500 mb-2">{errorMessage}</div>}
       <button
         type="submit"
-        disabled={!stripe || loading}
-        className="w-full bg-customblue hover:bg-blue-900 text-white font-bold py-2 px-2 rounded"
+        disabled={!stripe || !elements || loading}
+        className={`w-full font-bold py-2 px-2 rounded ${
+          !stripe || !elements || loading
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-customblue hover:bg-blue-900"
+        } text-white`}
       >
         {loading ? "Processing..." : "Pay"}
       </button>
