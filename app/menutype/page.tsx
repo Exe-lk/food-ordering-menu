@@ -18,7 +18,7 @@ import ProgressBar from "@/components/ProgressBar";
 
 const Page = () => {
   const dispatch = useDispatch<any>();
-  const { menus, loading, fetched } = useSelector((state: RootState) => state.menuType);
+  const { menus, loading, fetched, error } = useSelector((state: RootState) => state.menuType);
   const [localMenus, setLocalMenus] = useState(menus);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -32,6 +32,7 @@ const Page = () => {
 
   // Fetch menus if not already fetched
   useEffect(() => {
+
     dispatch(resetFetched());
     dispatch(fetchMenus());
     
@@ -51,6 +52,34 @@ const Page = () => {
       setIsPageLoading(false);
     }
   }, [menus, fetched]);
+
+    if (!fetched) {
+      console.log("Dispatching fetchMenus...");
+      dispatch(fetchMenus());
+    }
+  }, [fetched, dispatch]);
+
+  // When menus are loaded, update local state and disable the loader
+  useEffect(() => {
+    console.log("Menu state changed:", { fetched, error, menusLength: menus.length });
+    if (fetched || error) {
+      setLocalMenus(menus);
+      setIsPageLoading(false);
+    }
+  }, [menus, fetched, error]);
+
+  // Fallback timeout to prevent infinite loading
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (isPageLoading) {
+        console.warn("Menu loading timeout reached, stopping loading state");
+        setIsPageLoading(false);
+      }
+    }, 10000); // 10 second timeout
+
+    return () => clearTimeout(timeout);
+  }, [isPageLoading]);
+
 
   const filteredMenus = localMenus.filter((menu) => {
     const matchName = menu.name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -143,6 +172,8 @@ const Page = () => {
         <div className="flex justify-center items-center h-64">
           <div className="w-16 h-16 border-4 border-gray-200 border-t-customGold rounded-full animate-spin"></div>
         </div>
+      ) : error ? (
+        <p className="text-red-500">Error loading menus: {error}</p>
       ) : filteredMenus.length > 0 ? (
         <MenuCard menus={filteredMenus} onEdit={handleEdit} onRemove={handleRemove} />
       ) : (

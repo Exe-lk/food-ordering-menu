@@ -31,13 +31,30 @@ const page = () => {
   const amount = total * 100
   useEffect(() => {
     const createPaymentIntent = async () => {
-      const res = await fetch("/api/create-payment-intent", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ orderId, amount }),
-      });
-      const data = await res.json();
-      setClientSecret(data.clientSecret);
+      try {
+        console.log("Creating payment intent for:", { orderId, amount });
+        const res = await fetch("/api/create-payment-intent", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ orderId, amount }),
+        });
+        
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        
+        const data = await res.json();
+        console.log("Payment intent created:", data);
+        
+        if (data.error) {
+          throw new Error(data.error);
+        }
+        
+        setClientSecret(data.clientSecret);
+      } catch (error) {
+        console.error("Error creating payment intent:", error);
+        alert(`Error creating payment intent: ${error.message}`);
+      }
     };
     createPaymentIntent();
   }, [orderId, amount]);
