@@ -9,7 +9,7 @@ import PortionCreate from "@/components/PopUpModels/PortionCreate";
 import Heading from "@/components/Headings/Heading";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { fetchPortions, removePortion, resetFetched } from "@/redux/features/portionSlice";
+import { fetchPortions, removePortion } from "@/redux/features/portionSlice";
 import PortionEdit from "@/components/PopUpModels/EditPopUps/PortionEdit";
 import RecycleBinButton from "@/components/RecycleBin";
 import PortionRecycleBin from "@/components/RecycleBins/PortionRecycleBin";
@@ -29,52 +29,16 @@ const Page = () => {
   const [isPageLoading, setIsPageLoading] = useState(true);
 
   useEffect(() => {
-
-    dispatch(resetFetched());
     dispatch(fetchPortions());
-    
-    // Fallback timeout to prevent infinite loading
-    const timeout = setTimeout(() => {
-      setIsPageLoading(false);
-    }, 10000); // 10 second timeout
-
-    return () => clearTimeout(timeout);
   }, [dispatch]);
 
   useEffect(() => {
     setLocalPortions(portions);
-    // Set loading to false when data is fetched, regardless of whether there are items or not
-    if (fetched) {
+    // Set page loading to false when fetch is complete, regardless of whether there are items
+    if (fetched || !loading) {
       setIsPageLoading(false);
     }
-  }, [portions, fetched]);
-
-    if (!fetched) {
-      console.log("Dispatching fetchPortions...");
-      dispatch(fetchPortions());
-    }
-  }, [dispatch, fetched]);
-
-  useEffect(() => {
-    console.log("Portion state changed:", { fetched, error, portionsLength: portions.length });
-    if(fetched || error) {
-      setLocalPortions(portions);
-      setIsPageLoading(false);
-    }
-  }, [portions, fetched, error]);
-
-  // Fallback timeout to prevent infinite loading
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (isPageLoading) {
-        console.warn("Loading timeout reached, stopping loading state");
-        setIsPageLoading(false);
-      }
-    }, 10000); // 10 second timeout
-
-    return () => clearTimeout(timeout);
-  }, [isPageLoading]);
-
+  }, [portions, fetched, loading]);
 
   const handleEdit = (index: number) => {
     setSelectedIndex(index)
