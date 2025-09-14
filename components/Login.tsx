@@ -8,7 +8,6 @@ import { RootState } from "@/redux/store";
 import { logLogin } from "@/redux/features/loginLogSlice";
 
 const Login = () => {
-  // Local state for form fields
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
