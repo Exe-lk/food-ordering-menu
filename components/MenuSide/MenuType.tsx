@@ -29,11 +29,16 @@ const MenuType = () => {
                 alt="Food Menu"
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-white bg-opacity-75" />
+              <div className="absolute inset-0 bg-black bg-opacity-50" />
               <div className="absolute inset-0 flex items-center justify-center">
-                <h2 className="text-customGold text-2xl md:text-4xl lg:text-5xl font-semibold">
-                  Food Menu
-                </h2>
+                <div className="text-center">
+                  <h2 className="text-white text-2xl md:text-4xl lg:text-5xl font-bold drop-shadow-lg">
+                    Food Menu
+                  </h2>
+                  <p className="text-white text-sm md:text-base mt-2 opacity-90 drop-shadow-md">
+                    Browse our delicious dishes
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -49,11 +54,16 @@ const MenuType = () => {
                 alt="Bar Menu"
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-white bg-opacity-70" />
+              <div className="absolute inset-0 bg-black bg-opacity-50" />
               <div className="absolute inset-0 flex items-center justify-center">
-                <h2 className="text-customBeige text-2xl md:text-4xl lg:text-5xl font-semibold">
-                  Bar Menu
-                </h2>
+                <div className="text-center">
+                  <h2 className="text-white text-2xl md:text-4xl lg:text-5xl font-bold drop-shadow-lg">
+                    Bar Menu
+                  </h2>
+                  <p className="text-white text-sm md:text-base mt-2 opacity-90 drop-shadow-md">
+                    Explore our drinks & cocktails
+                  </p>
+                </div>
               </div>
             </div>
           </div>

@@ -9,7 +9,7 @@ import MenuCreate from "@/components/PopUpModels/MenuCreate";
 import Confirm from "@/components/PopUpModels/Confirm";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { fetchMenus, removeMenu } from "@/redux/features/menuSlice";
+import { fetchMenus, removeMenu, resetFetched } from "@/redux/features/menuSlice";
 import MenuEdit from "@/components/PopUpModels/EditPopUps/MenuEdit";
 import RecycleBinButton from "@/components/RecycleBin";
 import RecycleModal from "@/components/RecycleModal";
@@ -32,18 +32,25 @@ const Page = () => {
 
   // Fetch menus if not already fetched
   useEffect(() => {
-    if (!fetched) {
-      dispatch(fetchMenus());
-    }
-  }, [fetched, dispatch]);
+    dispatch(resetFetched());
+    dispatch(fetchMenus());
+    
+    // Fallback timeout to prevent infinite loading
+    const timeout = setTimeout(() => {
+      setIsPageLoading(false);
+    }, 10000); // 10 second timeout
+
+    return () => clearTimeout(timeout);
+  }, [dispatch]);
 
   // When menus are loaded, update local state and disable the loader
   useEffect(() => {
-    if (menus.length > 0) {
-      setLocalMenus(menus);
+    setLocalMenus(menus);
+    // Set loading to false when data is fetched, regardless of whether there are items or not
+    if (fetched) {
       setIsPageLoading(false);
     }
-  }, [menus]);
+  }, [menus, fetched]);
 
   const filteredMenus = localMenus.filter((menu) => {
     const matchName = menu.name.toLowerCase().includes(searchQuery.toLowerCase());
