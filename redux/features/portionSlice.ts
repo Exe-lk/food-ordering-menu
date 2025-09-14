@@ -217,11 +217,7 @@ string,
 const portionSlice = createSlice({
   name: "portion",
   initialState,
-  reducers: {
-    resetFetched: (state) => {
-      state.fetched = false;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchPortions.pending, (state) => {
@@ -276,5 +272,4 @@ const portionSlice = createSlice({
   },
 });
 
-export const { resetFetched } = portionSlice.actions;
 export default portionSlice.reducer;

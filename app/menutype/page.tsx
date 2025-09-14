@@ -9,7 +9,7 @@ import MenuCreate from "@/components/PopUpModels/MenuCreate";
 import Confirm from "@/components/PopUpModels/Confirm";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { fetchMenus, removeMenu, resetFetched } from "@/redux/features/menuSlice";
+import { fetchMenus, removeMenu } from "@/redux/features/menuSlice";
 import MenuEdit from "@/components/PopUpModels/EditPopUps/MenuEdit";
 import RecycleBinButton from "@/components/RecycleBin";
 import RecycleModal from "@/components/RecycleModal";
@@ -18,7 +18,7 @@ import ProgressBar from "@/components/ProgressBar";
 
 const Page = () => {
   const dispatch = useDispatch<any>();
-  const { menus, loading, fetched, error } = useSelector((state: RootState) => state.menuType);
+  const { menus, loading, fetched } = useSelector((state: RootState) => state.menuType);
   const [localMenus, setLocalMenus] = useState(menus);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -32,54 +32,19 @@ const Page = () => {
 
   // Fetch menus if not already fetched
   useEffect(() => {
-
-    dispatch(resetFetched());
-    dispatch(fetchMenus());
-    
-    // Fallback timeout to prevent infinite loading
-    const timeout = setTimeout(() => {
-      setIsPageLoading(false);
-    }, 10000); // 10 second timeout
-
-    return () => clearTimeout(timeout);
-  }, [dispatch]);
-
-  // When menus are loaded, update local state and disable the loader
-  useEffect(() => {
-    setLocalMenus(menus);
-    // Set loading to false when data is fetched, regardless of whether there are items or not
-    if (fetched) {
-      setIsPageLoading(false);
-    }
-  }, [menus, fetched]);
-
     if (!fetched) {
-      console.log("Dispatching fetchMenus...");
       dispatch(fetchMenus());
     }
   }, [fetched, dispatch]);
 
   // When menus are loaded, update local state and disable the loader
   useEffect(() => {
-    console.log("Menu state changed:", { fetched, error, menusLength: menus.length });
-    if (fetched || error) {
-      setLocalMenus(menus);
+    setLocalMenus(menus);
+    // Set page loading to false when fetch is complete, regardless of whether there are items
+    if (fetched || !loading) {
       setIsPageLoading(false);
     }
-  }, [menus, fetched, error]);
-
-  // Fallback timeout to prevent infinite loading
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (isPageLoading) {
-        console.warn("Menu loading timeout reached, stopping loading state");
-        setIsPageLoading(false);
-      }
-    }, 10000); // 10 second timeout
-
-    return () => clearTimeout(timeout);
-  }, [isPageLoading]);
-
+  }, [menus, fetched, loading]);
 
   const filteredMenus = localMenus.filter((menu) => {
     const matchName = menu.name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -172,8 +137,6 @@ const Page = () => {
         <div className="flex justify-center items-center h-64">
           <div className="w-16 h-16 border-4 border-gray-200 border-t-customGold rounded-full animate-spin"></div>
         </div>
-      ) : error ? (
-        <p className="text-red-500">Error loading menus: {error}</p>
       ) : filteredMenus.length > 0 ? (
         <MenuCard menus={filteredMenus} onEdit={handleEdit} onRemove={handleRemove} />
       ) : (
