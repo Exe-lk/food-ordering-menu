@@ -1,7 +1,7 @@
 // src/app/CartPage.tsx
 "use client";
 
-import { removeFromCart, updateQuantity, clearCart } from "@/redux/features/cartSlice";
+import { removeFromCart, updateQuantity, clearCart, clearCartFromFirebase } from "@/redux/features/cartSlice";
 import { RootState } from "@/redux/store";
 import React, { useEffect, useState } from "react";
 import { FaArrowLeft, FaTrashAlt } from "react-icons/fa";
@@ -46,6 +46,11 @@ const CartPage = () => {
     setIsPlacing(true);
     try {
       const order = await dispatch(placeOrder()).unwrap();
+      
+      // Clear cart from both Redux and Firebase
+      dispatch(clearCart());
+      await dispatch(clearCartFromFirebase()).unwrap();
+      
       Swal.fire({
         title: "Order Placed Successfully",
         icon: "success",
@@ -55,7 +60,6 @@ const CartPage = () => {
       }).then(() => {
         router.push("/menu/orders");
       });
-      dispatch(clearCart());
     } catch (error) {
       Swal.fire({
         title: "Failed to Place Order",

@@ -1,9 +1,9 @@
-import { configureStore, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
 import customerReducer from "./features/customerSlice"
 import menuReducer from './features/menuSlice'
 import portionTypeReducer from './features/portionSlice'
 import internalFoodReducer from './features/internalProductSlice'
-import cartSliceReducer from './features/cartSlice'
+import cartSliceReducer, { saveCartToFirebase } from './features/cartSlice'
 import orderSliceReducer from './features/orderSlice'
 import employeeSliceReducer from './features/employeeSlice'
 import loginLogSliceReducer  from './features/loginLogSlice'
@@ -15,7 +15,6 @@ import stockInSliceReducer from './features/stockInSlice'
 import stockOutSliceReducer from './features/stockOutSlice'
 import transactionSliceReducer from './features/transactionSlice'
 import qrSliceReducer from './features/qrSlice'
-import Cookies from 'js-cookie'
 
 
 const store = configureStore({
@@ -41,11 +40,27 @@ const store = configureStore({
   },
 });
 
+// Subscribe to cart changes and sync with Firebase
 if(typeof window !== "undefined"){
-  store.subscribe(() =>{
-    const cartState = store.getState().cart;
-    Cookies.set("cart",JSON.stringify(cartState),{expires:7})
-  })
+  let previousCartState = store.getState().cart;
+  
+  store.subscribe(() => {
+    const currentCartState = store.getState().cart;
+    
+    // Only sync if cart items or totalItems changed (not loading/error states)
+    if (
+      currentCartState.items !== previousCartState.items ||
+      currentCartState.totalItems !== previousCartState.totalItems
+    ) {
+      previousCartState = currentCartState;
+      
+      // Dispatch saveCartToFirebase asynchronously
+      store.dispatch(saveCartToFirebase({
+        items: currentCartState.items,
+        totalItems: currentCartState.totalItems,
+      }) as any);
+    }
+  });
 }
 
 export default store;
