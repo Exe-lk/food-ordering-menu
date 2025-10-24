@@ -1,10 +1,25 @@
 "use client"
 import { useRouter } from 'next/navigation'
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
+import { loadCartFromFirebase } from '@/redux/features/cartSlice'
 import NavBar from './NavBar';
 
 const MenuType = () => {
   const router = useRouter();
+  const dispatch = useDispatch<any>();
+
+  useEffect(() => {
+    // Load cart from Firebase when user enters menu
+    const loadCart = async () => {
+      try {
+        await dispatch(loadCartFromFirebase()).unwrap();
+      } catch (error) {
+        console.error("Failed to load cart:", error);
+      }
+    };
+    loadCart();
+  }, [dispatch]);
 
   return (
     <div className="relative min-h-screen bg-white">

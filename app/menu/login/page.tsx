@@ -41,6 +41,7 @@ const page = () => {
 
     const result = await dispatch(checkPhoneExists(phone)).unwrap();
     localStorage.setItem("phone", phone);
+    localStorage.setItem("phoneNumber", phone);
     Cookies.set("phone",phone,{expires:1});
 
     if (result.exists) {
