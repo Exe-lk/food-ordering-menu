@@ -12,13 +12,14 @@ function Model({ modelName }: { modelName: string }) {
 function LoadingFallback() {
   return (
     <div className="flex items-center justify-center h-full">
-      <div className="text-gray-600 text-sm sm:text-base">Loading 3D Model...</div>
+      <div className="text-white-600 text-sm sm:text-base">Loading 3D Model...</div>
     </div>
   );
 }
 
 export default function Model3D({ modelName }: { modelName: string }) {
   const [isMobile, setIsMobile] = useState(false);
+  const [autoRotate, setAutoRotate] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -32,13 +33,13 @@ export default function Model3D({ modelName }: { modelName: string }) {
   }, []);
 
   return (
-    <div className="w-full h-screen relative">
+    <div className="w-full h-screen relative touch-none">
       <Canvas
         camera={{ 
           position: isMobile ? [0, 0, 8] : [0, 0, 5], 
           fov: isMobile ? 60 : 75 
         }}
-        style={{ background: '#ffffff' }}
+        style={{ background: '#ffffff', touchAction: 'none' }}
         dpr={[1, 2]} // Optimize pixel ratio for mobile
         gl={{ 
           antialias: true,
@@ -55,15 +56,18 @@ export default function Model3D({ modelName }: { modelName: string }) {
           enablePan={true}
           enableZoom={true}
           enableRotate={true}
-          // Mobile-optimized controls
+          // Auto-rotation - 360 degrees continuously
+          autoRotate={autoRotate}
+          autoRotateSpeed={isMobile ? 1.5 : 2}
+          // Mobile-optimized controls - correct touch mapping
           touches={{
-            ONE: 2, // Single finger for rotate
-            TWO: 1  // Two fingers for pan and zoom
+            ONE: 0, // Single finger for rotate/orbit
+            TWO: 2  // Two fingers for pinch-to-zoom
           }}
           mouseButtons={{
-            LEFT: 2, // Left mouse for rotate
+            LEFT: 0, // Left mouse for rotate/orbit
             MIDDLE: 1, // Middle mouse for pan
-            RIGHT: 0 // Right mouse for zoom
+            RIGHT: 2 // Right mouse disabled
           }}
           // Faster, more responsive rotation for touch
           rotateSpeed={isMobile ? 1.2 : 0.8}
@@ -71,14 +75,22 @@ export default function Model3D({ modelName }: { modelName: string }) {
           // Reduced damping for snappier touch response
           dampingFactor={isMobile ? 0.02 : 0.05}
           enableDamping={true}
-          // Mobile-friendly limits
-          minDistance={isMobile ? 3 : 2}
-          maxDistance={isMobile ? 15 : 10}
-          // Smooth zoom
-          zoomSpeed={isMobile ? 1 : 0.8}
-          // No rotation limits for easier interaction
+          // Flexible zoom limits - can zoom in very close or out very far
+          minDistance={0.1}
+          maxDistance={50}
+          // Enhanced zoom control
+          zoomSpeed={isMobile ? 0.25 : 1}
+          // Full 360-degree rotation in all angles - no limits
           minPolarAngle={0}
           maxPolarAngle={Math.PI}
+          minAzimuthAngle={-Infinity}
+          maxAzimuthAngle={Infinity}
+          // Pause auto-rotation on interaction
+          onStart={() => setAutoRotate(false)}
+          onEnd={() => {
+            // Resume auto-rotation after 3 seconds of inactivity
+            setTimeout(() => setAutoRotate(true), 3000);
+          }}
         />
       </Canvas>
       
@@ -87,8 +99,8 @@ export default function Model3D({ modelName }: { modelName: string }) {
         <div className="absolute bottom-4 left-4 right-4 z-10 pointer-events-none">
           <div className="bg-black bg-opacity-50 text-white text-xs px-3 py-2 rounded-lg">
             <div className="text-center">
-              <div>👆 Drag with one finger to rotate</div>
-              <div>✌️ Pinch to zoom, drag with two fingers to pan</div>
+              <div>🔄 Auto-rotating • Touch to control</div>
+              <div className="mt-1 text-[10px] opacity-75">👆 One finger: Rotate • ✌️ Two fingers: Zoom/Pan</div>
             </div>
           </div>
         </div>

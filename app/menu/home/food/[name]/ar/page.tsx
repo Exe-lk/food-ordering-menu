@@ -59,11 +59,11 @@ export default function ARPage() {
         onClick={() => router.back()}
         className={`absolute top-2 sm:top-4 left-2 sm:left-4 z-10 bg-white bg-opacity-20 hover:bg-opacity-30 text-white rounded-lg backdrop-blur-sm transition-all ${
           isMobile 
-            ? 'px-2 py-1 text-xs' 
+            ? 'px-2 py-1 text-l mt-8' 
             : 'px-4 py-2'
         }`}
       >
-        ← {isMobile ? 'Back' : 'Back to Order this'}
+        ← {isMobile ? 'Back to Order this' : 'Back to Order this'}
       </button>
 
       {/* Product name overlay */}
