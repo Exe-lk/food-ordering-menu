@@ -1,5 +1,6 @@
 "use client"
 import React, { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import PortionPopUp from './MenuSide/PortionPopUp';
 
 
@@ -11,6 +12,25 @@ interface ProductCardProps {
 
 const ProductCard = ({name, portions, image}:ProductCardProps) => {
     const [showPopup, setShowPopUp] = useState(false);
+    const router = useRouter();
+
+    // Products with AR models available
+    const productsWithAR = [
+        'Beef Tenderloin Greens Potatoes',
+        'Black Bean Burgers',
+        'Burger Onion Rings',
+        'Burger With Garlic Mayo Ketchup Onion Jam',
+        'Glazed Pork Rice',
+        'Lil Cheese Pepperoni Pizza'
+    ];
+
+    const hasAR = productsWithAR.includes(name);
+
+    const handleViewAR = () => {
+        const url = `/menu/home/food/${encodeURIComponent(name)}/ar`;
+        router.push(url);
+    };
+
   return (
     <div className="relative rounded-3xl shadow-lg overflow-hidden mt-5">
             {/* Background Image */}
@@ -19,11 +39,11 @@ const ProductCard = ({name, portions, image}:ProductCardProps) => {
             {/* Gradient Overlay */}
             <div className="absolute inset-0">
                 {/* Text Content */}
-                <div className="absolute bottom-0 p-4 text-customGold w-full bg-overlayBack">
-                    <h3 className="font-bold text-lg mb-2">{name}</h3>
+                <div className="absolute bottom-0 p-3 sm:p-4 text-customGold w-full bg-overlayBack">
+                    <h3 className="font-bold text-base sm:text-lg mb-1 sm:mb-2">{name}</h3>
                     <div>
                         {portions.map((portion, index) => (
-                            <p key={index} className="text-sm">
+                            <p key={index} className="text-xs sm:text-sm">
                                 {portion.size} : {portion.price} LKR
                             </p>
                         ))}
@@ -31,12 +51,21 @@ const ProductCard = ({name, portions, image}:ProductCardProps) => {
                 </div>
             </div>
 
-            {/* Add Button */}
-            <button 
-            onClick={() => setShowPopUp(true)}
-            className="absolute bottom-4 right-4 bg-customGold text-white px-4 py-2 rounded shadow-lg">
-                Add +
-            </button>
+            {/* Action Buttons */}
+            <div className="absolute bottom-4 right-4 flex gap-2">
+                {hasAR && (
+                    <button 
+                    onClick={handleViewAR}
+                    className="bg-black text-white px-2 py-1 sm:px-4 sm:py-2 rounded shadow-lg text-xs sm:text-sm">
+                        View AR
+                    </button>
+                )}
+                <button 
+                onClick={() => setShowPopUp(true)}
+                className="bg-customGold text-white px-2 py-1 sm:px-4 sm:py-2 rounded shadow-lg text-xs sm:text-sm">
+                    Add +
+                </button>
+            </div>
             {/* Portion Selection Pop UP */}
             {showPopup && (
                 <PortionPopUp

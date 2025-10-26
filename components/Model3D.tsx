@@ -65,27 +65,30 @@ export default function Model3D({ modelName }: { modelName: string }) {
             MIDDLE: 1, // Middle mouse for pan
             RIGHT: 0 // Right mouse for zoom
           }}
-          // Responsive damping
-          dampingFactor={0.05}
+          // Faster, more responsive rotation for touch
+          rotateSpeed={isMobile ? 1.2 : 0.8}
+          panSpeed={0.8}
+          // Reduced damping for snappier touch response
+          dampingFactor={isMobile ? 0.02 : 0.05}
           enableDamping={true}
           // Mobile-friendly limits
           minDistance={isMobile ? 3 : 2}
           maxDistance={isMobile ? 15 : 10}
           // Smooth zoom
-          zoomSpeed={isMobile ? 0.8 : 1}
-          // Rotation limits for better mobile experience
-          minPolarAngle={Math.PI / 6}
-          maxPolarAngle={Math.PI - Math.PI / 6}
+          zoomSpeed={isMobile ? 1 : 0.8}
+          // No rotation limits for easier interaction
+          minPolarAngle={0}
+          maxPolarAngle={Math.PI}
         />
       </Canvas>
       
       {/* Mobile instructions overlay */}
       {isMobile && (
-        <div className="absolute top-4 left-4 right-4 z-10 pointer-events-none">
+        <div className="absolute bottom-4 left-4 right-4 z-10 pointer-events-none">
           <div className="bg-black bg-opacity-50 text-white text-xs px-3 py-2 rounded-lg">
             <div className="text-center">
-              <div>👆 One finger: Rotate</div>
-              <div>✌️ Two fingers: Pan & Zoom</div>
+              <div>👆 Drag with one finger to rotate</div>
+              <div>✌️ Pinch to zoom, drag with two fingers to pan</div>
             </div>
           </div>
         </div>
